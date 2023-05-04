@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include commit *.css
+recursive-include commit *.csv
+recursive-include commit *.html
+recursive-include commit *.ico
+recursive-include commit *.js
+recursive-include commit *.json
+recursive-include commit *.md
+recursive-include commit *.png
+recursive-include commit *.py
+recursive-include commit *.svg
+recursive-include commit *.txt
+recursive-exclude commit *.pyc
