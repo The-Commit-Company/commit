@@ -199,3 +199,5 @@ app_license = "MIT"
 # auth_hooks = [
 #	"commit.auth.validate"
 # ]
+
+website_route_rules = [{'from_route': '/dashboard/<path:app_path>', 'to_route': 'dashboard'},]
