@@ -1,0 +1,14 @@
+{
+  "name": "commit",
+  "version": "1.0.0",
+  "description": "The Commit Company",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cd dashboard && yarn dev",
+    "build": "cd dashboard && yarn build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
