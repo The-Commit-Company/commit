@@ -8,7 +8,7 @@ function App() {
 
   return (
     <div className="App">
-      <FrappeProvider url={'https://localhost:8000' ?? ''}>
+      <FrappeProvider url={'http://localhost:8001' ?? ''}>
         <BrowserRouter >
           <UserProvider>
             <Routes>

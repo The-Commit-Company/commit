@@ -23,8 +23,8 @@ export const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
         }, 3000)
     }
 
-    const { data } = useFrappeGetDoc('Connected App', 'fa306fb623')
-    console.log(data);
+    // const { data } = useFrappeGetDoc('Connected App', 'fa306fb623')
+    // console.log(data);
 
     return (
         <div className={cn("grid gap-6", className)} {...props}>
