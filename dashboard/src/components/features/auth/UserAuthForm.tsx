@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { useFrappeGetDoc } from "frappe-react-sdk"
 import { useState } from "react"
 import { AiFillGithub } from "react-icons/ai"
 
@@ -21,6 +22,9 @@ export const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
             setIsLoading(false)
         }, 3000)
     }
+
+    const { data } = useFrappeGetDoc('Connected App', 'fa306fb623')
+    console.log(data);
 
     return (
         <div className={cn("grid gap-6", className)} {...props}>

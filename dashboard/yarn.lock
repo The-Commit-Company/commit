@@ -1289,7 +1289,7 @@ frappe-js-sdk@^1.2.3:
 
 frappe-react-sdk@^1.1.1:
   version "1.1.1"
-  resolved "https://registry.npmjs.org/frappe-react-sdk/-/frappe-react-sdk-1.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/frappe-react-sdk/-/frappe-react-sdk-1.1.1.tgz#2e372cc5574c7c84ba2692869656803015dabac0"
   integrity sha512-rtUUb0BTLhoz2y2GmaV5/c8MVL7Vt+0U9yJibqrDuJMlskcfIIYKgmyAwoTnWyYDdt4bfF7fpmA3sTBlrVgFJA==
   dependencies:
     frappe-js-sdk "^1.2.3"
@@ -2049,7 +2049,7 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-swr@^2.0.0:
+swr@^2.0.0, swr@^2.1.5:
   version "2.1.5"
   resolved "https://registry.npmjs.org/swr/-/swr-2.1.5.tgz"
   integrity sha512-/OhfZMcEpuz77KavXST5q6XE9nrOBOVcBLWjMT+oAE/kQHyE3PASrevXCtQDZ8aamntOfFkbVJp7Il9tNBQWrw==
@@ -2160,9 +2160,9 @@ type-fest@^0.20.2:
   resolved "https://registry.npmjs.org/type-fest/-/type-fest-0.20.2.tgz"
   integrity sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==
 
-typescript@^5.0.2:
+typescript@^5.0.4:
   version "5.0.4"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-5.0.4.tgz"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.0.4.tgz#b217fd20119bd61a94d4011274e0ab369058da3b"
   integrity sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==
 
 update-browserslist-db@^1.0.10:
