@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "github_app_name",
   "client_id",
   "client_secret",
   "authorization_uri",
@@ -52,12 +53,17 @@
    "fieldname": "scopes",
    "fieldtype": "JSON",
    "label": "Scopes"
+  },
+  {
+   "fieldname": "github_app_name",
+   "fieldtype": "Data",
+   "label": "Github App name"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-05-16 13:35:50.597886",
+ "modified": "2023-05-16 13:42:15.451755",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Github Settings",
