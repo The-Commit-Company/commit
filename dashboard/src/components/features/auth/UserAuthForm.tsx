@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { useFrappeGetDoc } from "frappe-react-sdk"
+import { useFrappePostCall } from "frappe-react-sdk"
 import { useState } from "react"
 import { AiFillGithub } from "react-icons/ai"
+import { useNavigate } from "react-router-dom"
+
+const CLIENT_ID = 'Iv1.9804642ea04317fb'
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
     className?: string
@@ -23,8 +26,14 @@ export const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
         }, 3000)
     }
 
-    // const { data } = useFrappeGetDoc('Connected App', 'fa306fb623')
+    const navigate = useNavigate()
+
+    const { call } = useFrappePostCall('commit.commit.doctype.github_settings.github_settings.authenticate_user')
     // console.log(data);
+
+    const loginWithGithub = () => {
+        window.location.assign('https://github.com/login/oauth/authorize?client_id=' + CLIENT_ID + '&scope=user')
+    }
 
     return (
         <div className={cn("grid gap-6", className)} {...props}>
@@ -62,7 +71,7 @@ export const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
                     </span>
                 </div>
             </div>
-            <Button variant="outline" type="button" disabled={isLoading}>
+            <Button variant="outline" type="button" disabled={isLoading} onClick={loginWithGithub}>
                 {isLoading ? <SmallCircularSpinner /> : <div className="text-lg pr-1"><AiFillGithub /></div>}{" "}
                 Github
             </Button>
