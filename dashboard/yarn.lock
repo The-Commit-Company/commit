@@ -769,13 +769,6 @@ autoprefixer@^10.4.14:
     picocolors "^1.0.0"
     postcss-value-parser "^4.2.0"
 
-axios@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.npmjs.org/axios/-/axios-0.26.1.tgz"
-  integrity sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==
-  dependencies:
-    follow-redirects "^1.14.8"
-
 backo2@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/backo2/-/backo2-1.0.2.tgz"
@@ -1270,31 +1263,15 @@ flatted@^3.1.0:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.7.tgz"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-follow-redirects@^1.14.8:
-  version "1.15.2"
-  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
-  integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
-
 fraction.js@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
 
-frappe-js-sdk@^1.2.3:
-  version "1.2.3"
-  resolved "https://registry.npmjs.org/frappe-js-sdk/-/frappe-js-sdk-1.2.3.tgz"
-  integrity sha512-tT3TIv3OwNsTKJgGd5HwU924DpMdToUKWkvNQ3MA+0rqhQNDJCoz59d8ZF21Ujds1t0AgUjc2ME8mdG9G9QEtg==
-  dependencies:
-    axios "^0.26.1"
-
-frappe-react-sdk@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/frappe-react-sdk/-/frappe-react-sdk-1.1.1.tgz#2e372cc5574c7c84ba2692869656803015dabac0"
-  integrity sha512-rtUUb0BTLhoz2y2GmaV5/c8MVL7Vt+0U9yJibqrDuJMlskcfIIYKgmyAwoTnWyYDdt4bfF7fpmA3sTBlrVgFJA==
-  dependencies:
-    frappe-js-sdk "^1.2.3"
-    react ">=17.x"
-    swr "^2.0.0"
+frappe-react-sdk@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/frappe-react-sdk/-/frappe-react-sdk-1.1.6.tgz#9ff350a7b0b3627f537391260c000374485ca759"
+  integrity sha512-zkQt1IlRLmMUaxMjUqIa+e+6/7hv86Xh9rtV74ZhAfIbKJyB0ZaOX8B6lAVZw78nfPgv7aW78MVUc4ukGWersA==
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -1872,7 +1849,7 @@ react-router@6.11.1:
   dependencies:
     "@remix-run/router" "1.6.1"
 
-react@>=17.x, react@^18.2.0:
+react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -2049,7 +2026,7 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-swr@^2.0.0, swr@^2.1.5:
+swr@^2.1.5:
   version "2.1.5"
   resolved "https://registry.npmjs.org/swr/-/swr-2.1.5.tgz"
   integrity sha512-/OhfZMcEpuz77KavXST5q6XE9nrOBOVcBLWjMT+oAE/kQHyE3PASrevXCtQDZ8aamntOfFkbVJp7Il9tNBQWrw==
