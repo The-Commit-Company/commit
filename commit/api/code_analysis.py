@@ -1,13 +1,15 @@
 import frappe
 from commit.api.github import get_file_in_repo, get_all_files_in_repo, search_for_file_in_repo
 from commit.utils.conversions import convert_module_name
+from commit.utils.api_analysis import get_api_details_from_file_contents
 
 access_token = "**"
-organization = "Frappe"
-# organization = "The-Commit-Company"
-repo = "ERPNext"
-# repo = "Raven"
-app_name = "erpnext"
+# organization = "Frappe"
+organization = "The-Commit-Company"
+# repo = "ERPNext"
+repo = "Raven"
+# app_name = "erpnext"
+app_name = "raven"
 
 
 @frappe.whitelist()
@@ -112,4 +114,40 @@ def get_customized_doctypes_in_module(module: str):
         "module": module,
         "doctypes": doctypes,
         "count": len(doctypes)
+    }
+
+
+@frappe.whitelist()
+def get_all_whitelisted_api_in_app():
+    '''
+    Get list of all whitelisted API in a Frappe app with:
+    1. Type
+    2. Path
+    3. Method name
+    4. Arguments
+    5. Python code snippet
+    '''
+    query = f"@frappe.whitelist in:file+language:python"
+    search_results = search_for_file_in_repo(access_token, organization, repo, query)
+
+    if search_results.get("total_count", 0) == 0:
+        return []
+    
+    apis = []
+    for result in search_results["items"]:
+        path = result["path"]
+
+        file_content = get_file_in_repo(access_token, organization, repo, path)
+
+        apis_in_file = get_api_details_from_file_contents(file_content, path)
+        for api in apis_in_file:
+            apis.append(api)
+        # break
+        # api = get_whitelisted_api_in_file(path)
+        # if api:
+        #     apis.append(api)
+    
+    return {
+        "count": len(apis),
+        "apis": apis
     }

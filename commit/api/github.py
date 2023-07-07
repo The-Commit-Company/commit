@@ -53,7 +53,7 @@ def get_all_files_in_repo(access_token:str, organization:str, repo:str, path:str
     return response.json()
 
 
-def search_for_file_in_repo(access_token:str, organization:str, repo:str, query:str | None =None, extension: str | None=None, page:int=1, per_page:int=100):
+def search_for_file_in_repo(access_token:str, organization:str, repo:str, query:str | None =None, extension: str | None=None, page:int=1, per_page:int=100, accept=None):
     '''
     Search for a file in a repository from Github
     query examples:
@@ -65,7 +65,7 @@ def search_for_file_in_repo(access_token:str, organization:str, repo:str, query:
     '''
 
     # TODO: This API is expensive to use. We need to store the result based on commit hash and return from our own database
-    headers = prepare_headers(access_token)
+    headers = prepare_headers(access_token, accept=accept)
     if query:
         query = f"{query}+repo:{organization}/{repo}"
     if extension:
