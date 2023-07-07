@@ -4,3 +4,10 @@
 *.swp
 tags
 node_modules
+
+commit/docs/current
+node_modules/
+
+commit/public/dashboard
+commit/public/node_modules
+commit/www/dashboard.html
