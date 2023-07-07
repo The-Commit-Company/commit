@@ -1,5 +1,6 @@
 import frappe
-from commit.api.github import get_file_in_repo, get_all_files_in_repo
+from commit.api.github import get_file_in_repo, get_all_files_in_repo, search_for_file_in_repo
+from commit.utils.conversions import convert_module_name
 
 access_token = "**"
 organization = "Frappe"
@@ -64,3 +65,51 @@ def get_list_of_modules():
     return modules.split("\n")
 
 
+@frappe.whitelist()
+def get_list_of_doctypes_in_module(module: str):
+    '''
+    Get list of doctypes in a module
+    '''
+    module_pathname = convert_module_name(module)
+    query = f"path:{app_name}/{module_pathname}/doctype+{module} in:file"
+    search_results = search_for_file_in_repo(access_token, organization, repo, query, 'json')
+
+    if search_results.get("total_count", 0) == 0:
+        return []
+    
+    doctypes = []
+    for result in search_results["items"]:
+        path = result["path"]
+        doctype_json_content = get_file_in_repo(access_token, organization, repo, path)
+        doctype_json = frappe.parse_json(doctype_json_content)
+        if doctype_json.get("doctype", "") == "DocType":
+            doctypes.append(doctype_json)
+    return {
+        "module": module,
+        "doctypes": doctypes,
+        "count": len(doctypes)
+    }
+
+@frappe.whitelist()
+def get_customized_doctypes_in_module(module: str):
+    '''
+    Get list of all customized doctypes for a Frappe app
+    '''
+    module_pathname = convert_module_name(module)
+    query = f"path:{app_name}/{module_pathname}/custom+custom_fields in:file"
+    search_results = search_for_file_in_repo(access_token, organization, repo, query, 'json')
+
+    if search_results.get("total_count", 0) == 0:
+        return []
+    
+    doctypes = []
+    for result in search_results["items"]:
+        path = result["path"]
+        doctype_json_content = get_file_in_repo(access_token, organization, repo, path)
+        doctype_json = frappe.parse_json(doctype_json_content)
+        doctypes.append(doctype_json)
+    return {
+        "module": module,
+        "doctypes": doctypes,
+        "count": len(doctypes)
+    }
