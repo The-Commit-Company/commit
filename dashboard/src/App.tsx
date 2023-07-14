@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { UserProvider } from './utils/auth/UserProvider'
 import { ProtectedRoute } from './utils/auth/ProtectedRoute'
-import { SignUp } from './pages/features/auth/SignUp'
+import { SignUp } from './pages/auth/SignUp'
 import { FrappeProvider } from 'frappe-react-sdk'
 
 function App() {
