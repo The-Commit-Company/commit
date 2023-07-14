@@ -3,6 +3,7 @@ import { UserProvider } from './utils/auth/UserProvider'
 import { ProtectedRoute } from './utils/auth/ProtectedRoute'
 import { SignUp } from './pages/auth/SignUp'
 import { FrappeProvider } from 'frappe-react-sdk'
+import { Dashboard } from './pages/dashboard/Dashboard'
 
 function App() {
 
@@ -17,7 +18,7 @@ function App() {
 
               {/** Private Routes */}
               <Route path="/" element={<ProtectedRoute />} />
-              <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </UserProvider>
         </BrowserRouter>
