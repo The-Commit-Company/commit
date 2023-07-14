@@ -17,7 +17,7 @@
     "cal-sans": "^1.0.1",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
-    "frappe-react-sdk": "^1.1.6",
+    "frappe-react-sdk": "^1.2.8",
     "lucide-react": "^0.215.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

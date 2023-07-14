@@ -8,8 +8,8 @@ function App() {
 
   return (
     <div className="App">
-      <FrappeProvider url={'http://localhost:8001' ?? ''}>
-        <BrowserRouter >
+      <FrappeProvider url={import.meta.env.VITE_FRAPPE_PATH ?? ''} socketPort={import.meta.env.VITE_SOCKET_PORT ?? ''}>
+        <BrowserRouter>
           <UserProvider>
             <Routes>
               {/** Public Routes */}
