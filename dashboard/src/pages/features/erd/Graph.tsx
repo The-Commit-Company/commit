@@ -126,7 +126,7 @@ const getLayoutedElements = (nodes: Node<TableNodeData>[], edges: Edge[]) => {
         rankdir: 'LR',
         align: 'UL',
         nodesep: 100,
-        ranksep: 50,
+        ranksep: 80,
     })
 
     nodes.forEach((node) => {
@@ -166,7 +166,7 @@ function TableNode({ data, targetPosition, sourcePosition }: NodeProps<TableNode
     const hiddenNodeConnector = '!h-px !w-px !min-w-0 !min-h-0 !cursor-grab !border-0 !opacity-0'
 
     return (
-        <div className={`w-[${NODE_WIDTH / 2}px] rounded-lg overflow-hidden bg-white  shadow-sm`}>
+        <div className={`w-[${NODE_WIDTH / 2}px ] rounded-lg overflow-hidden bg-white  shadow-sm`}>
             <header className="text-[0.5rem] leading-5 px-2 font-bold text-center bg-blue-500 text-white">
                 {data.name}
             </header>
