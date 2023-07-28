@@ -2,7 +2,7 @@ import { PostgresTable } from "@/types/Table"
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { AiOutlineLink } from 'react-icons/ai'
+import { ICON_KEY_MAP, ICON_KEY } from "@/components/common/Icons"
 
 export interface Props {
     data: PostgresTable
@@ -11,6 +11,7 @@ export interface Props {
 }
 
 export const TableDrawer = ({ data, isOpen, onClose }: Props) => {
+
 
     return (
         <Transition.Root show={isOpen} as={Fragment}>
@@ -172,22 +173,24 @@ export const TableDrawer = ({ data, isOpen, onClose }: Props) => {
                                         <div>
                                             <div className="px-4 py-2 sm:px-6 overflow-auto h-[60vh]">
                                                 <ul role="list" className="divide-y divide-gray-100">
-                                                    {data.columns.map((column) => (
-                                                        <li key={column.id} className="flex justify-between gap-x-6 py-1">
-                                                            <div className="flex gap-x-2 items-center">
-                                                                {/* <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={column.imageUrl} alt="" /> */}
-                                                                <div className="h-10 w-10 flex-none rounded-full border border-gray-200 flex items-center justify-center">
-                                                                    <AiOutlineLink className="h-6 w-6" />
-                                                                </div>
+                                                    {data.columns.map((column) => {
+                                                        const IconComponent = ICON_KEY_MAP[column.format as ICON_KEY]
+                                                        return (
+                                                            <li key={column.id} className="flex justify-between gap-x-6 py-2">
+                                                                <div className="flex gap-x-2 items-center">
+                                                                    {/* <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={column.imageUrl} alt="" /> */}
+                                                                    <div className="h-10 w-10 flex-none rounded-full border border-gray-200 flex items-center justify-center">
+                                                                        <IconComponent className="h-6 w-6" />
+                                                                    </div>
 
-                                                                <div className="min-w-0 flex-auto">
-                                                                    <p className="text-sm font-semibold leading-6 text-gray-900">{column.name}</p>
-                                                                    <p className="mt-1 truncate text-xs leading-5 text-gray-500">{column.id}</p>
+                                                                    <div className="min-w-0 flex-auto">
+                                                                        <p className="text-sm font-semibold leading-4 text-gray-900">{column.name}</p>
+                                                                        <p className="mt-1 truncate text-xs leading-4 text-gray-500">{column.id}</p>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div className="hidden sm:flex sm:flex-col sm:items-end">
-                                                                <p className="text-sm leading-6 text-gray-900">{column.format}</p>
-                                                                {/* {column.lastSeen ? (
+                                                                <div className="hidden sm:flex sm:flex-col sm:items-end">
+                                                                    <p className="text-sm leading-6 text-gray-900">{column.format}</p>
+                                                                    {/* {column.lastSeen ? (
                                                                     <p className="mt-1 text-xs leading-5 text-gray-500">
                                                                         Last seen <time dateTime={column.lastSeenDateTime}>{column.lastSeen}</time>
                                                                     </p>
@@ -199,9 +202,10 @@ export const TableDrawer = ({ data, isOpen, onClose }: Props) => {
                                                                         <p className="text-xs leading-5 text-gray-500">Online</p>
                                                                     </div>
                                                                 )} */}
-                                                            </div>
-                                                        </li>
-                                                    ))}
+                                                                </div>
+                                                            </li>
+                                                        )
+                                                    })}
                                                 </ul>
 
                                             </div>
