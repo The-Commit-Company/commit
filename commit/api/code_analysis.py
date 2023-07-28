@@ -13,7 +13,7 @@ app_name = "raven"
 
 
 @frappe.whitelist()
-def get_name_of_app():
+def get_name_of_app(organization, repo):
     '''
     Get name of app from repo
     '''
@@ -29,13 +29,13 @@ def get_name_of_app():
             break
     
     if type == "pyproject.toml":
-        app_name = get_app_name_from_pyproject_toml()
+        app_name = get_app_name_from_pyproject_toml(organization, repo)
     elif type == "setup.py":
-        app_name = get_app_name_from_setup_py()   
+        app_name = get_app_name_from_setup_py(organization, repo)   
 
     return app_name
 
-def get_app_name_from_setup_py():
+def get_app_name_from_setup_py(organization, repo):
     '''
     Get app name from setup.py
     '''
@@ -44,7 +44,7 @@ def get_app_name_from_setup_py():
     return app_name
 
 
-def get_app_name_from_pyproject_toml():
+def get_app_name_from_pyproject_toml(organization, repo):
     '''
     Get app name from pyproject.toml
     '''
@@ -59,7 +59,7 @@ def get_app_name_from_pyproject_toml():
 # def get_list_of_dependencies
 
 @frappe.whitelist()
-def get_list_of_modules():
+def get_list_of_modules(organization, repo, app_name):
     '''
     Get list of modules for a Frappe app
     '''

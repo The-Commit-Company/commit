@@ -4,7 +4,7 @@ import requests
 
 def prepare_headers(access_token, type="bearer", accept="application/vnd.github+json"):
     return {
-        "Authorization": type + " " + access_token,
+        # "Authorization": type + " " + access_token,
         "Accept": accept,
         "X-GitHub-Api-Version": "2022-11-28"
     }
