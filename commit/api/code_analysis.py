@@ -2,15 +2,7 @@ import frappe
 from commit.api.github import get_file_in_repo, get_all_files_in_repo, search_for_file_in_repo
 from commit.utils.conversions import convert_module_name
 from commit.utils.api_analysis import get_api_details_from_file_contents
-
-access_token = "**"
-# organization = "Frappe"
-organization = "The-Commit-Company"
-# repo = "ERPNext"
-repo = "Raven"
-# app_name = "erpnext"
-app_name = "raven"
-
+access_token = "*"
 
 @frappe.whitelist()
 def get_name_of_app(organization, repo):
@@ -68,7 +60,7 @@ def get_list_of_modules(organization, repo, app_name):
 
 
 @frappe.whitelist()
-def get_list_of_doctypes_in_module(module: str):
+def get_list_of_doctypes_in_module(organization, repo, app_name, module: str):
     '''
     Get list of doctypes in a module
     '''
@@ -93,7 +85,7 @@ def get_list_of_doctypes_in_module(module: str):
     }
 
 @frappe.whitelist()
-def get_customized_doctypes_in_module(module: str):
+def get_customized_doctypes_in_module(organization, repo, app_name, module: str):
     '''
     Get list of all customized doctypes for a Frappe app
     '''
@@ -118,7 +110,7 @@ def get_customized_doctypes_in_module(module: str):
 
 
 @frappe.whitelist()
-def get_all_whitelisted_api_in_app():
+def get_all_whitelisted_api_in_app(organization, repo):
     '''
     Get list of all whitelisted API in a Frappe app with:
     1. Type
