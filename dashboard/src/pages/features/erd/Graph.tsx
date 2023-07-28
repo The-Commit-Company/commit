@@ -271,6 +271,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
+                    onNodeClick={onNodeMouseLeave}
                     defaultNodes={[]}
                     defaultEdges={[]}
                     onNodeMouseEnter={onNodeMouseEnter}
