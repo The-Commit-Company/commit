@@ -13,3 +13,10 @@ export const convertStringDateToMoment = (date: string) => {
   }
   return null
 }
+
+export const convertFrappeTimestampToReadableDate = (timestamp?: string, format = 'MM-DD-YYYY') => {
+  if (timestamp) {
+    return moment(timestamp, 'YYYY-MM-DD HH:mm:ss').format(format)
+  }
+  return ''
+}
