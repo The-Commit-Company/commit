@@ -1,7 +1,7 @@
 import { PostgresTable } from "@/types/Table";
 import { useState } from "react";
 import { NodeProps, Handle } from "reactflow";
-import { TableDrawer } from "./TableDrawer";
+import { TableDrawer } from "../TableDrawer/TableDrawer";
 import { NODE_WIDTH } from "./Graph";
 import { HoverCard, HoverCardTrigger } from "@radix-ui/react-hover-card";
 import { TableHoverCard } from "./TableHoverCard";
@@ -59,7 +59,7 @@ export const TableNode = ({ data, targetPosition, sourcePosition }: NodeProps<Po
                     </HoverCard>
                 ))}
             </div>
-            <TableDrawer isOpen={isOpen} onClose={onClose} data={data} key={data.name} />
+            <TableDrawer isOpen={isOpen} onClose={onClose} doctype={data.name} key={data.name} />
         </>
     )
 }
