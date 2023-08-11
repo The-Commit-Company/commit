@@ -5,9 +5,11 @@ import { useFrappeGetDoc } from "frappe-react-sdk"
 import { DocType } from "@/types/Core/DocType"
 import { convertFrappeTimestampToReadableDate } from '@/lib/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DataTableDemo } from './DrawerTable'
 import { DocField } from '@/types/Core/DocField'
 import { Badge } from '@/components/ui/badge'
+import { FieldsTable } from './FieldTable/FieldsTable'
+import { PermissionsTable } from './PermissionsTable/PermissionsTable'
+import { DocPerm } from '@/types/Core/DocPerm'
 
 export interface Props {
     doctype: string
@@ -17,9 +19,7 @@ export interface Props {
 
 export const TableDrawer = ({ doctype, isOpen, onClose }: Props) => {
 
-    const { data, error, isLoading, mutate } = useFrappeGetDoc<DocType>('DocType', 'User')
-
-
+    const { data, error, isLoading } = useFrappeGetDoc<DocType>('DocType', 'User')
 
     return (
         <Transition.Root show={isOpen} as={Fragment}>
@@ -110,15 +110,11 @@ export const TableDrawer = ({ doctype, isOpen, onClose }: Props) => {
                                                     <TabsTrigger value="fields">Fields</TabsTrigger>
                                                     <TabsTrigger value="permissions">Permissions</TabsTrigger>
                                                     <TabsTrigger value="links">Link</TabsTrigger>
-                                                    <TabsTrigger value="fetchFrom">Fetch from</TabsTrigger>
-                                                    <TabsTrigger value="comments">Comments</TabsTrigger>
 
                                                 </TabsList>
-                                                <TabsContent value="fields"><DataTableDemo data={data.fields ?? [] as DocField[]} /></TabsContent>
-                                                <TabsContent value="permissions">Change your password here.</TabsContent>
+                                                <TabsContent value="fields"><FieldsTable data={data.fields ?? [] as DocField[]} /></TabsContent>
+                                                <TabsContent value="permissions"><PermissionsTable permissions={data.permissions ?? [] as DocPerm[]} /> </TabsContent>
                                                 <TabsContent value="links">Change your notification settings here.</TabsContent>
-                                                <TabsContent value="fetchFrom">Change your notification settings here.</TabsContent>
-                                                <TabsContent value="comments">Change your notification settings here.</TabsContent>
                                             </Tabs>
                                         </div>
                                     </div>}
