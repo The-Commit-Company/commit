@@ -1,9 +1,10 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { APIData } from "@/types/APIData"
 
 export interface APIListProps {
-    apiList: []
+    apiList: APIData[]
 }
 
 export const APIList = ({ apiList }: APIListProps) => {
@@ -48,10 +49,10 @@ export const APIList = ({ apiList }: APIListProps) => {
     )
 }
 
-export const ListView = ({ list }: { list: [] }) => {
+export const ListView = ({ list }: { list: APIData[] }) => {
     return (
         <ul role="list" className="divide-y divide-gray-100 px-1">
-            {list.map((person) => (
+            {list.map((person: APIData) => (
                 <li key={person.name} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50">
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
@@ -60,7 +61,7 @@ export const ListView = ({ list }: { list: [] }) => {
                         </div>
                     </div>
                     <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p className="text-sm leading-6 text-gray-900">{person.role}</p>
+                        {/* <p className="text-sm leading-6 text-gray-900">{person.role}</p> */}
                         {person.allow_guest ? (
                             <></>
                         ) : (
