@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge'
 import { FieldsTable } from './FieldTable/FieldsTable'
 import { PermissionsTable } from './PermissionsTable/PermissionsTable'
 import { DocPerm } from '@/types/Core/DocPerm'
+import { LinkTable } from './LinkTable/LinkTable'
+import { DocTypeLink } from '@/types/Core/DocTypeLink'
 
 export interface Props {
     doctype: string
@@ -114,7 +116,7 @@ export const TableDrawer = ({ doctype, isOpen, onClose }: Props) => {
                                                 </TabsList>
                                                 <TabsContent value="fields"><FieldsTable data={data.fields ?? [] as DocField[]} /></TabsContent>
                                                 <TabsContent value="permissions"><PermissionsTable permissions={data.permissions ?? [] as DocPerm[]} /> </TabsContent>
-                                                <TabsContent value="links">Change your notification settings here.</TabsContent>
+                                                <TabsContent value="links"><LinkTable links={data.links ?? [] as DocTypeLink[]} /></TabsContent>
                                             </Tabs>
                                         </div>
                                     </div>}
