@@ -1,5 +1,4 @@
 import {
-    CheckIcon,
     ChevronDownIcon,
     DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
@@ -25,7 +24,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -38,13 +36,12 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { DocField } from "@/types/Core/DocField"
-import { useToast } from "@/components/ui/use-toast"
 import { useMemo, useState } from "react"
 import { FieldTypeOptions } from "./FieldTypeOptions"
 import { DataTableFacetedFilter } from "./FieldTypeFilters"
 import { Checkbox } from "@/components/ui/checkbox"
 import { OptionsComponent } from "./IconTextComponent"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
 
 export interface DrawerTableProps {
     data: DocField[]
@@ -65,28 +62,6 @@ export const UnwantedDataTypes = [
 ]
 
 export const FieldsTable = ({ data }: DrawerTableProps) => {
-    const { toast } = useToast()
-
-
-    const copyData = async (value: string) => {
-        try {
-            await navigator.clipboard.writeText(value);
-
-        } catch (error) {
-            console.error("Clipboard copy error:", error);
-        }
-    }
-
-    const toastCopy = (value: string) => {
-        toast({
-            title: "Copied",
-            description: <div className='flex flex-row items-center'>
-                <CheckIcon className='mr-1' />
-                <div className='mr-1'>{value} Copied to clipboard</div>
-            </div>,
-            duration: 2000,
-        });
-    }
 
 
     const columns: ColumnDef<DocField>[] = [
@@ -112,25 +87,12 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
         {
             accessorKey: "label",
             header: "Label",
-            cell: ({ row }) => (
-                <div>{row.getValue("label")}</div>
-            ),
+            cell: ({ row }) => <CopyHovor value={row.getValue('label')} />,
         },
         {
             accessorKey: "fieldname",
             header: () => <div className="text-start">Name</div>,
-            cell: ({ row }) => <TooltipProvider>
-                <Tooltip delayDuration={0}>
-                    <TooltipTrigger>
-                        <div style={{ cursor: 'pointer' }}>{row.getValue("fieldname")}</div>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={4} className="bg-zinc-600 border border-zinc-700">
-                        <div className="text-sm py-0">
-                            {'copy'}
-                        </div>
-                    </TooltipContent>
-                </Tooltip >
-            </TooltipProvider >,
+            cell: ({ row }) => <CopyHovor value={row.getValue('fieldname')} />,
         },
         {
             accessorKey: "fieldtype",
@@ -143,7 +105,7 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
         {
             id: "actions",
             enableHiding: false,
-            cell: ({ row }) => {
+            cell: () => {
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -154,28 +116,6 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => {
-                                    copyData(row.getValue("label"))
-                                        .then(() => {
-                                            toastCopy('Label')
-                                        })
-                                        .catch(error => {
-                                            console.error("Copy error:", error);
-                                        });
-                                }}>
-                                Copy Label
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                                copyData(row.getValue("fieldname"))
-                                    .then(() => {
-                                        toastCopy('Name')
-                                    })
-                                    .catch(error => {
-                                        console.error("Copy error:", error);
-                                    });
-                            }}>Copy Name</DropdownMenuItem>
-                            <DropdownMenuSeparator />
                             <DropdownMenuItem>View details</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -338,6 +278,15 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
                     Total {table.getFilteredRowModel().rows.length} row(s).
                 </div>
             </div>
+        </div>
+    )
+}
+
+export const CopyHovor = ({ value }: { value: string }) => {
+    return (
+        <div className="group flex space-x-2 items-center">
+            <div className="group-hover:text-base">{value}</div>
+            <CopyButton value={value} className="h-8 w-8 invisible bg-zinc-200 hover:bg-zinc-400 group-hover:visible" />
         </div>
     )
 }

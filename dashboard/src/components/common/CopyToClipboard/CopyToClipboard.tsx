@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
 import { useEffect, useState } from "react"
 
@@ -33,15 +32,18 @@ export function CopyButton({
             onClick={() => {
                 copyToClipboardWithMeta(value)
                     .then(() => setHasCopied(true))
-                    .catch(() => setHasCopied(false))
+                    .catch(() => {
+                        console.error("Failed to copy")
+                        setHasCopied(false)
+                    })
             }}
             {...props}
         >
             <span className="sr-only">Copy</span>
             {hasCopied ? (
-                <CheckIcon className="h-3 w-3" />
+                <CheckIcon className="h-4 w-4" />
             ) : (
-                <CopyIcon className="h-3 w-3" />
+                <CopyIcon className="h-4 w-4" />
             )}
         </Button>
     )
