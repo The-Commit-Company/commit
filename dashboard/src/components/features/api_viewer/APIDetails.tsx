@@ -45,18 +45,17 @@ export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: A
             </div>
             <div>
                 <div className="border-b border-gray-100 pb-2 space-x-2">
-                    <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
+                    {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
                         Allow Guest
-                    </span>
-                    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                    </span>}
+                    {!data?.xss_safe && <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
                         XSS Unsafe
-                    </span>
+                    </span>}
                 </div>
                 <div className="mt-0 border-b border-gray-100">
                     <dl className="divide-y divide-gray-100">
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">API name :</dt>
-                            {/* <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0">:</dd> */}
                             <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>{data?.name}</code></dd>
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
@@ -65,9 +64,6 @@ export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: A
                                 <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{getEndpointFromPath(data?.file, data?.name)}</dd>
                                 <CopyButton value={getEndpointFromPath(data?.file, data?.name) ?? ''} className="h-6 w-6" />
                             </div>
-                            {/* <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0 truncate w-[50ch]">
-                                <code>{getEndpointFromPath(data?.file, data?.name)}</code>
-                            </dd> */}
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">File path :</dt>
