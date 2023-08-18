@@ -1,4 +1,4 @@
-import CopyButton from "@/components/common/CopyToClipboard.tsx/CopyToClipboard"
+import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
 import { Tabs } from "@/components/common/Tabs"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { APIData, Argument } from "@/types/APIData"
