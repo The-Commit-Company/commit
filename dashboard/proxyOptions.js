@@ -1,8 +1,13 @@
-const common_site_config = require('../../../sites/common_site_config.json');
-const { webserver_port } = common_site_config;
+let webserver_port = "8001";
+try {
+	const common_site_config = require('../../../sites/common_site_config.json');
+	webserver_port = common_site_config.webserver_port;
+} catch {
+
+}
 
 export default {
-  '^/(app|api|assets|files)': {
+  '^/(app|api|assets|files|private)': {
     target: `http://127.0.0.1:${webserver_port}`,
     ws: true,
     changeOrigin: true,
