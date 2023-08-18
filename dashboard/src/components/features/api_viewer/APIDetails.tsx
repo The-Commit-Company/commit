@@ -1,14 +1,33 @@
+import CopyButton from "@/components/common/CopyToClipboard.tsx/CopyToClipboard"
 import { Tabs } from "@/components/common/Tabs"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { APIData, Argument } from "@/types/APIData"
+import { useMemo } from "react"
 
-export const APIDetails = () => {
+export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: APIData[], selectedEndpoint: string }) => {
+
+    const data = useMemo(() => {
+        return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
+    }, [endpointData, selectedEndpoint])
 
     const tabs = [
-        { name: 'Parameters', content: <ParametersTable /> },
-        { name: 'Body', content: <CodeSnippet /> },
-        { name: 'Headers', content: <p>Header data if any here.</p> },
-        { name: 'Authorization', content: <p>Authorization data here.</p> },
+        { name: 'Parameters', content: <ParametersTable parameters={data?.arguments} /> },
+        { name: 'Code', content: <CodeSnippet /> },
     ]
+
+    /**
+     * Funtion to get the API endpoint name from the file path
+     * @param path file path of the endpoint
+     * @param name name of the endpoint
+     * @returns return the endpoint name from the path
+     */
+    const getEndpointFromPath = (path: string | undefined, name: string | undefined) => {
+        const pathArray = path?.split('/').slice(1)
+        // remove '.py' from last element of array using regex
+        pathArray?.splice(-1, 1, pathArray[pathArray.length - 1].replace(/\.py$/, ''))
+        pathArray?.push(name ?? '')
+        return pathArray?.join('.')
+    }
 
     return (
         <div className="flex flex-col space-y-3 p-3">
@@ -38,107 +57,53 @@ export const APIDetails = () => {
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">API name :</dt>
                             {/* <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0">:</dd> */}
-                            <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>get_linked_material_requests</code></dd>
+                            <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>{data?.name}</code></dd>
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">API endpoint :</dt>
-                            <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>erpnext.accounts.get_chart_of_accounts</code></dd>
+                            <div className="flex items-start space-x-2 sm:col-span-4">
+                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[50ch]">{getEndpointFromPath(data?.file, data?.name)}</dd>
+                                <CopyButton value={getEndpointFromPath(data?.file, data?.name) ?? ''} />
+                            </div>
+                            {/* <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0 truncate w-[50ch]">
+                                <code>{getEndpointFromPath(data?.file, data?.name)}</code>
+                            </dd> */}
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">File path :</dt>
-                            <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0">../dashboard/src/pages/features/api_viewer/APIViewer.tsx</dd>
+                            <div className="flex items-start space-x-2 sm:col-span-4">
+                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[50ch]">{data?.file}</dd>
+                                <CopyButton value={data?.file ?? ''} />
+                            </div>
                         </div>
                     </dl>
                 </div>
             </div>
+
             <Tabs tabs={tabs} />
         </div>
     )
 }
 
 
-export const ParametersTable = () => {
-    const parameters = [
-        {
-            argument: 'doctype',
-            type: 'string',
-            default: 'Sales Order',
-        },
-        {
-            argument: 'name',
-            type: 'string',
-            default: 'SO-00001',
-        },
-        {
-            argument: 'fields',
-            type: 'string',
-            default: '["name", "customer", "grand_total"]',
-        },
-        {
-            argument: 'filters',
-            type: 'string',
-            default: '{"customer": "Harry Potter"}',
-        },
-        {
-            argument: 'limit_page_length',
-            type: 'int',
-            default: '20',
-        },
-        {
-            argument: 'limit_start',
-            type: 'int',
-            default: '0',
-        },
-        {
-            argument: 'order_by',
-            type: 'string',
-            default: 'creation desc',
-        },
-        {
-            argument: 'as_dict',
-            type: 'int',
-            default: '1',
-        },
-        {
-            argument: 'with_childnames',
-            type: 'int',
-            default: '0',
-        },
-        {
-            argument: 'ignore_permissions',
-            type: 'int',
-            default: '0',
-        },
-        {
-            argument: 'ignore_ifnull',
-            type: 'int',
-            default: '0',
-        },
-        {
-            argument: 'debug',
-            type: 'int',
-            default: '0',
-        },
-    ]
+export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => {
 
     return (
         <Table>
             <TableCaption>A list of parameters that can be used in the API</TableCaption>
             <TableHeader className="bg-gray-100">
                 <TableRow>
-                    <TableHead className="w-[100px]">Argument</TableHead>
+                    <TableHead>Argument</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Default</TableHead>
-                    <TableHead className="text-right">blah...</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {parameters.map((parameter) => (
+                {parameters?.map((parameter) => (
                     <TableRow key={parameter.argument} className="font-light text-xs">
                         <TableCell>{parameter.argument}</TableCell>
-                        <TableCell>{parameter.type}</TableCell>
-                        <TableCell>{parameter.default}</TableCell>
-                        <TableCell className="text-right">...</TableCell>
+                        <TableCell>{parameter.type ? parameter.type : '-'}</TableCell>
+                        <TableCell>{parameter.default ? parameter.default : '-'}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>

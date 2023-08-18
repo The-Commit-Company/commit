@@ -5,9 +5,10 @@ import { APIData } from "@/types/APIData"
 
 export interface APIListProps {
     apiList: APIData[]
+    setSelectedEndpoint: (endpoint: string) => void
 }
 
-export const APIList = ({ apiList }: APIListProps) => {
+export const APIList = ({ apiList, setSelectedEndpoint }: APIListProps) => {
     return (
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200 h-screen">
             <div className="border-b border-gray-200 pb-4">
@@ -43,28 +44,31 @@ export const APIList = ({ apiList }: APIListProps) => {
             </div>
             {/* fixed height container */}
             <div className="flex flex-col space-y-4 overflow-y-auto h-[calc(100vh-10rem)]">
-                <ListView list={apiList} />
+                <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} />
             </div>
         </div>
     )
 }
 
-export const ListView = ({ list }: { list: APIData[] }) => {
+export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void }) => {
     return (
         <ul role="list" className="divide-y divide-gray-100 px-1">
             {list.map((person: APIData) => (
                 <li key={person.name} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50">
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
-                            <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer hover:text-blue-600"><code>{person.name}</code></p>
+                            <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer hover:text-blue-600" onClick={() => setSelectedEndpoint(person.name)}><code>{person.name}</code></p>
                             <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.file}</p>
                         </div>
                     </div>
                     <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        {/* <p className="text-sm leading-6 text-gray-900">{person.role}</p> */}
-                        {person.allow_guest ? (
-                            <></>
-                        ) : (
+                        <p className="text-sm leading-6 text-gray-900 space-x-1">
+                            {person.request_types.map((type: string, idx: number) => (
+                                <span key={idx} className="text-xs font-semibold leading-5 text-gray-500">{type} {idx !== person.request_types.length - 1 ? '/' : ''}</span>
+                            ))}
+                        </p>
+
+                        {person.allow_guest && (
                             <div className="mt-1 flex items-center gap-x-1.5">
                                 <div className="flex-none rounded-full bg-red-500/20 p-1">
                                     <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
