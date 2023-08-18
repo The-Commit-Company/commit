@@ -62,8 +62,8 @@ export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: A
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">API endpoint :</dt>
                             <div className="flex items-start space-x-2 sm:col-span-4">
-                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[50ch]">{getEndpointFromPath(data?.file, data?.name)}</dd>
-                                <CopyButton value={getEndpointFromPath(data?.file, data?.name) ?? ''} />
+                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{getEndpointFromPath(data?.file, data?.name)}</dd>
+                                <CopyButton value={getEndpointFromPath(data?.file, data?.name) ?? ''} className="h-6 w-6" />
                             </div>
                             {/* <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0 truncate w-[50ch]">
                                 <code>{getEndpointFromPath(data?.file, data?.name)}</code>
@@ -72,8 +72,8 @@ export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: A
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">File path :</dt>
                             <div className="flex items-start space-x-2 sm:col-span-4">
-                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[50ch]">{data?.file}</dd>
-                                <CopyButton value={data?.file ?? ''} />
+                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{data?.file}</dd>
+                                <CopyButton value={data?.file ?? ''} className="h-6 w-6" />
                             </div>
                         </div>
                     </dl>
