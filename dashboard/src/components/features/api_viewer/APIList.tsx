@@ -20,7 +20,7 @@ export const APIList = ({ apiList, setSelectedEndpoint }: APIListProps) => {
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">
                     <Input placeholder="Search" />
-                    <Input placeholder="Module" />
+                    {/* <Input placeholder="Module" /> */}
                 </div>
                 <div className="w-2/5 flex flex-row space-x-4">
                     <Select >
