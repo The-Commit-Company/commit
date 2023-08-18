@@ -44,6 +44,7 @@ import { FieldTypeOptions } from "./FieldTypeOptions"
 import { DataTableFacetedFilter } from "./FieldTypeFilters"
 import { Checkbox } from "@/components/ui/checkbox"
 import { OptionsComponent } from "./IconTextComponent"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export interface DrawerTableProps {
     data: DocField[]
@@ -118,7 +119,18 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
         {
             accessorKey: "fieldname",
             header: () => <div className="text-start">Name</div>,
-            cell: ({ row }) => <div>{row.getValue("fieldname")}</div>,
+            cell: ({ row }) => <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                    <TooltipTrigger>
+                        <div style={{ cursor: 'pointer' }}>{row.getValue("fieldname")}</div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" sideOffset={4} className="bg-zinc-600 border border-zinc-700">
+                        <div className="text-sm py-0">
+                            {'copy'}
+                        </div>
+                    </TooltipContent>
+                </Tooltip >
+            </TooltipProvider >,
         },
         {
             accessorKey: "fieldtype",
