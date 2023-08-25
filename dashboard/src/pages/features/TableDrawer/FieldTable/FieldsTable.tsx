@@ -1,6 +1,5 @@
 import {
     ChevronDownIcon,
-    DotsHorizontalIcon,
 } from "@radix-ui/react-icons"
 
 import {
@@ -22,8 +21,6 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -42,6 +39,7 @@ import { DataTableFacetedFilter } from "./FieldTypeFilters"
 import { Checkbox } from "@/components/ui/checkbox"
 import { OptionsComponent } from "./IconTextComponent"
 import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
+import { FieldActionButton } from "./FieldActionButton"
 
 export interface DrawerTableProps {
     data: DocField[]
@@ -105,22 +103,7 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
         {
             id: "actions",
             enableHiding: false,
-            cell: () => {
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <DotsHorizontalIcon className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View details</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )
-            },
+            cell: ({ row }) => <FieldActionButton field={row.original} />,
         },
     ]
 

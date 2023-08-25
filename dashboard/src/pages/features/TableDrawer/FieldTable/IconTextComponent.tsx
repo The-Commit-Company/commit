@@ -11,7 +11,7 @@ export const OptionsComponent = ({ field }: { field: DocField }) => {
     if (field.fieldtype === 'Select') {
         return <div className='flex flex-row'>
             <div className='mr-1'>{field.fieldtype} - </div>
-            <div className='text-gray-500'>{field.options?.length ?? 0} options</div>
+            <div className='text-gray-500'>{field.options?.split('\n').length ?? 0} options</div>
         </div>
     }
     if (field.fieldtype === 'Data' && field.options) {
