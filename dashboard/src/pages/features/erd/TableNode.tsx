@@ -1,7 +1,5 @@
 import { PostgresTable } from "@/types/Table";
-import { useState } from "react";
 import { NodeProps, Handle } from "reactflow";
-import { TableDrawer } from "../TableDrawer/TableDrawer";
 import { NODE_WIDTH } from "./Graph";
 import { HoverCard, HoverCardTrigger } from "@radix-ui/react-hover-card";
 import { TableHoverCard } from "./TableHoverCard";
@@ -11,14 +9,9 @@ export const TableNode = ({ data, targetPosition, sourcePosition }: NodeProps<Po
     // ref: https://github.com/wbkd/react-flow/discussions/2698
     const hiddenNodeConnector = '!h-px !w-px !min-w-0 !min-h-0 !cursor-grab !border-0 !opacity-0'
 
-    const [isOpen, setIsOpen] = useState(false);
-
-    const onOpen = () => setIsOpen(true);
-    const onClose = () => setIsOpen(false);
-
     return (
         <>
-            <div onClick={onOpen} className={`w-[${NODE_WIDTH / 2}px ] rounded-lg overflow-hidden bg-white  shadow-sm`}>
+            <div className={`w-[${NODE_WIDTH / 2}px ] rounded-lg overflow-hidden bg-white  shadow-sm`}>
                 <header className="text-[0.5rem] leading-5 px-2 font-bold text-center bg-blue-500 text-white">
                     {data.name}
                 </header>
@@ -59,7 +52,6 @@ export const TableNode = ({ data, targetPosition, sourcePosition }: NodeProps<Po
                     </HoverCard>
                 ))}
             </div>
-            <TableDrawer isOpen={isOpen} onClose={onClose} doctype={data.name} key={data.name} />
         </>
     )
 }
