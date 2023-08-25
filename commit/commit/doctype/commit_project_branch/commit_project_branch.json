@@ -7,7 +7,7 @@
   }
  ],
  "allow_rename": 1,
- "autoname": "format:{project}-{branch}",
+ "autoname": "format:{project}-{branch_name}",
  "creation": "2023-07-28 18:08:47.726861",
  "default_view": "List",
  "doctype": "DocType",
@@ -18,7 +18,14 @@
   "branch_name",
   "path_to_folder",
   "commit_hash",
-  "last_fetched"
+  "app_name",
+  "last_fetched",
+  "modules_and_doctypes_tab",
+  "modules",
+  "module_doctypes_map",
+  "doctype_module_map",
+  "apis_tab",
+  "whitelisted_apis"
  ],
  "fields": [
   {
@@ -55,11 +62,49 @@
    "in_list_view": 1,
    "label": "Last fetched",
    "read_only": 1
+  },
+  {
+   "fieldname": "modules_and_doctypes_tab",
+   "fieldtype": "Tab Break",
+   "label": "Modules and Doctypes"
+  },
+  {
+   "fieldname": "modules",
+   "fieldtype": "Long Text",
+   "label": "Modules",
+   "read_only": 1
+  },
+  {
+   "fieldname": "apis_tab",
+   "fieldtype": "Tab Break",
+   "label": "APIs"
+  },
+  {
+   "fieldname": "whitelisted_apis",
+   "fieldtype": "JSON",
+   "label": "Whitelisted APIs"
+  },
+  {
+   "fetch_from": "project.app_name",
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "App Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "module_doctypes_map",
+   "fieldtype": "JSON",
+   "label": "Module - Doctypes Map"
+  },
+  {
+   "fieldname": "doctype_module_map",
+   "fieldtype": "JSON",
+   "label": "Doctype - Module Map"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-25 15:07:50.739766",
+ "modified": "2023-08-25 17:14:48.123119",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Project Branch",
