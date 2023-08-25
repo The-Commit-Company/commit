@@ -11,6 +11,10 @@ export type PostgresTable = {
     name: string,
     id: string,
     module: string,
+    creation?: string,
+    modified?: string,
+    modified_by?: string,
+    istable?: number,
     columns: PostgresColumn[],
     // relationships: PostgresRelationship[]
 }
@@ -20,7 +24,14 @@ export type PostgresColumn = {
     id: string,
     name: string,
     // data_type: string,
-    format: string
+    format: string,
+    options?: string,
+    reqd?: number,
+    oldfieldname?: string,
+    oldfieldtype?: string,
+    read_only?: number,
+    hidden?: number,
+    default?: string,
     // default_value: string,
     // is_unique: boolean,
     // is_nullable: boolean,
