@@ -23,6 +23,7 @@ import { PostgresTable, PostgresRelationship, TableNodeData } from '@/types/Tabl
 import { CgMaximizeAlt } from 'react-icons/cg'
 import { TbArrowsMinimize } from 'react-icons/tb'
 import { TableNode } from './TableNode'
+import { TableDrawer } from '../TableDrawer/TableDrawer'
 // import { set } from 'lodash'
 
 // ReactFlow is scaling everything by the factor of 2
@@ -250,6 +251,13 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
         [edges, setEdges, store]
     );
 
+    const [selectedDoctype, setSelectedDoctype] = useState<string | null>(null);
+
+    const onNodeClick = useCallback((_: any, node: Node<{ name: string }>) => {
+        setSelectedDoctype(node.data?.name)
+    }, []
+    );
+
     useEffect(() => {
         const { nodes, edges } = getGraphDataFromTables(tables, relationships)
         setNodes(nodes)
@@ -271,7 +279,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
-                    onNodeClick={onNodeMouseLeave}
+                    onNodeClick={onNodeClick}
                     defaultNodes={[]}
                     defaultEdges={[]}
                     onNodeMouseEnter={onNodeMouseEnter}
@@ -311,7 +319,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     /> */}
                     <Background color="#aaa" gap={16} />
                 </ReactFlow>
-
+                <TableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} key={selectedDoctype} />
             </div>
         </>
     )
