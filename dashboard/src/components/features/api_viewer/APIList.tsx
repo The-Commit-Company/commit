@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
@@ -6,9 +5,11 @@ import { APIData } from "@/types/APIData"
 export interface APIListProps {
     apiList: APIData[]
     setSelectedEndpoint: (endpoint: string) => void
+    setSearchQuery: (query: string) => void
+    setRequestTypeFilter: (type: string) => void
 }
 
-export const APIList = ({ apiList, setSelectedEndpoint }: APIListProps) => {
+export const APIList = ({ apiList, setSelectedEndpoint, setSearchQuery, setRequestTypeFilter }: APIListProps) => {
     return (
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200 h-screen">
             <div className="border-b border-gray-200 pb-4">
@@ -19,11 +20,10 @@ export const APIList = ({ apiList, setSelectedEndpoint }: APIListProps) => {
             </div>
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">
-                    <Input placeholder="Search" />
-                    {/* <Input placeholder="Module" /> */}
+                    <Input placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)} />
                 </div>
-                <div className="w-2/5 flex flex-row space-x-4">
-                    <Select >
+                <div className="flex flex-row space-x-4">
+                    <Select onValueChange={(value) => setRequestTypeFilter(value)}>
                         <SelectTrigger className="w-[14ch]">
                             <SelectValue placeholder="Req. type" />
                         </SelectTrigger>
@@ -36,10 +36,6 @@ export const APIList = ({ apiList, setSelectedEndpoint }: APIListProps) => {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <div className="flex flex-row space-x-2 items-center w-70">
-                        <Checkbox id="Allow Guest" />
-                        <label htmlFor="Allow Guest" className="text-sm">Allow Guest</label>
-                    </div>
                 </div>
             </div>
             {/* fixed height container */}
@@ -53,8 +49,8 @@ export const APIList = ({ apiList, setSelectedEndpoint }: APIListProps) => {
 export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void }) => {
     return (
         <ul role="list" className="divide-y divide-gray-100 px-1">
-            {list.map((person: APIData) => (
-                <li key={person.name} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50">
+            {list.map((person: APIData, index: number) => (
+                <li key={`${person.name}-${index}`} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50">
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
                             <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer hover:text-blue-600" onClick={() => setSelectedEndpoint(person.name)}><code>{person.name}</code></p>
