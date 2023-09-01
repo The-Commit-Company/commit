@@ -22,23 +22,27 @@ export const APIViewer = () => {
             return api.name.toLowerCase().includes(searchQuery.toLowerCase()) || api.request_types.includes(requestTypeFilter.toUpperCase())
         })
     }, [searchQuery, API_JSON, requestTypeFilter])
-    console.log(apiList)
 
-    const [selectedendpoint, setSelectedEndpoint] = useState<string>(apiList[0]?.name ?? '')
+    const [selectedendpoint, setSelectedEndpoint] = useState<string>(apiList[0]?.name)
 
     return (
+        // show API details column only if there is selected endpoint else show only API list in full width.
         <div className="grid grid-cols-5 gap-0">
-            <div className="col-span-3 h-screen">
+            <div className={`${selectedendpoint ? 'col-span-3' : 'col-span-5'} h-screen`}>
                 <APIList
                     apiList={apiList}
+                    app_name={data?.app_name ?? ''}
+                    branch_name={data?.branch_name ?? ''}
                     setSelectedEndpoint={setSelectedEndpoint}
                     setSearchQuery={setSearchQuery}
                     setRequestTypeFilter={setRequestTypeFilter}
                 />
             </div>
-            <div className="col-span-2 h-screen">
-                <APIDetails endpointData={apiList} selectedEndpoint={selectedendpoint} />
-            </div>
+            {selectedendpoint && (
+                <div className="col-span-2 h-screen">
+                    <APIDetails endpointData={apiList} selectedEndpoint={selectedendpoint} />
+                </div>
+            )}
         </div>
     )
 }
