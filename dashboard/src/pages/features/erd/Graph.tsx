@@ -16,23 +16,27 @@ import ReactFlow, {
     useEdgesState,
     useNodesState
 } from 'reactflow'
-import tables, { relationships } from './tables'
 // import { uniqBy } from 'lodash'
 import 'reactflow/dist/style.css'
 import { PostgresTable, PostgresRelationship, TableNodeData } from '@/types/Table'
 import { CgMaximizeAlt } from 'react-icons/cg'
 import { TbArrowsMinimize } from 'react-icons/tb'
 import { TableNode } from './TableNode'
+import { TableDrawer } from '../TableDrawer/TableDrawer'
 // import { set } from 'lodash'
 
 // ReactFlow is scaling everything by the factor of 2
 export const NODE_WIDTH = 320
 export const NODE_ROW_HEIGHT = 40
 
-export const Graph = () => {
+export const Graph = ({ tables, relationships, project_branch }: {
+    tables: PostgresTable[]
+    relationships: PostgresRelationship[]
+    project_branch: string
+}) => {
     return (
         <ReactFlowProvider>
-            <TablesGraph tables={tables} relationships={relationships} />
+            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} />
         </ReactFlowProvider>
     )
 }
@@ -160,7 +164,7 @@ const getLayoutedElements = (nodes: Node<TableNodeData>[], edges: Edge[]) => {
 
 
 
-const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelationship[] }> = ({ tables, relationships }) => {
+const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelationship[], project_branch: string }> = ({ tables, relationships, project_branch }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [fullscreenOn, setFullScreen] = useState(false);
@@ -250,6 +254,13 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
         [edges, setEdges, store]
     );
 
+    const [selectedDoctype, setSelectedDoctype] = useState<string | null>(null);
+
+    const onNodeClick = useCallback((_: any, node: Node<{ name: string }>) => {
+        setSelectedDoctype(node.data?.name)
+    }, []
+    );
+
     useEffect(() => {
         const { nodes, edges } = getGraphDataFromTables(tables, relationships)
         setNodes(nodes)
@@ -271,7 +282,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
-                    onNodeClick={onNodeMouseLeave}
+                    onNodeClick={onNodeClick}
                     defaultNodes={[]}
                     defaultEdges={[]}
                     onNodeMouseEnter={onNodeMouseEnter}
@@ -311,7 +322,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     /> */}
                     <Background color="#aaa" gap={16} />
                 </ReactFlow>
-
+                <TableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} project_branch={project_branch} key={selectedDoctype} />
             </div>
         </>
     )
