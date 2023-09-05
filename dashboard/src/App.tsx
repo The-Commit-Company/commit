@@ -1,7 +1,7 @@
 import { FrappeProvider } from 'frappe-react-sdk'
-import { Graph } from './pages/features/erd/Graph'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { APIViewer } from './pages/features/api_viewer/APIViewer'
+import { ERDForModule } from './pages/features/erd/ERDForModule'
 
 function App() {
 
@@ -16,7 +16,8 @@ function App() {
           {/** Private Routes */}
           {/* <Route path="/" element={<ProtectedRoute />} /> */}
           <Route path="/dashboard" element={<h1>Dashboard</h1>} />
-          <Route path="/graph" element={<Graph />} />
+          {/*TODO: Need to Change below route */}
+          <Route path='graph' element={<ERDForModule module='Core' project_branch='frappe-frappe-develop' />} />
           <Route path="/viewer" element={<APIViewer />} />
         </Routes>
         {/* </UserProvider> */}
