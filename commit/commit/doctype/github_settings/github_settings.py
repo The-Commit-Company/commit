@@ -18,14 +18,14 @@ session.headers.update({'Accept': 'application/json'})
 @frappe.whitelist()
 def authenticate_user(code, state=None):
     '''API to authenticate the user with GitHub'''
-    print("----- Auth Code: ", code)
+    # print("----- Auth Code: ", code)
     response = get_access_token(code)
     if response:
         user_data = get_user_details(response.get('access_token'))
         if user_data:
-            print("Inside user data: ", user_data)
+            # print("Inside user data: ", user_data)
             user = create_user(user_data)
-            print("----- User: ", user.as_dict())
+            # print("----- User: ", user.as_dict())
 
 
 def get_access_token(code):
@@ -46,19 +46,19 @@ def get_access_token(code):
     headers = {'Accept': 'application/json'}
 
     response = requests.post(token_url, data=data, headers=headers)
-    print("----- Response: ", response.json())
+    # print("----- Response: ", response.json())
     return response.json()
 
 
 def get_user_details(access_token):
     user_response = requests.get(
         'https://api.github.com/user', headers={'Authorization': 'token ' + access_token})
-    print("----- User Response: ", user_response.json())
+    # print("----- User Response: ", user_response.json())
     user_data = {}
     if user_response.status_code == 200 and user_response.json():
         email_response = requests.get(
             'https://api.github.com/user/emails', headers={'Authorization': 'token ' + access_token})
-        print("----- Email Response: ", email_response.json())
+        # print("----- Email Response: ", email_response.json())
         user_data = {"user_details": user_response.json(
         ), "email_details": email_response.json()}
 
