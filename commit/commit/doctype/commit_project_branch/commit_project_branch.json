@@ -1,0 +1,143 @@
+{
+ "actions": [
+  {
+   "action": "commit.commit.doctype.commit_project_branch.commit_project_branch.fetch_repo",
+   "action_type": "Server Action",
+   "label": "Fetch Repo"
+  }
+ ],
+ "allow_rename": 1,
+ "autoname": "format:{project}-{branch_name}",
+ "creation": "2023-07-28 18:08:47.726861",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "project",
+  "branch_name",
+  "path_to_folder",
+  "commit_hash",
+  "app_name",
+  "last_fetched",
+  "modules_and_doctypes_tab",
+  "modules",
+  "module_doctypes_map",
+  "doctype_module_map",
+  "apis_tab",
+  "whitelisted_apis"
+ ],
+ "fields": [
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Commit Project",
+   "options": "Commit Project",
+   "reqd": 1
+  },
+  {
+   "fieldname": "branch_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "path_to_folder",
+   "fieldtype": "Data",
+   "label": "Path to folder",
+   "read_only": 1
+  },
+  {
+   "fieldname": "commit_hash",
+   "fieldtype": "Data",
+   "label": "Commit Hash",
+   "length": 300,
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_fetched",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Last fetched",
+   "read_only": 1
+  },
+  {
+   "fieldname": "modules_and_doctypes_tab",
+   "fieldtype": "Tab Break",
+   "label": "Modules and Doctypes"
+  },
+  {
+   "fieldname": "modules",
+   "fieldtype": "Long Text",
+   "label": "Modules",
+   "read_only": 1
+  },
+  {
+   "fieldname": "apis_tab",
+   "fieldtype": "Tab Break",
+   "label": "APIs"
+  },
+  {
+   "fieldname": "whitelisted_apis",
+   "fieldtype": "JSON",
+   "label": "Whitelisted APIs"
+  },
+  {
+   "fetch_from": "project.app_name",
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "App Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "module_doctypes_map",
+   "fieldtype": "JSON",
+   "label": "Module - Doctypes Map"
+  },
+  {
+   "fieldname": "doctype_module_map",
+   "fieldtype": "JSON",
+   "label": "Doctype - Module Map"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-25 17:14:48.123119",
+ "modified_by": "Administrator",
+ "module": "commit",
+ "name": "Commit Project Branch",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Commit Project Member",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

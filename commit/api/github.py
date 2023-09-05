@@ -2,13 +2,13 @@ import frappe
 import requests
 
 
-def prepare_headers(access_token, type="bearer", accept="application/vnd.github+json"):
+def prepare_headers(access_token=None, type="bearer", accept="application/vnd.github+json"):
     return {
-        "Authorization": type + " " + access_token,
+        # "Authorization": type + " " + access_token,
         "Accept": accept,
         "X-GitHub-Api-Version": "2022-11-28"
     }
-def get_user(access_token):
+def get_user(access_token=None):
     '''
     Get user details from github
     '''
@@ -16,7 +16,7 @@ def get_user(access_token):
     response = requests.get("https://api.github.com/user", headers=headers)
     return response.json()
 
-def get_user_organizations(access_token):
+def get_user_organizations(access_token=None):
     '''
     Get user organizations from github
     '''

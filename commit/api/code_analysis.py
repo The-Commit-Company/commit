@@ -2,18 +2,10 @@ import frappe
 from commit.api.github import get_file_in_repo, get_all_files_in_repo, search_for_file_in_repo
 from commit.utils.conversions import convert_module_name
 from commit.utils.api_analysis import get_api_details_from_file_contents
-
-access_token = "**"
-# organization = "Frappe"
-organization = "The-Commit-Company"
-# repo = "ERPNext"
-repo = "Raven"
-# app_name = "erpnext"
-app_name = "raven"
-
+access_token = "*"
 
 @frappe.whitelist()
-def get_name_of_app():
+def get_name_of_app(organization, repo):
     '''
     Get name of app from repo
     '''
@@ -29,13 +21,13 @@ def get_name_of_app():
             break
     
     if type == "pyproject.toml":
-        app_name = get_app_name_from_pyproject_toml()
+        app_name = get_app_name_from_pyproject_toml(organization, repo)
     elif type == "setup.py":
-        app_name = get_app_name_from_setup_py()   
+        app_name = get_app_name_from_setup_py(organization, repo)   
 
     return app_name
 
-def get_app_name_from_setup_py():
+def get_app_name_from_setup_py(organization, repo):
     '''
     Get app name from setup.py
     '''
@@ -44,7 +36,7 @@ def get_app_name_from_setup_py():
     return app_name
 
 
-def get_app_name_from_pyproject_toml():
+def get_app_name_from_pyproject_toml(organization, repo):
     '''
     Get app name from pyproject.toml
     '''
@@ -59,7 +51,7 @@ def get_app_name_from_pyproject_toml():
 # def get_list_of_dependencies
 
 @frappe.whitelist()
-def get_list_of_modules():
+def get_list_of_modules(organization, repo, app_name):
     '''
     Get list of modules for a Frappe app
     '''
@@ -68,7 +60,7 @@ def get_list_of_modules():
 
 
 @frappe.whitelist()
-def get_list_of_doctypes_in_module(module: str):
+def get_list_of_doctypes_in_module(organization, repo, app_name, module: str):
     '''
     Get list of doctypes in a module
     '''
@@ -93,7 +85,7 @@ def get_list_of_doctypes_in_module(module: str):
     }
 
 @frappe.whitelist()
-def get_customized_doctypes_in_module(module: str):
+def get_customized_doctypes_in_module(organization, repo, app_name, module: str):
     '''
     Get list of all customized doctypes for a Frappe app
     '''
@@ -118,7 +110,7 @@ def get_customized_doctypes_in_module(module: str):
 
 
 @frappe.whitelist()
-def get_all_whitelisted_api_in_app():
+def get_all_whitelisted_api_in_app(organization, repo):
     '''
     Get list of all whitelisted API in a Frappe app with:
     1. Type
