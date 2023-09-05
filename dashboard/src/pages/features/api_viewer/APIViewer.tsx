@@ -4,10 +4,20 @@ import { useMemo, useState } from "react"
 import { useFrappeGetDoc } from "frappe-react-sdk"
 import { CommitProjectBranch } from "@/types/CommitProjectBranch"
 import { APIData } from "@/types/APIData"
+import { useParams } from "react-router-dom"
 
-export const APIViewer = () => {
+export const APIViewerContainer = () => {
+    const { ID } = useParams()
 
-    const { data } = useFrappeGetDoc<CommitProjectBranch>('Commit Project Branch', 'The-Commit-Company-Raven-develop')
+    if (ID) {
+        return <APIViewer projectBranch={ID} />
+    }
+    return null
+}
+
+export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
+
+    const { data } = useFrappeGetDoc<CommitProjectBranch>('Commit Project Branch', projectBranch)
 
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('')
@@ -19,7 +29,7 @@ export const APIViewer = () => {
 
     const apiList = useMemo(() => {
         return API_JSON.filter((api: APIData) => {
-            return api.name.toLowerCase().includes(searchQuery.toLowerCase()) || api.request_types.includes(requestTypeFilter.toUpperCase())
+            return api.name.toLowerCase().includes(searchQuery.toLowerCase()) && (requestTypeFilter !== 'All' ? api.request_types.includes(requestTypeFilter.toUpperCase()) : true)
         })
     }, [searchQuery, API_JSON, requestTypeFilter])
 

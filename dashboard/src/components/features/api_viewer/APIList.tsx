@@ -16,7 +16,7 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200 h-screen">
             <div className="border-b border-gray-200 pb-4">
                 <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
-                    <h3 className="ml-2 mt-2 text-base text-xl font-semibold leading-6 text-gray-900">Listed APIs</h3>
+                    <h3 className="ml-2 mt-2 text-xl font-semibold leading-6 text-gray-900">Listed APIs</h3>
                     <p className="ml-2 mt-1 truncate text-sm text-gray-500">in {app_name} @ <code className="text-xs font-semibold">{branch_name}</code></p>
                 </div>
             </div>
@@ -25,12 +25,13 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
                     <Input placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)} />
                 </div>
                 <div className="flex flex-row space-x-4">
-                    <Select onValueChange={(value) => setRequestTypeFilter(value)}>
+                    <Select onValueChange={(value) => setRequestTypeFilter(value)} defaultValue="All">
                         <SelectTrigger className="w-[14ch]">
                             <SelectValue placeholder="Req. type" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
+                                <SelectItem value="All">All</SelectItem>
                                 <SelectItem value="GET">GET</SelectItem>
                                 <SelectItem value="POST">POST</SelectItem>
                                 <SelectItem value="PUT">PUT</SelectItem>
@@ -51,6 +52,11 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
 export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void }) => {
     return (
         <ul role="list" className="divide-y divide-gray-100 px-1">
+            {list.length === 0 && (
+                <li className="flex items-center">
+                    <p className="text-lg leading-6 text-gray-800">No APIs found</p>
+                </li>
+            )}
             {list.map((person: APIData, index: number) => (
                 <li key={`${person.name}-${index}`} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50">
                     <div className="flex min-w-0 gap-x-4">
