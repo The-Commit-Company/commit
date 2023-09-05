@@ -4,18 +4,20 @@ import { APIData } from "@/types/APIData"
 
 export interface APIListProps {
     apiList: APIData[]
+    app_name: string
+    branch_name: string
     setSelectedEndpoint: (endpoint: string) => void
     setSearchQuery: (query: string) => void
     setRequestTypeFilter: (type: string) => void
 }
 
-export const APIList = ({ apiList, setSelectedEndpoint, setSearchQuery, setRequestTypeFilter }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, setSearchQuery, setRequestTypeFilter }: APIListProps) => {
     return (
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200 h-screen">
             <div className="border-b border-gray-200 pb-4">
                 <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
                     <h3 className="ml-2 mt-2 text-base text-xl font-semibold leading-6 text-gray-900">Listed APIs</h3>
-                    <p className="ml-2 mt-1 truncate text-sm text-gray-500">in emotive_app @ <code className="text-xs font-semibold">develop</code></p>
+                    <p className="ml-2 mt-1 truncate text-sm text-gray-500">in {app_name} @ <code className="text-xs font-semibold">{branch_name}</code></p>
                 </div>
             </div>
             <div className="flex flex-row space-x-4">
