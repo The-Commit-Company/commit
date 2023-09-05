@@ -22,4 +22,6 @@ export interface CommitProject{
 	banner_image?: string
 	/**	Path to folder : Data	*/
 	path_to_folder?: string
+	/**	Description : Data	*/
+	description?: string
 }
