@@ -1,21 +1,8 @@
-import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Tabs } from '@/components/common/Tabs'
+import { Button } from '@/components/ui/button'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://avatars.githubusercontent.com/u/19825455?v=4',
-}
-
-const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
-]
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
@@ -35,7 +22,7 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                                         src="https://avatars.githubusercontent.com/u/125638080?s=200&v=4"
                                         alt="The Commit Company"
                                     /> */}
-                                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-zinc-400">commit
+                                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-zinc-500">commit
                                         <span className="text-green-500">.</span>
                                     </h1>
                                 </div>
@@ -45,7 +32,7 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                                     <label htmlFor="search" className="sr-only">
                                         Search
                                     </label>
-                                    <div className="relative">
+                                    {/* <div className="relative">
                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                                         </div>
@@ -56,7 +43,7 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                                             placeholder="Search"
                                             type="search"
                                         />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                             <div className="relative z-10 flex items-center lg:hidden">
@@ -71,91 +58,27 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                                     )}
                                 </Disclosure.Button>
                             </div>
+
                             <div className="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
-                                <button
-                                    type="button"
-                                    className="relative flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                >
-                                    <span className="absolute -inset-1.5" />
-                                    <span className="sr-only">View notifications</span>
-                                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                </button>
-
-                                {/* Profile dropdown */}
-                                <Menu as="div" className="relative ml-4 flex-shrink-0">
-                                    <div>
-                                        <Menu.Button className="relative flex rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                            <span className="absolute -inset-1.5" />
-                                            <span className="sr-only">Open user menu</span>
-                                            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
-                                        </Menu.Button>
-                                    </div>
-                                    <Transition
-                                        as={Fragment}
-                                        enter="transition ease-out duration-100"
-                                        enterFrom="transform opacity-0 scale-95"
-                                        enterTo="transform opacity-100 scale-100"
-                                        leave="transition ease-in duration-75"
-                                        leaveFrom="transform opacity-100 scale-100"
-                                        leaveTo="transform opacity-0 scale-95"
-                                    >
-                                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                            {userNavigation.map((item) => (
-                                                <Menu.Item key={item.name}>
-                                                    {({ active }) => (
-                                                        <a
-                                                            href={item.href}
-                                                            className={classNames(
-                                                                active ? 'bg-gray-100' : '',
-                                                                'block px-4 py-2 text-sm text-gray-700'
-                                                            )}
-                                                        >
-                                                            {item.name}
-                                                        </a>
-                                                    )}
-                                                </Menu.Item>
-                                            ))}
-                                        </Menu.Items>
-                                    </Transition>
-                                </Menu>
+                                <Button className="text-sm font-medium text-white bg-gray-900 hover:bg-gray-800">
+                                    <GitHubLogoIcon className='w-5 h-5 mr-2' /> Github
+                                </Button>
+                                <div className="hidden lg:relative lg:z-10 lg:ml-2 lg:flex lg:items-center">
+                                    <a href="#_" className="relative px-6 py-2 font-medium text-white transition duration-300 bg-blue-400 rounded-md hover:bg-blue-500 ease">
+                                        <span className="absolute bottom-0 left-0 h-full -ml-2">
+                                            <svg viewBox="0 0 487 487" className="w-auto h-full opacity-100 object-stretch" xmlns="http://www.w3.org/2000/svg"><path d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z" fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path></svg>
+                                        </span>
+                                        <span className="absolute top-0 right-0 w-12 h-full -mr-3">
+                                            <svg viewBox="0 0 487 487" className="object-cover w-full h-full" xmlns="http://www.w3.org/2000/svg"><path d="M487 486.7c-66.1-3.6-132.3-7.3-186.3-37s-95.9-85.3-126.2-137.2c-30.4-51.8-49.3-99.9-76.5-151.4C70.9 109.6 35.6 54.8.3 0H487v486.7z" fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path></svg>
+                                        </span>
+                                        <span className="relative">Share Feedback</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <Tabs tabs={navigation} variant='button' />
+                        {/* FIXME: Enable Tabs Only after other tabs are ready */}
+                        {/* <Tabs tabs={navigation} variant='button' /> */}
                     </div>
-
-                    <Disclosure.Panel as="nav" className="lg:hidden" aria-label="Global">
-                        <div className="border-t border-gray-200 pb-3 pt-4">
-                            <div className="flex items-center px-4">
-                                <div className="flex-shrink-0">
-                                    <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
-                                </div>
-                                <div className="ml-3">
-                                    <div className="text-base font-medium text-gray-800">{user.name}</div>
-                                    <div className="text-sm font-medium text-gray-500">{user.email}</div>
-                                </div>
-                                <button
-                                    type="button"
-                                    className="relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                >
-                                    <span className="absolute -inset-1.5" />
-                                    <span className="sr-only">View notifications</span>
-                                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                </button>
-                            </div>
-                            <div className="mt-3 space-y-1 px-2">
-                                {userNavigation.map((item) => (
-                                    <Disclosure.Button
-                                        key={item.name}
-                                        as="a"
-                                        href={item.href}
-                                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                                    >
-                                        {item.name}
-                                    </Disclosure.Button>
-                                ))}
-                            </div>
-                        </div>
-                    </Disclosure.Panel>
                 </>
             )}
         </Disclosure>
