@@ -1,5 +1,5 @@
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Disclosure } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
@@ -28,11 +28,11 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                                 </div>
                             </div>
                             <div className="relative z-0 flex flex-1 items-center justify-center px-2 sm:absolute sm:inset-0">
-                                <div className="w-full sm:max-w-xs">
+                                {/* <div className="w-full sm:max-w-xs">
                                     <label htmlFor="search" className="sr-only">
                                         Search
                                     </label>
-                                    {/* <div className="relative">
+                                    <div className="relative">
                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                                         </div>
@@ -43,8 +43,8 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                                             placeholder="Search"
                                             type="search"
                                         />
-                                    </div> */}
-                                </div>
+                                    </div>
+                                </div> */}
                             </div>
                             <div className="relative z-10 flex items-center lg:hidden">
                                 {/* Mobile menu button */}
@@ -60,11 +60,11 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                             </div>
 
                             <div className="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
-                                <Button className="text-sm font-medium text-white bg-gray-900 hover:bg-gray-800">
-                                    <GitHubLogoIcon className='w-5 h-5 mr-2' /> Github
+                                <Button variant='outline' color='primary' size={'sm'}>
+                                    <GitHubLogoIcon className='w-4 h-4 mr-2' /> Github
                                 </Button>
                                 <div className="hidden lg:relative lg:z-10 lg:ml-2 lg:flex lg:items-center">
-                                    <a href="#_" className="relative px-6 py-2 font-medium text-white transition duration-300 bg-blue-400 rounded-md hover:bg-blue-500 ease">
+                                    <a href="#_" className="relative px-5 py-1 font-medium text-white transition duration-300 bg-blue-400 rounded-md hover:bg-blue-500 ease">
                                         <span className="absolute bottom-0 left-0 h-full -ml-2">
                                             <svg viewBox="0 0 487 487" className="w-auto h-full opacity-100 object-stretch" xmlns="http://www.w3.org/2000/svg"><path d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z" fill="#FFF" fill-rule="nonzero" fill-opacity=".1"></path></svg>
                                         </span>
@@ -80,7 +80,8 @@ export const Navbar = ({ navigation }: { navigation: { name: string, content: JS
                         {/* <Tabs tabs={navigation} variant='button' /> */}
                     </div>
                 </>
-            )}
-        </Disclosure>
+            )
+            }
+        </Disclosure >
     )
 }
