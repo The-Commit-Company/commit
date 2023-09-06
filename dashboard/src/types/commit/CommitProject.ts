@@ -1,5 +1,5 @@
 
-export interface CommitProject{
+export interface CommitProject {
 	creation: string
 	name: string
 	modified: string
@@ -12,6 +12,8 @@ export interface CommitProject{
 	idx?: number
 	/**	Organization : Link - Commit Organization	*/
 	org: string
+	/**	Display Name : Data	*/
+	display_name: string
 	/**	Github Repo : Data	*/
 	repo_name: string
 	/**	App Name : Data	*/
