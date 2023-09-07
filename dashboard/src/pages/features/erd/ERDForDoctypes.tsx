@@ -1,7 +1,9 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
 import { PostgresRelationship, PostgresTable } from "@/types/Table"
-import { useFrappeGetCall } from "frappe-react-sdk"
+import { useFrappeGetCall, useFrappePostCall } from "frappe-react-sdk"
 import { Graph } from "./Graph"
+import { useEffect, useState } from "react"
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 
 export interface SchemaData {
     tables: PostgresTable[]
@@ -15,20 +17,30 @@ export interface Props {
 
 export const ERDForDoctypes = ({ project_branch, doctypes }: Props) => {
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: SchemaData }>('commit.api.erd_viewer.get_erd_schema_for_doctypes', {
-        project_branch: project_branch,
-        doctypes: JSON.stringify(doctypes)
-    })
+    const [data, setData] = useState<SchemaData | null>(null)
+    const { call, error, loading } = useFrappePostCall<{ message: SchemaData }>('commit.api.erd_viewer.get_erd_schema_for_doctypes')
 
-    if (isLoading) {
+    useEffect(() => {
+
+        call({
+            project_branch: project_branch,
+            doctypes: JSON.stringify(doctypes)
+        }).then(res => {
+            setData(res.message)
+        }).catch(err => {
+            throw err
+        })
+    }, [project_branch, doctypes, call])
+
+    if (loading) {
         return <FullPageLoader />
     }
     if (error) {
-        return <div>Error</div>
+        return <div><ErrorBanner error={error} /></div>
     }
 
-    if (data && data.message) {
-        return <Graph tables={data.message.tables} relationships={data.message.relationships} project_branch={project_branch} />
+    if (data) {
+        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} />
     }
 
     return null

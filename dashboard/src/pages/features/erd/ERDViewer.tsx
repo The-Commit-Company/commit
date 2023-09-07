@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom"
 import { ERDForDoctypes } from "./ERDForDoctypes"
 import { Header } from "@/components/common/Header"
 import { Input } from "@/components/ui/input"
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 
 export const ERDViewer = () => {
 
@@ -137,7 +138,7 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
     }, [data, filter])
 
     if (error) {
-        return <div>Error</div>
+        return <ErrorBanner error={error} />
     }
     if (isLoading) {
         return <FullPageLoader className="w-[240px]" />
