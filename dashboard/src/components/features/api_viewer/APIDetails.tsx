@@ -54,14 +54,14 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
                 </div>
             </div>
             <div>
-                <div className="border-b border-gray-100 pb-2 space-x-2">
+                {data?.allow_guest || data?.xss_safe ? <div className="border-b border-gray-100 pb-2 space-x-2">
                     {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
                         Allow Guest
                     </span>}
                     {data?.xss_safe && <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
                         XSS Safe
                     </span>}
-                </div>
+                </div> : null}
                 <div className="mt-0 border-b border-gray-100">
                     <dl className="divide-y divide-gray-100">
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">

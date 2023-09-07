@@ -1,8 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
-import CommitLogo from '../../../assets/commit-logo.png'
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 export interface APIListProps {
     apiList: APIData[]
     app_name: string
@@ -13,8 +12,23 @@ export interface APIListProps {
 export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
+
+    const filterList = useMemo(() => {
+
+        return apiList.filter((api: APIData) => {
+
+            return api.name.toLowerCase().includes(searchQuery.toLowerCase()) && (requestTypeFilter !== 'All' ? api.request_types.includes(requestTypeFilter.toUpperCase()) : true)
+
+        })
+
+    }, [searchQuery, apiList, requestTypeFilter])
+
+    useEffect(() => {
+        setSelectedEndpoint(filterList[0]?.name ?? '')
+    }, [filterList, setSelectedEndpoint])
+
     return (
-        <div className="flex flex-col space-y-4 p-3 border-r border-gray-200 h-screen">
+        <div className="flex flex-col space-y-4 p-3 border-r border-gray-200">
             <div className="flex space-x-2 border-b border-gray-200 pb-4">
                 <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
                     <p className="ml-2 mt-1 truncate text-sm text-gray-500">in {app_name} @ <code className="text-xs font-semibold">{branch_name}</code></p>
@@ -43,7 +57,7 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }:
             </div>
             {/* fixed height container */}
             <div className="flex flex-col space-y-4 overflow-y-auto h-[calc(100vh-10rem)]">
-                <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} />
+                <ListView list={filterList} setSelectedEndpoint={setSelectedEndpoint} />
             </div>
         </div>
     )

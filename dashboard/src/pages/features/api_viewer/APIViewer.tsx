@@ -1,8 +1,7 @@
 import { APIDetails } from "@/components/features/api_viewer/APIDetails"
 import { APIList } from "@/components/features/api_viewer/APIList"
-import { useMemo, useState } from "react"
-import { useFrappeGetCall, useFrappeGetDoc } from "frappe-react-sdk"
-import { CommitProjectBranch } from "@/types/CommitProjectBranch"
+import { useState } from "react"
+import { useFrappeGetCall, } from "frappe-react-sdk"
 import { APIData } from "@/types/APIData"
 import { useParams } from "react-router-dom"
 import { Header } from "@/components/common/Header"
@@ -36,15 +35,19 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
         onSuccess: (d: { message: GetAPIResponse }) => setSelectedEndpoint(d.message.apis[0].name)
     })
 
+    if (error) {
+        return <div>Error</div>
+    }
+
     if (isLoading) {
         return <FullPageLoader />
     }
     return (
         // show API details column only if there is selected endpoint else show only API list in full width.
-        <div>
+        <div className="overflow-hidden">
             <Header text="API Explorer" />
-            <div className="grid grid-cols-8 gap-0 h-[calc(100vh-3rem)]">
-                <div className={`col-span-4`}>
+            <div className="grid grid-cols-5 gap-0 h-[calc(100vh-4rem)]">
+                <div className={`col-span-3`}>
                     <APIList
                         apiList={data?.message.apis ?? []}
                         app_name={data?.message.app_name ?? ''}
@@ -53,11 +56,17 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                     />
 
                 </div>
-                {selectedendpoint && (
-                    <div className="col-span-4">
+
+                {selectedendpoint ? (
+                    <div className="col-span-2">
                         <APIDetails endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
                     </div>
-                )}
+                ) : <div className="col-span-2">
+                    <div className="flex items-center justify-center h-full">
+                        <div className="text-lg text-gray-700">Select an endpoint to view details</div>
+
+                    </div>
+                </div>}
             </div>
         </div>
 
