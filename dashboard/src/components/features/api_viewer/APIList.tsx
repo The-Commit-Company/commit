@@ -1,22 +1,22 @@
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
-
+import CommitLogo from '../../../assets/commit-logo.png'
+import { useState } from "react"
 export interface APIListProps {
     apiList: APIData[]
     app_name: string
     branch_name: string
     setSelectedEndpoint: (endpoint: string) => void
-    setSearchQuery: (query: string) => void
-    setRequestTypeFilter: (type: string) => void
 }
 
-export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, setSearchQuery, setRequestTypeFilter }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }: APIListProps) => {
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
     return (
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200 h-screen">
-            <div className="border-b border-gray-200 pb-4">
+            <div className="flex space-x-2 border-b border-gray-200 pb-4">
                 <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
-                    <h3 className="ml-2 mt-2 text-xl font-semibold leading-6 text-gray-900">Listed APIs</h3>
                     <p className="ml-2 mt-1 truncate text-sm text-gray-500">in {app_name} @ <code className="text-xs font-semibold">{branch_name}</code></p>
                 </div>
             </div>
