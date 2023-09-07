@@ -9,13 +9,17 @@ import { useState } from "react"
 import { AiOutlineApi } from "react-icons/ai"
 import { BsDatabase } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
+import { OrganozationHoverCard } from "./OrganizationHoverCard"
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[]
 }
 export interface ProjectData extends CommitProjectBranch {
     projects: ProjectWithBranch[]
-
+    organization_name: string
+    image: string
+    name: string
+    about: string
 }
 export const Projects = () => {
 
@@ -33,14 +37,14 @@ export const Projects = () => {
         return (
             <div className="mx-auto  p-4 h-[calc(100vh-4rem)]">
                 <div className="h-full p-2 space-y-4">
-                    <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
                         Projects
                     </h1>
                     <ul role="list" className="divide-y divide-gray-200">
                         {data.message.map((org: ProjectData) => {
                             return org.projects.map((project => {
                                 return (
-                                    <ProjectCard project={project} key={project.name} />
+                                    <ProjectCard project={project} org={org} key={project.name} />
                                 )
                             }
                             ))
@@ -55,9 +59,10 @@ export const Projects = () => {
 
 export interface ProjectCardProps {
     project: ProjectWithBranch
+    org: ProjectData
 }
 
-export const ProjectCard = ({ project }: ProjectCardProps) => {
+export const ProjectCard = ({ project, org }: ProjectCardProps) => {
 
     const navigate = useNavigate()
 
@@ -75,13 +80,23 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
                 <div className="flex space-x-4 items-center justify-between">
                     <div className="flex space-x-3 items-center">
                         <img
-                            className="inline-block h-12 w-12 rounded-md"
+                            className="inline-block h-11 w-11 rounded-md"
                             src={project.image}
                             alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrN1Q7oEaS4Z_oUmK8UVYtRZW5ijuqKuvAEX4U2xZt_Jz2sThi8ihE9uSgwzKjifPed8&usqp=CAU"
                         />
                         <div className="flex flex-col">
-                            <CardTitle className="text-xl font-medium">{project.display_name}</CardTitle>
-                            <CardDescription className="text-md text-gray-500">{project.description}</CardDescription>
+                            <div className="flex items-baseline space-x-2">
+                                <CardTitle className="text-lg font-medium tracking-normal">{project.display_name}</CardTitle>
+                                <span className="text-sm text-gray-500">
+                                    by <OrganozationHoverCard
+                                        onHoverText={org.organization_name}
+                                        organization_image={org.image}
+                                        organization_id={org.name}
+                                        organization_about={org.about}
+                                        joined_on={org.creation} />
+                                </span>
+                            </div>
+                            <CardDescription className="text-sm text-gray-500">{project.description}</CardDescription>
                         </div>
                     </div>
 
@@ -111,7 +126,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
                         </Button>
                     </div>
                 </div>
-            </div>
-        </li>
+            </div >
+        </li >
     )
 }
