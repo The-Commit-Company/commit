@@ -112,7 +112,7 @@ class CommitProjectBranch(Document):
     pass
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def fetch_repo(doc):
     doc = json.loads(doc)
     project_branch = frappe.get_doc("Commit Project Branch", doc.get("name"))

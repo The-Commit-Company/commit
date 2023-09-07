@@ -3,7 +3,7 @@ from commit.commit.code_analysis.schema_builder import get_schema_from_doctypes_
 import json
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_doctype_json(project_branch: str, doctype: str):
     '''
     Get doctype json from a project branch
@@ -14,7 +14,7 @@ def get_doctype_json(project_branch: str, doctype: str):
     return doctype_json
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_erd_schema_for_module(project_branch: str, module: str):
     '''
     Get ERD schema for a module
@@ -28,7 +28,7 @@ def get_erd_schema_for_module(project_branch: str, module: str):
     return schema
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_erd_schema_for_doctypes(project_branch: str, doctypes):
     doctypes = json.loads(doctypes)
 

@@ -1,7 +1,7 @@
 import frappe
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_project_list_with_branches():
     """
     Get list of projects with branches for each organization

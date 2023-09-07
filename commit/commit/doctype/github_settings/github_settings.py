@@ -15,7 +15,7 @@ session = requests.Session()
 session.headers.update({'Accept': 'application/json'})
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def authenticate_user(code, state=None):
     '''API to authenticate the user with GitHub'''
     # print("----- Auth Code: ", code)
