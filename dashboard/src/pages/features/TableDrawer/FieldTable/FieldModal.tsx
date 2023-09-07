@@ -37,15 +37,15 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                             </div>
                             {field.description}
                             <div className='flex gap-2'>
-                                {field.reqd === 1 && <div className="flex gap-1 bg-blue-500  rounded-md p-1">
+                                {field.reqd === 1 && <div className="flex gap-1 bg-yellow-500  rounded-md p-1">
                                     <span className="text-xs text-cyan-50 font-semibold">Mandatory</span>
                                     <ExclamationCircleIcon className="h-4 w-4 text-cyan-50" />
                                 </div>}
-                                {field.is_virtual === 1 && <div className="flex gap-1 bg-blue-500 rounded-md p-1">
+                                {field.is_virtual === 1 && <div className="flex gap-1 bg-yellow-500 rounded-md p-1">
                                     <span className="text-xs text-cyan-50 font-semibold">Virtual</span>
                                     <EyeIcon className="h-4 w-4 text-cyan-50" />
                                 </div>}
-                                {field.search_index === 1 && <div className="flex gap-1 bg-blue-500 rounded-md p-1">
+                                {field.search_index === 1 && <div className="flex gap-1 bg-yellow-500 rounded-md p-1">
                                     <span className="text-xs text-cyan-50 font-semibold">Index</span>
                                     <RocketLaunchIcon className="h-4 w-4 text-cyan-50" />
                                 </div>}
@@ -59,27 +59,27 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                             <div className="grid items-start gap-2">
                                 <div className="text-sm font-semibold">Visibility</div>
                                 <div className="grid grid-cols-3 gap-1">
-                                    <div className={`flex gap-1 justify-between ${field.hidden === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.hidden === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Hidden</span>
                                         {field.hidden === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.bold === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.bold === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs  text-cyan-50 font-semibold">Bold</span>
                                         {field.bold === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.allow_in_quick_entry === 1 ? 'bg-green-500' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.allow_in_quick_entry === 1 ? 'bg-green-500' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Quick Entry</span>
                                         {field.allow_in_quick_entry === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.translatable === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.translatable === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Translatable</span>
                                         {field.translatable === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.print_hide === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.print_hide === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Print Hide</span>
                                         {field.print_hide === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.report_hide === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.report_hide === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Report Hide</span>
                                         {field.report_hide === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
@@ -89,23 +89,23 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                             <div className="grid items-start gap-2">
                                 <div className="text-sm font-semibold">List / Search Settings</div>
                                 <div className="grid grid-cols-3 gap-1">
-                                    <div className={`flex gap-1 justify-between ${field.in_list_view === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.in_list_view === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">List View</span>
                                         {field.in_list_view === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.in_standard_filter === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.in_standard_filter === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs  text-cyan-50 font-semibold">Standard Filter</span>
                                         {field.in_standard_filter === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.in_preview === 1 ? 'bg-green-500' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.in_preview === 1 ? 'bg-green-500' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Preview</span>
                                         {field.in_preview === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.in_filter === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.in_filter === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Filter</span>
                                         {field.in_filter === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.in_global_search === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.in_global_search === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Global Search</span>
                                         {field.in_global_search === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
                                     </div>
@@ -114,28 +114,28 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                             <div className="grid items-start gap-2">
                                 <div className="text-sm font-semibold">Permissions and Constraints</div>
                                 <div className="grid grid-cols-3 gap-1">
-                                    <div className={`flex gap-1 justify-between ${field.read_only === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.read_only === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Read Only</span>
                                         {field.read_only === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.allow_on_submit === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.allow_on_submit === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs  text-cyan-50 font-semibold">Allow on Submit</span>
                                         {field.allow_on_submit === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.set_only_once === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.set_only_once === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Set Only Once</span>
                                         {field.set_only_once === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.unique === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.unique === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Unique</span>
                                         {field.unique === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
                                     </div>
-                                    <div className={`flex gap-1 justify-between ${field.no_copy === 1 ? 'bg-green-600' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.no_copy === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">No Copy</span>
                                         {field.no_copy === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
                                     </div>
 
-                                    <div className={`flex gap-1 justify-between ${field.ignore_user_permissions === 1 ? 'bg-green-500' : 'bg-gray-500'} rounded-md p-1`}>
+                                    <div className={`flex gap-1 justify-between ${field.ignore_user_permissions === 1 ? 'bg-green-500' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Ignore User Permissions</span>
                                         {field.ignore_user_permissions === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
                                     </div>

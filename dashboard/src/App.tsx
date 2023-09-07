@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { APIViewerContainer } from './pages/features/api_viewer/APIViewer'
 import { Overview } from './pages/overview/Overview'
 import { ERDForModule } from './pages/features/erd/ERDForModule'
+import { ERDViewer } from './pages/features/erd/ERDViewer'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Overview />} />
           <Route path="/dashboard" element={<h1>Dashboard</h1>} />
           {/*TODO: Need to Change below route */}
+          <Route path='erd/:ID' element={<ERDViewer />} />
           <Route path='graph' element={<ERDForModule module='Core' project_branch='frappe-frappe-develop' />} />
           <Route path="/viewer/:ID" element={<APIViewerContainer />} />
         </Routes>
