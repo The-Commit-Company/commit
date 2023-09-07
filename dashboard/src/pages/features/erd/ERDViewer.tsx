@@ -7,7 +7,7 @@ import { CommitProjectBranch, ModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useFrappeGetDoc } from "frappe-react-sdk"
-import { Fragment, useState } from "react"
+import { Fragment, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ERDForDoctypes } from "./ERDForDoctypes"
 import { Header } from "@/components/common/Header"
@@ -125,6 +125,16 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
 
     const [filter, setFilter] = useState<string>("")
 
+    const moduleData: ModuleData = useMemo(() => {
+        const module_doctypes_map: ModuleData = JSON.parse(data?.module_doctypes_map ?? "{}")
+
+        const filtered = Object.entries(module_doctypes_map).filter(([m]) => module_doctypes_map?.[m]?.doctype_names.map((d) => d.toLowerCase()).some((d) => d.includes(filter.toLowerCase())))
+
+        return Object.fromEntries(filtered)
+
+
+    }, [data, filter])
+
     if (error) {
         return <div>Error</div>
     }
@@ -132,19 +142,14 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
         return <FullPageLoader className="w-[240px]" />
     }
 
-    if (data) {
+    if (moduleData) {
 
-        const moduleData: ModuleData = JSON.parse(data.module_doctypes_map ?? "{}")
         return (
             <div>
                 <Input
                     placeholder="Filter DocType..."
                     value={filter}
                     onChange={(event) => setFilter(event.target.value)}
-                    // value={(table.getColumn("label")?.getFilterValue() as string) ?? ""}
-                    // onChange={(event) =>
-                    //     table.getColumn("label")?.setFilterValue(event.target.value)
-                    // }
                     className="w-full"
                 />
                 <Accordion type="single" collapsible className="w-full">
