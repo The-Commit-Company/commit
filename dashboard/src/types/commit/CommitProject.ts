@@ -1,5 +1,5 @@
 
-export interface CommitProject {
+export interface CommitProject{
 	creation: string
 	name: string
 	modified: string
