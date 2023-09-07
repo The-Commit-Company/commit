@@ -15,7 +15,7 @@ export const Header = ({ text }: { text?: string }) => {
             </div>
             <div className='flex space-x-2'>
                 <Button variant='outline' color='primary' size={'sm'} onClick={() => window.open('https://github.com/The-Commit-Company', '_blank')}>
-                    <GitHubLogoIcon className='w-4 h-4 mr-2' /> Github
+                    <GitHubLogoIcon className='w-4 h-4 mr-2' /> GitHub
                 </Button>
                 <Button size={'sm'}>Take our survey</Button>
             </div>
