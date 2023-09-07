@@ -16,6 +16,21 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
         { name: 'Code', content: <CodeSnippet /> },
     ]
 
+    const requestTypeColor = useMemo(() => {
+        switch (data?.request_types[0]) {
+            case 'GET':
+                return 'green'
+            case 'POST':
+                return 'blue'
+            case 'PUT':
+                return 'yellow'
+            case 'DELETE':
+                return 'red'
+            default:
+                return 'gray'
+        }
+    }, [data?.request_types])
+
     return (
         <div className="flex flex-col space-y-3 p-3">
             <div className="border-b border-gray-200 pb-3 sm:flex sm:items-center sm:justify-between">
@@ -60,6 +75,21 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
                                 <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{data?.api_path}</dd>
                                 <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
                             </div>
+                        </div>
+                        <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Req. Types :</dt>
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 space-x-1">
+                                {data?.request_types.map((type: string, idx: number) => (
+                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor}-600/20`}>
+                                        {type}
+                                    </span>
+                                ))}
+                                {data?.request_types.length === 0 && ['GET', 'POST', 'PUT', 'DELETE'].map((type: string, idx: number) => (
+                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor}-600/20`}>
+                                        {type}
+                                    </span>
+                                ))}
+                            </dd>
                         </div>
                     </dl>
                 </div>

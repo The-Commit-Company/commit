@@ -4,14 +4,18 @@ import { APIData } from "@/types/APIData"
 import { useEffect, useMemo, useState } from "react"
 import { AiOutlineBranches } from "react-icons/ai"
 import { GoPackage } from "react-icons/go"
+import { MdOutlineUpdate } from "react-icons/md"
+import TimeAgo from "timeago-react"
 export interface APIListProps {
     apiList: APIData[]
     app_name: string
     branch_name: string
+    last_updated: string
+    organization_name: string
     setSelectedEndpoint: (endpoint: string) => void
 }
 
-export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, last_updated, organization_name, setSelectedEndpoint }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
@@ -34,12 +38,17 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }:
             <div className="flex space-x-2 items-center">
                 <div className="flex flex-wrap items-center space-x-1">
                     <GoPackage />
-                    <p className="truncate text-md text-gray-700">{app_name}</p>
+                    <p className="truncate text-md text-gray-700">{organization_name} / {app_name}</p>
                 </div>
                 <div className="w-px h-4 bg-gray-200" />
                 <div className="flex flex-wrap items-center space-x-1">
                     <AiOutlineBranches />
                     <p>{branch_name}</p>
+                </div>
+                <div className="w-px h-4 bg-gray-200" />
+                <div className="flex flex-wrap items-center space-x-2">
+                    <MdOutlineUpdate />
+                    <p className="truncate text-sm text-gray-700">{last_updated.split(' ')[0]}</p><h6 className="text-gray-400 text-sm"> (<TimeAgo datetime={last_updated} />)</h6>
                 </div>
             </div>
             <div className="flex flex-row space-x-4">
