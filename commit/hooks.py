@@ -4,7 +4,7 @@ app_name = "commit"
 app_title = "commit"
 app_publisher = "The Commit Company"
 app_description = "The Commit Company"
-app_email = "yash.jane@thecommit.company"
+app_email = "support@thecommit.company"
 app_license = "MIT"
 
 # Includes in <head>
