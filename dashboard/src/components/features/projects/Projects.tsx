@@ -35,8 +35,8 @@ export const Projects = () => {
 
     if (data && data.message) {
         return (
-            <div className="mx-auto  p-4 h-[calc(100vh-4rem)]">
-                <div className="h-full p-2 space-y-4">
+            <div className="mx-auto p-4 h-[calc(100vh-4rem)]">
+                <div className="h-full space-y-">
                     <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
                         Projects
                     </h1>
