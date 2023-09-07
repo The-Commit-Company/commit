@@ -1,11 +1,12 @@
 import { APIDetails } from "@/components/features/api_viewer/APIDetails"
 import { APIList } from "@/components/features/api_viewer/APIList"
 import { useState } from "react"
-import { useFrappeGetCall, } from "frappe-react-sdk"
+import { useFrappeGetCall } from "frappe-react-sdk"
 import { APIData } from "@/types/APIData"
 import { useParams } from "react-router-dom"
 import { Header } from "@/components/common/Header"
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 
 
 interface GetAPIResponse {
@@ -28,16 +29,14 @@ export const APIViewerContainer = () => {
 }
 
 export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
+
     const [selectedendpoint, setSelectedEndpoint] = useState<string>('')
+
     const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.api_explorer.get_apis_for_project', {
         project_branch: projectBranch
     }, undefined, {
         onSuccess: (d: { message: GetAPIResponse }) => setSelectedEndpoint(d.message.apis[0].name)
     })
-
-    if (error) {
-        return <div>Error</div>
-    }
 
     if (isLoading) {
         return <FullPageLoader />
@@ -46,7 +45,8 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
         // show API details column only if there is selected endpoint else show only API list in full width.
         <div className="overflow-hidden">
             <Header text="API Explorer" />
-            <div className="grid grid-cols-5 gap-0 h-[calc(100vh-4rem)]">
+            {error && <ErrorBanner error={error} />}
+            {data && <div className="grid grid-cols-5 gap-0 h-[calc(100vh-4rem)]">
                 <div className={selectedendpoint ? "col-span-3" : "col-span-5"}>
                     <APIList
                         apiList={data?.message.apis ?? []}
@@ -62,7 +62,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                         <APIDetails endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
                     </div>
                 )}
-            </div>
+            </div>}
         </div>
 
     )
