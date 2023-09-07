@@ -14,6 +14,7 @@ interface GetAPIResponse {
     app_name: string
     branch_name: string
     organization_name: string,
+    organization_id: string,
     app_logo?: string,
     org_logo?: string,
     last_updated: string,
@@ -53,7 +54,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                         app_name={data?.message.app_name ?? ''}
                         branch_name={data?.message.branch_name ?? ''}
                         last_updated={data?.message.last_updated ?? ''}
-                        organization_name={data?.message.organization_name ?? ''}
+                        organization_id={data?.message.organization_id ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
                     />
 
