@@ -18,7 +18,6 @@ function App() {
           {/* <Route path="/" element={<ProtectedRoute />} /> */}
           {/* default route on '/' */}
           <Route path="/" element={<Overview />} />
-          <Route path="/dashboard" element={<h1>Dashboard</h1>} />
           {/*TODO: Need to Change below route */}
           <Route path='erd/:ID' element={<ERDViewer />} />
           <Route path="/viewer/:ID" element={<APIViewerContainer />} />

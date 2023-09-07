@@ -2,7 +2,8 @@ import frappe
 import json
 import os
 
-@frappe.whitelist()
+
+@frappe.whitelist(allow_guest=True)
 def get_apis_for_project(project_branch: str):
     '''
         Gets the Project Branch document with the organization and app name
