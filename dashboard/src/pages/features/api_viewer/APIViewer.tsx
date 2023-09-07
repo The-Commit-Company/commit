@@ -56,6 +56,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                     />
 
                 </div>
+
                 {selectedendpoint ? (
                     <div className="col-span-2">
                         <APIDetails endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
@@ -63,6 +64,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                 ) : <div className="col-span-2">
                     <div className="flex items-center justify-center h-full">
                         <div className="text-lg text-gray-700">Select an endpoint to view details</div>
+
                     </div>
                 </div>}
             </div>
