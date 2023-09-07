@@ -275,7 +275,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
 
     return (
         <>
-            <div className='Flow' style={{ width: '100vw', height: '100vh' }}>
+            <div className='Flow' style={{ width: '100vw', height: 'auto', padding: 2 }}>
                 {/* <Markers /> */}
                 <ReactFlow
                     nodes={nodes}
