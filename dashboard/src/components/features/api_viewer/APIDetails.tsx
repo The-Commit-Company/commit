@@ -1,11 +1,13 @@
 import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 import { Tabs } from "@/components/common/Tabs"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { APIData, Argument } from "@/types/APIData"
 import { XMarkIcon } from "@heroicons/react/24/outline"
+import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
 
-export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint }: { endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>> }) => {
+export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>> }) => {
 
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
@@ -13,11 +15,11 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
 
     const tabs = [
         { name: 'Parameters', content: <ParametersTable parameters={data?.arguments} /> },
-        { name: 'Code', content: <CodeSnippet /> },
+        { name: 'Code', content: <CodeSnippet apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} /> },
     ]
 
-    const requestTypeColor = useMemo(() => {
-        switch (data?.request_types[0]) {
+    const requestTypeColor = (requestType: string) => {
+        switch (requestType) {
             case 'GET':
                 return 'green'
             case 'POST':
@@ -29,7 +31,7 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
             default:
                 return 'gray'
         }
-    }, [data?.request_types])
+    }
 
     return (
         <div className="flex flex-col space-y-3 p-3">
@@ -72,7 +74,7 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
                             <div className="flex items-start space-x-2 sm:col-span-4">
-                                <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{data?.api_path}</dd>
+                                <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[58ch]">{data?.api_path}</dd>
                                 <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
                             </div>
                         </div>
@@ -80,12 +82,13 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
                             <dt className="text-sm font-medium leading-6 text-gray-900">Req. Types :</dt>
                             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 space-x-1">
                                 {data?.request_types.map((type: string, idx: number) => (
-                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor}-600/20`}>
+                                    console.log(requestTypeColor(type)),
+                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor(type)}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor(type)}-600/20`}>
                                         {type}
                                     </span>
                                 ))}
                                 {data?.request_types.length === 0 && ['GET', 'POST', 'PUT', 'DELETE'].map((type: string, idx: number) => (
-                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor}-600/20`}>
+                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor(type)}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor(type)}-600/20`}>
                                         {type}
                                     </span>
                                 ))}
@@ -96,7 +99,7 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
             </div>
 
             <Tabs tabs={tabs} />
-        </div>
+        </div >
     )
 }
 
@@ -126,21 +129,43 @@ export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => 
     )
 }
 
-export const CodeSnippet = () => {
+
+export const CodeSnippet = ({ apiData, project_branch, file_path }: { apiData: APIData, project_branch: string, file_path: string }) => {
+
+    const { data, error } = useFrappeGetCall<{ message: { file_content: string } }>('commit.api.api_explorer.get_file_content_from_path', {
+        project_branch: project_branch,
+        file_path: file_path
+    })
+
     return (
         <div className="flex flex-col space-y-2">
-            <h1 className="text-sm font-medium leading-6 text-gray-900">API Code Snippet</h1>
-            <code className="bg-gray-50 p-2 rounded-md text-sm">
-                <pre>
-                    {`{
-    "name": "API Name",
-    "endpoint": "/api/endpoint",
-    "method": "GET",
-    "module": "Module Name",
-    "allowGuest": true
-}`}
+            {error && <ErrorBanner error={error} />}
+            {/* <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-16rem)]">
+                <pre className="counter-reset" data-prefix={data?.message?.file_content.split('\n').length}>
+                    {data?.message?.file_content.split('\n').map((line, idx) => (
+                        <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
+                    ))}
+                </pre>
+            </code> */}
+            {/* hightlight with light yellow colour those lines which start from the def_index until next @frappe.whitelist occurs */}
+            <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-16rem)]">
+                <pre className="counter-reset" data-prefix={data?.message?.file_content.split('\n').length}>
+                    {data?.message?.file_content.split('\n').map((line, idx) => {
+                        // console.log(idx)
+                        console.log(apiData.def_index)
+                        if (idx === apiData.def_index) {
+                            console.log(line)
+                            if (line.startsWith('@frappe.whitelist')) {
+                                return <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
+                            }
+                            return <span key={idx} className="block bg-yellow-200" data-line-number={idx + 1}>{line}</span>
+                        }
+                        return <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
+                    }
+                    )}
+
                 </pre>
             </code>
-        </div>
+        </div >
     )
 }
