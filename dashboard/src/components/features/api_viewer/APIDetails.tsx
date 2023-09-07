@@ -18,18 +18,33 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
         { name: 'Code', content: <CodeSnippet apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} /> },
     ]
 
-    const requestTypeColor = (requestType: string) => {
+    const requestTypeBgColor = (requestType: string) => {
         switch (requestType) {
             case 'GET':
-                return 'green'
+                return 'bg-green-100'
             case 'POST':
-                return 'blue'
+                return 'bg-blue-100'
             case 'PUT':
-                return 'yellow'
+                return 'bg-yellow-100'
             case 'DELETE':
-                return 'red'
+                return 'bg-red-100'
             default:
-                return 'gray'
+                return 'bg-gray-100'
+        }
+    }
+
+    const requestTypeBorderColor = (requestType: string) => {
+        switch (requestType) {
+            case 'GET':
+                return 'ring-green-600/20'
+            case 'POST':
+                return 'ring-blue-600/20'
+            case 'PUT':
+                return 'ring-yellow-600/20'
+            case 'DELETE':
+                return 'ring-red-600/20'
+            default:
+                return 'ring-gray-600/20'
         }
     }
 
@@ -82,13 +97,12 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                             <dt className="text-sm font-medium leading-6 text-gray-900">Req. Types :</dt>
                             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 space-x-1">
                                 {data?.request_types.map((type: string, idx: number) => (
-                                    console.log(requestTypeColor(type)),
-                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor(type)}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor(type)}-600/20`}>
+                                    <span key={idx} className={`inline-flex items-center rounded-md ${requestTypeBgColor(type)} px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ${requestTypeBorderColor(type)}`}>
                                         {type}
                                     </span>
                                 ))}
                                 {data?.request_types.length === 0 && ['GET', 'POST', 'PUT', 'DELETE'].map((type: string, idx: number) => (
-                                    <span key={idx} className={`inline-flex items-center rounded-md bg-${requestTypeColor(type)}-100 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-${requestTypeColor(type)}-600/20`}>
+                                    <span key={idx} className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ${requestTypeBgColor(type)} ${requestTypeBorderColor(type)}`}>
                                         {type}
                                     </span>
                                 ))}

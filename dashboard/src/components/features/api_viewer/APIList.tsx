@@ -4,8 +4,7 @@ import { APIData } from "@/types/APIData"
 import { useEffect, useMemo, useState } from "react"
 import { AiOutlineBranches } from "react-icons/ai"
 import { GoPackage } from "react-icons/go"
-import { MdOutlineUpdate } from "react-icons/md"
-import TimeAgo from "timeago-react"
+
 export interface APIListProps {
     apiList: APIData[]
     app_name: string
