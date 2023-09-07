@@ -47,8 +47,8 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
         <div className="overflow-hidden">
             <Header text="API Explorer" />
             {error && <ErrorBanner error={error} />}
-            {data && <div className="grid grid-cols-5 gap-0 h-[calc(100vh-4rem)]">
-                <div className={selectedendpoint ? "col-span-3" : "col-span-5"}>
+            {data && <div className="flex w-full h-[calc(100vh-4rem)]">
+                <div className={selectedendpoint ? "w-[55%]" : "w-full"}>
                     <APIList
                         apiList={data?.message.apis ?? []}
                         app_name={data?.message.app_name ?? ''}
@@ -61,8 +61,8 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                 </div>
 
                 {selectedendpoint && (
-                    <div className="col-span-2">
-                        <APIDetails endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
+                    <div className="w-[45%]">
+                        <APIDetails project_branch={projectBranch} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
                     </div>
                 )}
             </div>}
