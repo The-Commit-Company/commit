@@ -268,8 +268,8 @@ export const FieldsTable = ({ data }: DrawerTableProps) => {
 export const CopyHovor = ({ value }: { value: string }) => {
     return (
         <div className="group flex space-x-2 items-center">
-            <div className="group-hover:text-base">{value}</div>
-            <CopyButton value={value} className="h-8 w-8 invisible bg-zinc-200 hover:bg-zinc-400 group-hover:visible" />
+            <div className="">{value}</div>
+            <CopyButton value={value} className="h-6 w-6 invisible bg-zinc-200 hover:bg-zinc-400 group-hover:visible" />
         </div>
     )
 }
