@@ -6,11 +6,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { CommitProjectBranch, ModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import { HamburgerMenuIcon } from "@radix-ui/react-icons"
 import { useFrappeGetDoc } from "frappe-react-sdk"
 import { Fragment, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ERDForDoctypes } from "./ERDForDoctypes"
+import { Header } from "@/components/common/Header"
+import { Input } from "@/components/ui/input"
 
 export const ERDViewer = () => {
 
@@ -20,23 +21,22 @@ export const ERDViewer = () => {
 
     const [erdDoctypes, setERDDocTypes] = useState<string[]>([])
     return (
-        <div className="space-y-4 p-3 border-r border-gray-200 h-screen">
-            <div className="flex justify-between border-b h-[5vh] border-gray-200 pb-4 items-start space-x-2">
-                <Button variant={"outline"} size={'icon'} onClick={() => setOpen(!open)} className="items-center h-8 w-8">
-                    <HamburgerMenuIcon className="h-4 w-4" />
-                </Button>
-
-                <div className="flex items-center space-x-4">
-                    {erdDoctypes.length ? <Badge variant="secondary" className="h-8">{erdDoctypes.length} DocTypes Selected</Badge> : null}
+        <div className="h-screen">
+            <Header text="ERD Viewer" />
+            <div className="border-r border-gray-200">
+                <div className="fixed bottom-4 left-[50%] -translate-x-[50%] z-50" hidden={open}>
+                    <Button onClick={() => setOpen(!open)}>
+                        Select DocTypes ({erdDoctypes.length})
+                    </Button>
                 </div>
-            </div>
 
-            {ID && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} ID={ID} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />}
+                {ID && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} ID={ID} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />}
 
-            {/* fixed height container */}
-            <div className="flex h-[95vh] pb-4">
-                {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
-                {ID && erdDoctypes && <ERDForDoctypes project_branch={ID} doctypes={erdDoctypes} />}
+                {/* fixed height container */}
+                <div className="flex h-[95vh] pb-4">
+                    {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
+                    {ID && erdDoctypes && <ERDForDoctypes project_branch={ID} doctypes={erdDoctypes} />}
+                </div>
             </div>
         </div>
     )
@@ -81,8 +81,12 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, ID, erdDoctypes, setERD
                                     <div className="flex h-full flex-col overflow-y-scroll bg-white pt-6 shadow-xl">
                                         <div className="px-4 sm:px-6">
                                             <div className="flex items-start justify-between">
-                                                <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                                                    Select DocTypes
+                                                <Dialog.Title className="flex space-x-2 ">
+                                                    <div className="text-base font-semibold leading-6 text-gray-900">
+                                                        Select DocTypes
+                                                    </div>
+                                                    {doctype.length ? <Badge variant="secondary" className="h-6">{doctype.length} DocTypes</Badge> : null}
+
                                                 </Dialog.Title>
                                                 <div className="ml-3 flex h-7 items-center">
                                                     <button
@@ -119,6 +123,8 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
 
     const { data, error, isLoading } = useFrappeGetDoc<CommitProjectBranch>('Commit Project Branch', ID)
 
+    const [filter, setFilter] = useState<string>("")
+
     if (error) {
         return <div>Error</div>
     }
@@ -130,56 +136,70 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
 
         const moduleData: ModuleData = JSON.parse(data.module_doctypes_map ?? "{}")
         return (
-            <Accordion type="single" collapsible className="w-full">
-                {Object.keys(moduleData).map((module: string) => {
-                    return (
-                        <AccordionItem value={module} key={module}>
-                            <div className="w-full flex justify-between items-center">
-                                <div className="text-base">
-                                    <AccordionTrigger className="space-x-4">
-                                        {module}&nbsp;
-                                    </AccordionTrigger>
-                                </div>
-                                <div>
-                                    <Checkbox checked={moduleData?.[module]?.doctype_names?.every((d) => doctype.includes(d))}
-                                        onCheckedChange={(checked) => {
-                                            if (checked) {
-                                                setDocType([...new Set([...doctype, ...moduleData?.[module]?.doctype_names ?? []])])
-                                            } else {
-                                                setDocType(doctype.filter((d) => !moduleData?.[module]?.doctype_names?.includes(d)))
-                                            }
+            <div>
+                <Input
+                    placeholder="Filter DocType..."
+                    value={filter}
+                    onChange={(event) => setFilter(event.target.value)}
+                    // value={(table.getColumn("label")?.getFilterValue() as string) ?? ""}
+                    // onChange={(event) =>
+                    //     table.getColumn("label")?.setFilterValue(event.target.value)
+                    // }
+                    className="w-full"
+                />
+                <Accordion type="single" collapsible className="w-full">
+                    {Object.keys(moduleData).map((module: string) => {
+                        return (
+                            <AccordionItem value={module} key={module}>
+                                <div className="w-full flex justify-between items-center">
+                                    <div className="text-base">
+                                        <AccordionTrigger className="space-x-4">
+                                            {module}&nbsp;
+                                        </AccordionTrigger>
+                                    </div>
+                                    <div className="flex space-x-2 items-center">
+                                        {moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length ?
+                                            <Badge variant="secondary" className="h-6 rounded-full">{moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length}</Badge> : null}
+                                        <Checkbox checked={moduleData?.[module]?.doctype_names?.every((d) => doctype.includes(d))}
+                                            onCheckedChange={(checked) => {
+                                                if (checked) {
+                                                    setDocType([...new Set([...doctype, ...moduleData?.[module]?.doctype_names ?? []])])
+                                                } else {
+                                                    setDocType(doctype.filter((d) => !moduleData?.[module]?.doctype_names?.includes(d)))
+                                                }
 
-                                        }} />
+                                            }} />
+                                    </div>
                                 </div>
-                            </div>
-                            <AccordionContent>
-                                <ul role="list" className="divide-y divide-gray-200">
-                                    {
-                                        moduleData?.[module]?.doctype_names?.map((doctypeName: string) => {
-                                            return (
-                                                <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
-                                                    <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
-                                                    <div className="min-h-[24px]">
-                                                        <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
-                                                            if (checked) {
-                                                                setDocType([...new Set([...doctype, doctypeName])])
-                                                            } else {
-                                                                setDocType(doctype.filter((d) => d !== doctypeName))
-                                                            }
-                                                        }}>
-                                                            {doctypeName}
-                                                        </Checkbox>
-                                                    </div>
-                                                </li>
-                                            )
-                                        })
-                                    }
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                    )
-                })}
-            </Accordion>
+                                <AccordionContent>
+                                    <ul role="list" className="divide-y divide-gray-200">
+                                        {
+                                            moduleData?.[module]?.doctype_names?.map((doctypeName: string) => {
+                                                return (
+                                                    <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
+                                                        <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
+                                                        <div className="min-h-[24px]">
+                                                            <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
+                                                                if (checked) {
+                                                                    setDocType([...new Set([...doctype, doctypeName])])
+                                                                } else {
+                                                                    setDocType(doctype.filter((d) => d !== doctypeName))
+                                                                }
+                                                            }}>
+                                                                {doctypeName}
+                                                            </Checkbox>
+                                                        </div>
+                                                    </li>
+                                                )
+                                            })
+                                        }
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+                        )
+                    })}
+                </Accordion>
+            </div>
         )
     }
 
