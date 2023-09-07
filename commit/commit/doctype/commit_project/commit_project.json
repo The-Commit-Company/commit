@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "org",
+  "display_name",
   "repo_name",
   "app_name",
   "image",
@@ -59,12 +60,18 @@
    "fieldname": "description",
    "fieldtype": "Data",
    "label": "Description"
+  },
+  {
+   "fieldname": "display_name",
+   "fieldtype": "Data",
+   "label": "Display Name",
+   "reqd": 1
   }
  ],
  "image_field": "image",
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-09-05 19:45:21.828117",
+ "modified": "2023-09-06 19:37:04.665915",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Project",

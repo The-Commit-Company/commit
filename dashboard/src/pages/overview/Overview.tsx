@@ -15,6 +15,7 @@ export const Overview = () => {
     return (
         <div className="h-screen">
             <Navbar navigation={navigation} />
+            <Projects />
         </div>
     )
 }
