@@ -31,7 +31,7 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
             ## Comment out later
             # if file.endswith('party.py'):
             indexes = find_indexes_of_whitelist(file_content, no_of_occurrences)
-            apis = get_api_details(file, file_content, indexes)
+            apis = get_api_details(file, file_content, indexes, path)
             api_details.extend(apis)
     
     return api_details
@@ -51,7 +51,7 @@ def find_indexes_of_whitelist(file_content: str, count: int):
     
     return indexes
 
-def get_api_details(file, file_content: str, indexes: list):
+def get_api_details(file, file_content: str, indexes: list, path: str):
     '''
     Get details of the API
     '''
@@ -65,7 +65,8 @@ def get_api_details(file, file_content: str, indexes: list):
             **whitelist_details,
             'other_decorators': other_decorators,
             'index': index,
-            'file': file
+            'file': file,
+            'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
         })
     
     return apis
