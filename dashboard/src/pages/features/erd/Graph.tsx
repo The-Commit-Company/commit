@@ -126,9 +126,9 @@ const getLayoutedElements = (nodes: Node<TableNodeData>[], edges: Edge[]) => {
     const dagreGraph = new dagre.graphlib.Graph()
     dagreGraph.setDefaultEdgeLabel(() => ({}))
     dagreGraph.setGraph({
-        rankdir: 'LR',
+        rankdir: 'TB',
         align: 'UL',
-        nodesep: 100,
+        nodesep: 80,
         ranksep: 80,
     })
 
@@ -278,6 +278,9 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
             <div className='Flow' style={{ width: '100vw', height: 'auto', padding: 2 }}>
                 {/* <Markers /> */}
                 <ReactFlow
+                    style={{
+                        backgroundColor: '#F7FAFC',
+                    }}
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
@@ -320,7 +323,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                         color="#dddddd"
                         variant={BackgroundVariant.Lines}
                     /> */}
-                    <Background color="#aaa" gap={16} />
+                    <Background color="#171923" gap={16} />
                 </ReactFlow>
                 <TableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} project_branch={project_branch} key={selectedDoctype} />
             </div>

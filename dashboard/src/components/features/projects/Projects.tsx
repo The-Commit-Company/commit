@@ -1,6 +1,6 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
 import { Button } from "@/components/ui/button"
-import { CardDescription, CardTitle } from "@/components/ui/card"
+import { CardDescription } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProject } from "@/types/commit/CommitProject"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
@@ -66,7 +66,7 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
 
     const navigate = useNavigate()
 
-    const [branch, setBranch] = useState<string>(project.branches[0].name)
+    const [branch, setBranch] = useState<string>(project.branches[0]?.name)
 
     const onNavigate = () => {
         navigate({
@@ -104,7 +104,7 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
                     <div className="flex items-center space-x-4">
                         <Select
                             onValueChange={(value) => setBranch(value)}
-                            defaultValue={project.branches[0].name}
+                            defaultValue={project.branches[0]?.name}
                         >
                             <SelectTrigger className="h-8 w-40">
                                 <SelectValue placeholder="Select Branch" />
