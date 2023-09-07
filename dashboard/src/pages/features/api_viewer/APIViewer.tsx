@@ -20,7 +20,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
     const { data } = useFrappeGetDoc<CommitProjectBranch>('Commit Project Branch', projectBranch)
 
     const [searchQuery, setSearchQuery] = useState<string>('')
-    const [requestTypeFilter, setRequestTypeFilter] = useState<string>('')
+    const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
     const API_JSON: APIData[] = useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
@@ -50,7 +50,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
             </div>
             {selectedendpoint && (
                 <div className="col-span-2 h-screen">
-                    <APIDetails endpointData={apiList} selectedEndpoint={selectedendpoint} />
+                    <APIDetails endpointData={apiList} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
                 </div>
             )}
         </div>

@@ -2,9 +2,10 @@ import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
 import { Tabs } from "@/components/common/Tabs"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { APIData, Argument } from "@/types/APIData"
+import { XMarkIcon } from "@heroicons/react/24/outline"
 import { useMemo } from "react"
 
-export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: APIData[], selectedEndpoint: string }) => {
+export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint }: { endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>> }) => {
 
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
@@ -41,6 +42,15 @@ export const APIDetails = ({ endpointData, selectedEndpoint }: { endpointData: A
                         Share
                     </button>
                     <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-1 text-center">Export</button>
+                    <button
+                        type="button"
+                        className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={() => setSelectedEndpoint('')}
+                    >
+                        <span className="absolute -inset-2.5" />
+                        <span className="sr-only">Close panel</span>
+                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
                 </div>
             </div>
             <div>
