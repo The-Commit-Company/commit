@@ -125,6 +125,7 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
 
     const [filter, setFilter] = useState<string>("")
 
+
     const moduleData: ModuleData = useMemo(() => {
         const module_doctypes_map: ModuleData = JSON.parse(data?.module_doctypes_map ?? "{}")
 
