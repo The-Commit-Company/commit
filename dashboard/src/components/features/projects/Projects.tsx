@@ -109,10 +109,11 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
                     <button disabled={!branch} onClick={onNavigate} type="button" className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-indigo-400 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
                         API Viewer
                     </button>
-                    <button type="button" className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-indigo-400 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
+                    <button type="button" disabled={!branch} onClick={() => navigate({
+                        pathname: `/erd/${branch}`
+                    })} className="py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-indigo-400 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm">
                         View ERD
                     </button>
-
                 </div>
             </CardContent>
         </Card>
