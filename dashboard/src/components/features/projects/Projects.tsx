@@ -85,10 +85,11 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
                             alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrN1Q7oEaS4Z_oUmK8UVYtRZW5ijuqKuvAEX4U2xZt_Jz2sThi8ihE9uSgwzKjifPed8&usqp=CAU"
                         />
                         <div className="flex flex-col">
-                            <div className="flex items-baseline space-x-2">
-                                <CardTitle className="text-lg font-medium tracking-normal">{project.display_name}</CardTitle>
+                            <div className="flex space-x-2 items-center">
+                                <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
                                 <span className="text-sm text-gray-500">
-                                    by <OrganozationHoverCard
+                                    by
+                                    <OrganozationHoverCard
                                         onHoverText={org.organization_name}
                                         organization_image={org.image}
                                         organization_id={org.name}
