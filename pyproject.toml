@@ -1,0 +1,12 @@
+[project]
+name = "commit"
+authors = [
+    { name = "The Commit Company", email = "support@thecommit.company"}
+]
+description = "Developer tooling for the Frappeverse"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+ "GitPython",
+]
