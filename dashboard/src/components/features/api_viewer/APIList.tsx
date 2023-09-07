@@ -75,9 +75,10 @@ export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSe
     return (
         <ul role="list" className="divide-y divide-gray-100 px-1">
             {list.length === 0 && (
-                <li className="flex items-center">
-                    <p className="text-lg leading-6 text-gray-800">No APIs found</p>
-                </li>
+                <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)] space-y-2" style={{ minHeight: '20rem' }} >
+                    <p className="text-gray-500 text-lg">Sorry we couldn't find what you were looking for.</p>
+                    <p className="text-gray-500 text-lg">Try searching with different keywords.</p>
+                </div>
             )}
             {list.map((person: APIData, index: number) => (
                 <li key={`${person.name}-${index}`} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50 cursor-pointer group" onClick={() => setSelectedEndpoint(person.name)}>

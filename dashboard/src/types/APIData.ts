@@ -9,6 +9,7 @@ export interface APIData {
     other_decorators: string[]
     index: number
     file: string
+    api_path: string
 }
 
 export interface Argument {

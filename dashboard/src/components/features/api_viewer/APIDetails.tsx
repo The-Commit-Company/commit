@@ -16,32 +16,18 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
         { name: 'Code', content: <CodeSnippet /> },
     ]
 
-    /**
-     * Funtion to get the API endpoint name from the file path
-     * @param path file path of the endpoint
-     * @param name name of the endpoint
-     * @returns return the endpoint name from the path
-     */
-    const getEndpointFromPath = (path: string | undefined, name: string | undefined) => {
-        const pathArray = path?.split('/').slice(1)
-        // remove '.py' from last element of array using regex
-        pathArray?.splice(-1, 1, pathArray[pathArray.length - 1].replace(/\.py$/, ''))
-        pathArray?.push(name ?? '')
-        return pathArray?.join('.')
-    }
-
     return (
         <div className="flex flex-col space-y-3 p-3">
             <div className="border-b border-gray-200 pb-3 sm:flex sm:items-center sm:justify-between">
                 <h1 className="text-lg font-semibold leading-6 text-gray-900">API Details</h1>
                 <div className="mt-3 flex sm:ml-4 sm:mt-0 space-x-2">
-                    <button
+                    {/* <button
                         type="button"
                         className="py-1 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     >
                         Share
                     </button>
-                    <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-1 text-center">Export</button>
+                    <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-4 py-1 text-center">Export</button> */}
                     <button
                         type="button"
                         className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -65,14 +51,14 @@ export const APIDetails = ({ endpointData, selectedEndpoint, setSelectedEndpoint
                 <div className="mt-0 border-b border-gray-100">
                     <dl className="divide-y divide-gray-100">
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
-                            <dt className="text-sm font-medium leading-6 text-gray-900">API name :</dt>
-                            <dd className="mt-1 text-xs leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>{data?.name}</code></dd>
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Name :</dt>
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>{data?.name}</code></dd>
                         </div>
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
-                            <dt className="text-sm font-medium leading-6 text-gray-900">API endpoint :</dt>
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
                             <div className="flex items-start space-x-2 sm:col-span-4">
-                                <dd className="mt-1 text-xs text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{getEndpointFromPath(data?.file, data?.name)}</dd>
-                                <CopyButton value={data?.api_path} className="h-6 w-6" />
+                                <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[53ch]">{data?.api_path}</dd>
+                                <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
                             </div>
                         </div>
                     </dl>
@@ -99,7 +85,7 @@ export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => 
             </TableHeader>
             <TableBody>
                 {parameters?.map((parameter) => (
-                    <TableRow key={parameter.argument} className="font-light text-xs">
+                    <TableRow key={parameter.argument} className="font-light text-sm">
                         <TableCell>{parameter.argument}</TableCell>
                         <TableCell>{parameter.type ? parameter.type : '-'}</TableCell>
                         <TableCell>{parameter.default ? parameter.default : '-'}</TableCell>
