@@ -1,12 +1,12 @@
 import { APIDetails } from "@/components/features/api_viewer/APIDetails"
 import { APIList } from "@/components/features/api_viewer/APIList"
-import { useMemo, useState } from "react"
-import { useFrappeGetCall, useFrappeGetDoc } from "frappe-react-sdk"
-import { CommitProjectBranch } from "@/types/CommitProjectBranch"
+import { useState } from "react"
+import { useFrappeGetCall } from "frappe-react-sdk"
 import { APIData } from "@/types/APIData"
 import { useParams } from "react-router-dom"
 import { Header } from "@/components/common/Header"
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 
 
 interface GetAPIResponse {
@@ -29,7 +29,9 @@ export const APIViewerContainer = () => {
 }
 
 export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
+
     const [selectedendpoint, setSelectedEndpoint] = useState<string>('')
+
     const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.api_explorer.get_apis_for_project', {
         project_branch: projectBranch
     }, undefined, {
@@ -41,24 +43,28 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
     }
     return (
         // show API details column only if there is selected endpoint else show only API list in full width.
-        <div>
+        <div className="overflow-hidden">
             <Header text="API Explorer" />
-            <div className="grid grid-cols-8 gap-0 h-[calc(100vh-3rem)]">
-                <div className={`col-span-4`}>
+            {error && <ErrorBanner error={error} />}
+            {data && <div className="grid grid-cols-5 gap-0 h-[calc(100vh-4rem)]">
+                <div className={selectedendpoint ? "col-span-3" : "col-span-5"}>
                     <APIList
                         apiList={data?.message.apis ?? []}
                         app_name={data?.message.app_name ?? ''}
                         branch_name={data?.message.branch_name ?? ''}
+                        last_updated={data?.message.last_updated ?? ''}
+                        organization_name={data?.message.organization_name ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
                     />
 
                 </div>
+
                 {selectedendpoint && (
-                    <div className="col-span-4">
+                    <div className="col-span-2">
                         <APIDetails endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} />
                     </div>
                 )}
-            </div>
+            </div>}
         </div>
 
     )

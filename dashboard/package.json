@@ -48,12 +48,16 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.1",
     "react-icons": "^4.10.1",
+    "react-markdown": "^8.0.7",
     "react-router-dom": "^6.14.1",
     "reactflow": "^11.7.4",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^3.0.1",
     "socket.io-client": "^4.5.1",
     "swr": "^2.1.5",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
+    "timeago-react": "^3.0.6",
     "zod": "^3.21.4"
   },
   "devDependencies": {
