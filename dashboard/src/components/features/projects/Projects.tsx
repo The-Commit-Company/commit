@@ -121,7 +121,11 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
                             <AiOutlineApi className="mr-2" />
                             API Explorer
                         </Button>
-                        <Button size='sm'>
+                        <Button size='sm' onClick={() => {
+                            navigate({
+                                pathname: `/erd/${branch}`
+                            })
+                        }}>
                             <BsDatabase className='mr-2' /> View ERD
                         </Button>
                     </div>

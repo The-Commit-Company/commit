@@ -51,6 +51,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                         branch_name={data?.message.branch_name ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
                     />
+
                 </div>
                 {selectedendpoint && (
                     <div className="col-span-4">

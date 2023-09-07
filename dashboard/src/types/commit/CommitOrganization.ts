@@ -16,4 +16,6 @@ export interface CommitOrganization{
 	github_org: string
 	/**	Image : Attach Image	*/
 	image?: string
+	/**	About : Data	*/
+	about?: string
 }
