@@ -10,3 +10,10 @@ export interface CommitProjectBranch {
     doctype_module_map: string
     whitelisted_apis: string
 }
+export interface ModuleData {
+    [key: string]: {
+        doctype_names: string[];
+        module: string;
+        number_of_doctypes: number;
+    };
+}
