@@ -2,6 +2,8 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
 import { useEffect, useMemo, useState } from "react"
+import { AiOutlineBranches } from "react-icons/ai"
+import { GoPackage } from "react-icons/go"
 export interface APIListProps {
     apiList: APIData[]
     app_name: string
@@ -29,9 +31,15 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }:
 
     return (
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200">
-            <div className="flex space-x-2 border-b border-gray-200 pb-4">
-                <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
-                    <p className="ml-2 mt-1 truncate text-sm text-gray-500">in {app_name} @ <code className="text-xs font-semibold">{branch_name}</code></p>
+            <div className="flex space-x-2 items-center">
+                <div className="flex flex-wrap items-center space-x-1">
+                    <GoPackage />
+                    <p className="truncate text-md text-gray-700">{app_name}</p>
+                </div>
+                <div className="w-px h-4 bg-gray-200" />
+                <div className="flex flex-wrap items-center space-x-1">
+                    <AiOutlineBranches />
+                    <p>{branch_name}</p>
                 </div>
             </div>
             <div className="flex flex-row space-x-4">
@@ -72,10 +80,10 @@ export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSe
                 </li>
             )}
             {list.map((person: APIData, index: number) => (
-                <li key={`${person.name}-${index}`} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50">
+                <li key={`${person.name}-${index}`} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50 cursor-pointer group" onClick={() => setSelectedEndpoint(person.name)}>
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
-                            <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer hover:text-blue-600" onClick={() => setSelectedEndpoint(person.name)}><code>{person.name}</code></p>
+                            <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer group-hover:text-blue-600"><code>{person.name}</code></p>
                             <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.file}</p>
                         </div>
                     </div>
