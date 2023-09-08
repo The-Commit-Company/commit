@@ -17,7 +17,9 @@ export const Header = ({ text }: { text?: string }) => {
                 <Button variant='outline' color='primary' size={'sm'} onClick={() => window.open('https://github.com/The-Commit-Company', '_blank')}>
                     <GitHubLogoIcon className='w-4 h-4 mr-2' /> GitHub
                 </Button>
-                <Button size={'sm'}>Take our survey</Button>
+                <a href='https://forms.gle/cNpbkGRKbwnthQ6Q8' target='_blank' rel='noreferrer'>
+                    <Button size={'sm'}>Take our survey</Button>
+                </a>
             </div>
         </header>
     )
