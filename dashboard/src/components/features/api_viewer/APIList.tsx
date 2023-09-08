@@ -93,7 +93,7 @@ export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSe
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
                             <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer group-hover:text-blue-600"><code>{person.name}</code></p>
-                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.file}</p>
+                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.api_path}</p>
                         </div>
                     </div>
                     <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
