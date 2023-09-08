@@ -126,16 +126,14 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
 
     const [filter, setFilter] = useState<string>("")
 
-
-    const moduleData: ModuleData = useMemo(() => {
+    const filterDoctypes = useMemo(() => {
         const module_doctypes_map: ModuleData = JSON.parse(data?.module_doctypes_map ?? "{}")
 
-        const filtered = Object.entries(module_doctypes_map).filter(([m]) => module_doctypes_map?.[m]?.doctype_names.map((d) => d.toLowerCase()).some((d) => d.includes(filter.toLowerCase())))
+        const allDoctypes = Object.values(module_doctypes_map).map((m) => m?.doctype_names ?? []).flat()
 
-        return Object.fromEntries(filtered)
-
-
+        return allDoctypes.filter((d) => d.toLowerCase().includes(filter.toLowerCase()))
     }, [data, filter])
+
 
     if (error) {
         return <ErrorBanner error={error} />
@@ -144,7 +142,9 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
         return <FullPageLoader className="w-[240px]" />
     }
 
-    if (moduleData) {
+    if (data) {
+        const moduleData: ModuleData = JSON.parse(data?.module_doctypes_map ?? "{}")
+
 
         return (
             <div>
@@ -154,58 +154,82 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
                     onChange={(event) => setFilter(event.target.value)}
                     className="w-full"
                 />
-                <Accordion type="single" collapsible className="w-full">
-                    {Object.keys(moduleData).map((module: string) => {
-                        return (
-                            <AccordionItem value={module} key={module}>
-                                <div className="w-full flex justify-between items-center">
-                                    <div className="text-base">
-                                        <AccordionTrigger className="space-x-4">
-                                            {module}&nbsp;
-                                        </AccordionTrigger>
-                                    </div>
-                                    <div className="flex space-x-2 items-center">
-                                        {moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length ?
-                                            <Badge variant="secondary" className="h-6 rounded-full">{moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length}</Badge> : null}
-                                        <Checkbox checked={moduleData?.[module]?.doctype_names?.every((d) => doctype.includes(d))}
-                                            onCheckedChange={(checked) => {
+                {filter ? <div>
+                    <ul role="list" className="divide-y divide-gray-200">
+                        {
+                            filterDoctypes.map((doctypeName: string) => {
+                                return (
+                                    <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
+                                        <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
+                                        <div className="min-h-[24px]">
+                                            <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
                                                 if (checked) {
-                                                    setDocType([...new Set([...doctype, ...moduleData?.[module]?.doctype_names ?? []])])
+                                                    setDocType([...new Set([...doctype, doctypeName])])
                                                 } else {
-                                                    setDocType(doctype.filter((d) => !moduleData?.[module]?.doctype_names?.includes(d)))
+                                                    setDocType(doctype.filter((d) => d !== doctypeName))
                                                 }
+                                            }}>
+                                                {doctypeName}
+                                            </Checkbox>
+                                        </div>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div> :
+                    <Accordion type="single" collapsible className="w-full">
+                        {Object.keys(moduleData).map((module: string) => {
+                            return (
+                                <AccordionItem value={module} key={module}>
+                                    <div className="w-full flex justify-between items-center">
+                                        <div className="text-base">
+                                            <AccordionTrigger className="space-x-4">
+                                                {module}&nbsp;
+                                            </AccordionTrigger>
+                                        </div>
+                                        <div className="flex space-x-2 items-center">
+                                            {moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length ?
+                                                <Badge variant="secondary" className="h-6 rounded-full">{moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length}</Badge> : null}
+                                            <Checkbox checked={moduleData?.[module]?.doctype_names?.every((d) => doctype.includes(d))}
+                                                onCheckedChange={(checked) => {
+                                                    if (checked) {
+                                                        setDocType([...new Set([...doctype, ...moduleData?.[module]?.doctype_names ?? []])])
+                                                    } else {
+                                                        setDocType(doctype.filter((d) => !moduleData?.[module]?.doctype_names?.includes(d)))
+                                                    }
 
-                                            }} />
+                                                }} />
+                                        </div>
                                     </div>
-                                </div>
-                                <AccordionContent>
-                                    <ul role="list" className="divide-y divide-gray-200">
-                                        {
-                                            moduleData?.[module]?.doctype_names?.map((doctypeName: string) => {
-                                                return (
-                                                    <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
-                                                        <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
-                                                        <div className="min-h-[24px]">
-                                                            <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
-                                                                if (checked) {
-                                                                    setDocType([...new Set([...doctype, doctypeName])])
-                                                                } else {
-                                                                    setDocType(doctype.filter((d) => d !== doctypeName))
-                                                                }
-                                                            }}>
-                                                                {doctypeName}
-                                                            </Checkbox>
-                                                        </div>
-                                                    </li>
-                                                )
-                                            })
-                                        }
-                                    </ul>
-                                </AccordionContent>
-                            </AccordionItem>
-                        )
-                    })}
-                </Accordion>
+                                    <AccordionContent>
+                                        <ul role="list" className="divide-y divide-gray-200">
+                                            {
+                                                moduleData?.[module]?.doctype_names?.map((doctypeName: string) => {
+                                                    return (
+                                                        <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
+                                                            <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
+                                                            <div className="min-h-[24px]">
+                                                                <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
+                                                                    if (checked) {
+                                                                        setDocType([...new Set([...doctype, doctypeName])])
+                                                                    } else {
+                                                                        setDocType(doctype.filter((d) => d !== doctypeName))
+                                                                    }
+                                                                }}>
+                                                                    {doctypeName}
+                                                                </Checkbox>
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            )
+                        })}
+                    </Accordion>}
             </div>
         )
     }
