@@ -28,7 +28,7 @@ def get_apis_for_project(project_branch: str):
     }
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_file_content_from_path(project_branch: str, file_path: str):
     '''
         Gets the Project Branch document with the organization and app name
