@@ -1,4 +1,5 @@
 import os
+import ast
 
 other_decorators = [
     '@cache_source',
@@ -68,7 +69,8 @@ def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: 
             **whitelist_details,
             'other_decorators': other_decorators,
             'index': index,
-            'line_no': line_nos[indexes.index(index)],
+            'block_start': line_nos[indexes.index(index)],
+            'block_end': find_function_end_lines(file_content),
             'file': file,
             'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
         })
@@ -191,3 +193,17 @@ def get_py_files(path: str, app_name: str):
             if file.endswith('.py'):
                 py_files.append(os.path.join(root, file))
     return py_files
+
+def find_function_end_lines(source_code: str):
+
+    tree = ast.parse(source_code)
+
+    end_line_no = 0
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef):
+            end_line = node.end_lineno
+            if end_line > end_line_no:
+                end_line_no = end_line
+
+    return end_line_no
