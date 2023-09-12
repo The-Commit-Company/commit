@@ -30,8 +30,8 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
 
             ## Comment out later
             # if file.endswith('party.py'):
-            indexes = find_indexes_of_whitelist(file_content, no_of_occurrences)
-            apis = get_api_details(file, file_content, indexes, path)
+            indexes,line_nos = find_indexes_of_whitelist(file_content, no_of_occurrences)
+            apis = get_api_details(file, file_content, indexes,line_nos, path)
             api_details.extend(apis)
     
     return api_details
@@ -45,13 +45,16 @@ def find_indexes_of_whitelist(file_content: str, count: int):
     Find indexes of @frappe.whitelist in the file content
     '''
     indexes = []
+    line_nos = []
     for i in range(count):
         index = file_content.find('@frappe.whitelist', indexes[i - 1] + len('@frappe.whitelist') if i > 0 else 0)
         indexes.append(index)
-    
-    return indexes
+        line_nos.append((file_content.count('\n', 0, index)+1))
 
-def get_api_details(file, file_content: str, indexes: list, path: str):
+    
+    return indexes, line_nos
+
+def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: str):
     '''
     Get details of the API
     '''
@@ -65,6 +68,7 @@ def get_api_details(file, file_content: str, indexes: list, path: str):
             **whitelist_details,
             'other_decorators': other_decorators,
             'index': index,
+            'line_no': line_nos[indexes.index(index)],
             'file': file,
             'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
         })
