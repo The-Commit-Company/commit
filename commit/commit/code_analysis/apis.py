@@ -70,7 +70,7 @@ def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: 
             'other_decorators': other_decorators,
             'index': index,
             'block_start': line_nos[indexes.index(index)],
-            'block_end': find_function_end_lines(file_content),
+            'block_end': find_function_end_lines(file_content,api_details.get('name','')),
             'file': file,
             'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
         })
@@ -194,16 +194,15 @@ def get_py_files(path: str, app_name: str):
                 py_files.append(os.path.join(root, file))
     return py_files
 
-def find_function_end_lines(source_code: str):
+def find_function_end_lines(source_code: str,function_name:str):
 
     tree = ast.parse(source_code)
 
-    end_line_no = 0
+    function_end_lines = {}
 
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
             end_line = node.end_lineno
-            if end_line > end_line_no:
-                end_line_no = end_line
+            function_end_lines[node.name] = end_line
 
-    return end_line_no
+    return function_end_lines.get(function_name,0)

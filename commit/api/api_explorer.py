@@ -29,7 +29,7 @@ def get_apis_for_project(project_branch: str):
 
 
 @frappe.whitelist(allow_guest=True)
-def get_file_content_from_path(project_branch: str, file_path: str):
+def get_file_content_from_path(project_branch: str, file_path: str,block_start: int, block_end: int):
     '''
         Gets the Project Branch document with the organization and app name
     '''
@@ -49,7 +49,9 @@ def get_file_content_from_path(project_branch: str, file_path: str):
     else:
         if os.path.isfile(file_path):
             file_content = open(file_path, 'r')
-            file_content = file_content.read()
+            file_content = file_content.readlines()
+            # fetch the block
+            file_content = file_content[block_start:block_end]
             return {
             "file_content": file_content
             }

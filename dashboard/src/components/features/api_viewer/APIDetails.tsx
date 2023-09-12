@@ -148,7 +148,9 @@ export const CodeSnippet = ({ apiData, project_branch, file_path }: { apiData: A
 
     const { data, error } = useFrappeGetCall<{ message: { file_content: string } }>('commit.api.api_explorer.get_file_content_from_path', {
         project_branch: project_branch,
-        file_path: file_path
+        file_path: file_path,
+        block_start: apiData.block_start ?? 0,
+        block_end: apiData.block_end ?? 0,
     })
 
     return (
@@ -163,8 +165,8 @@ export const CodeSnippet = ({ apiData, project_branch, file_path }: { apiData: A
             </code> */}
             {/* hightlight with light yellow colour those lines which start from the def_index until next @frappe.whitelist occurs */}
             <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-16rem)]">
-                <pre className="counter-reset" data-prefix={data?.message?.file_content.split('\n').length}>
-                    {data?.message?.file_content.split('\n').map((line, idx) => {
+                <pre className="counter-reset">
+                    {/* {data?.message?.file_content.split('\n').map((line, idx) => {
                         // console.log(idx)
                         console.log(apiData.def_index)
                         if (idx === apiData.def_index) {
@@ -176,7 +178,8 @@ export const CodeSnippet = ({ apiData, project_branch, file_path }: { apiData: A
                         }
                         return <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
                     }
-                    )}
+                    )} */}
+                    {data?.message?.file_content}
 
                 </pre>
             </code>

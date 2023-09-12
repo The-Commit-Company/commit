@@ -10,6 +10,8 @@ export interface APIData {
     index: number
     file: string
     api_path: string
+    block_start: number
+    block_end: number
 }
 
 export interface Argument {
