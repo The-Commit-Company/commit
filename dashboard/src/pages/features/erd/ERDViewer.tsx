@@ -7,7 +7,7 @@ import { CommitProjectBranch, ModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useFrappeGetDoc } from "frappe-react-sdk"
-import { Fragment, useMemo, useState } from "react"
+import { Fragment, useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ERDForDoctypes } from "./ERDForDoctypes"
 import { Header } from "@/components/common/Header"
@@ -36,7 +36,7 @@ export const ERDViewer = () => {
                 {/* fixed height container */}
                 <div className="flex h-[95vh] pb-4">
                     {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
-                    {ID && erdDoctypes && <ERDForDoctypes project_branch={ID} doctypes={erdDoctypes} />}
+                    {ID && erdDoctypes && <ERDForDoctypes project_branch={ID} doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
                 </div>
             </div>
         </div>
@@ -59,6 +59,10 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, ID, erdDoctypes, setERD
         setERDDocTypes(doctype)
         setOpen(false)
     }
+
+    useEffect(() => {
+        setDocType(erdDoctypes)
+    }, [erdDoctypes])
 
 
     return (

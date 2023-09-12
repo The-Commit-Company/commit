@@ -1,6 +1,6 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
 import { PostgresRelationship, PostgresTable } from "@/types/Table"
-import { useFrappeGetCall, useFrappePostCall } from "frappe-react-sdk"
+import { useFrappePostCall } from "frappe-react-sdk"
 import { Graph } from "./Graph"
 import { useEffect, useState } from "react"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
@@ -13,9 +13,10 @@ export interface SchemaData {
 export interface Props {
     project_branch: string
     doctypes: string[]
+    setDocTypes: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-export const ERDForDoctypes = ({ project_branch, doctypes }: Props) => {
+export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes }: Props) => {
 
     const [data, setData] = useState<SchemaData | null>(null)
     const { call, error, loading } = useFrappePostCall<{ message: SchemaData }>('commit.api.erd_viewer.get_erd_schema_for_doctypes')
@@ -40,7 +41,7 @@ export const ERDForDoctypes = ({ project_branch, doctypes }: Props) => {
     }
 
     if (data) {
-        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} />
+        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} setDoctypes={setDocTypes} />
     }
 
     return null

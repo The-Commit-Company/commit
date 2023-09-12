@@ -29,14 +29,15 @@ import { TableDrawer } from '../TableDrawer/TableDrawer'
 export const NODE_WIDTH = 320
 export const NODE_ROW_HEIGHT = 40
 
-export const Graph = ({ tables, relationships, project_branch }: {
+export const Graph = ({ tables, relationships, project_branch, setDoctypes }: {
     tables: PostgresTable[]
     relationships: PostgresRelationship[]
     project_branch: string
+    setDoctypes: React.Dispatch<React.SetStateAction<string[]>>
 }) => {
     return (
         <ReactFlowProvider>
-            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} />
+            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} />
         </ReactFlowProvider>
     )
 }
@@ -164,7 +165,7 @@ const getLayoutedElements = (nodes: Node<TableNodeData>[], edges: Edge[]) => {
 
 
 
-const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelationship[], project_branch: string }> = ({ tables, relationships, project_branch }) => {
+const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelationship[], project_branch: string, setDoctypes: React.Dispatch<React.SetStateAction<string[]>> }> = ({ tables, relationships, project_branch, setDoctypes }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [fullscreenOn, setFullScreen] = useState(false);
@@ -261,6 +262,27 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
     }, []
     );
 
+    const onNodesDelete = useCallback(
+        (nodesToDelete: Node[]) => {
+            const nodes = nodesToDelete.map((node) => node.id);
+            setNodes((ns) => ns.filter((n) => !nodes.includes(n.id)));
+            setEdges((es) =>
+                es.filter((e) => {
+                    return (
+                        !nodes.includes(e.source) && !nodes.includes(e.target)
+                    );
+                })
+            );
+
+            setDoctypes((doctypes) => {
+                return doctypes.filter((doctype) => {
+                    return !nodes.includes(doctype);
+                });
+            })
+        },
+        [setNodes, setEdges, setDoctypes]
+    );
+
     useEffect(() => {
         const { nodes, edges } = getGraphDataFromTables(tables, relationships)
         setNodes(nodes)
@@ -286,12 +308,14 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     onNodeClick={onNodeClick}
+                    onNodesDelete={onNodesDelete}
                     defaultNodes={[]}
                     defaultEdges={[]}
                     onNodeMouseEnter={onNodeMouseEnter}
                     onNodeMouseLeave={onNodeMouseLeave}
                     snapToGrid={true}
                     snapGrid={[16, 16]}
+                    maxZoom={10}
                     defaultEdgeOptions={{
                         type: 'smoothstep',
                         markerEnd: MarkerType.ArrowClosed,
