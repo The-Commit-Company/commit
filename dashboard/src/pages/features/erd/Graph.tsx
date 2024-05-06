@@ -29,15 +29,22 @@ import { TableDrawer } from '../TableDrawer/TableDrawer'
 export const NODE_WIDTH = 320
 export const NODE_ROW_HEIGHT = 40
 
-export const Graph = ({ tables, relationships, project_branch, setDoctypes }: {
+export const Graph = ({ tables, relationships, project_branch, setDoctypes, doctypes }: {
     tables: PostgresTable[]
     relationships: PostgresRelationship[]
-    project_branch: string
-    setDoctypes: React.Dispatch<React.SetStateAction<string[]>>
+    project_branch: string[]
+    setDoctypes: React.Dispatch<React.SetStateAction<{
+        doctype: string;
+        project_branch: string;
+    }[]>>
+    doctypes: {
+        doctype: string;
+        project_branch: string;
+    }[]
 }) => {
     return (
         <ReactFlowProvider>
-            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} />
+            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} doctypes={doctypes} />
         </ReactFlowProvider>
     )
 }
@@ -165,7 +172,18 @@ const getLayoutedElements = (nodes: Node<TableNodeData>[], edges: Edge[]) => {
 
 
 
-const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelationship[], project_branch: string, setDoctypes: React.Dispatch<React.SetStateAction<string[]>> }> = ({ tables, relationships, project_branch, setDoctypes }) => {
+const TablesGraph: FC<{
+    tables: PostgresTable[], relationships: PostgresRelationship[], project_branch: string[], setDoctypes: React.Dispatch<React.SetStateAction<
+        {
+            doctype: string;
+            project_branch: string;
+        }[]
+    >>
+    doctypes: {
+        doctype: string;
+        project_branch: string;
+    }[]
+}> = ({ tables, relationships, setDoctypes, doctypes }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [fullscreenOn, setFullScreen] = useState(false);
@@ -276,7 +294,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
 
             setDoctypes((doctypes) => {
                 return doctypes.filter((doctype) => {
-                    return !nodes.includes(doctype);
+                    return !nodes.includes(doctype.doctype);
                 });
             })
         },
@@ -349,7 +367,7 @@ const TablesGraph: FC<{ tables: PostgresTable[], relationships: PostgresRelation
                     /> */}
                     <Background color="#171923" gap={16} />
                 </ReactFlow>
-                <TableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} project_branch={project_branch} key={selectedDoctype} />
+                <TableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} project_branch={doctypes.find(d => d.doctype === selectedDoctype)?.project_branch} key={selectedDoctype} />
             </div>
         </>
     )

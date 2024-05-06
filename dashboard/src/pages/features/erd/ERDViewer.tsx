@@ -1,26 +1,27 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { CommitProjectBranch, ModuleData } from "@/types/CommitProjectBranch"
+import { AppModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
-import { useFrappeGetDoc } from "frappe-react-sdk"
+import { useFrappeGetCall } from "frappe-react-sdk"
 import { Fragment, useEffect, useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
-import { ERDForDoctypes } from "./ERDForDoctypes"
+import { useLocation } from "react-router-dom"
 import { Header } from "@/components/common/Header"
 import { Input } from "@/components/ui/input"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
+import { ERDForDoctypes } from "./ERDForDoctypes"
 
 export const ERDViewer = () => {
 
     const [open, setOpen] = useState(true)
 
-    const { ID } = useParams()
+    const location = useLocation()
 
-    const [erdDoctypes, setERDDocTypes] = useState<string[]>([])
+    const { apps } = location.state as { apps: string[] }
+
+    const [erdDoctypes, setERDDocTypes] = useState<{ doctype: string, project_branch: string }[]>([])
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
@@ -31,12 +32,12 @@ export const ERDViewer = () => {
                     </Button>
                 </div>
 
-                {ID && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} ID={ID} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />}
+                {apps && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} apps={apps} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />}
 
                 {/* fixed height container */}
                 <div className="flex h-[95vh] pb-4">
                     {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
-                    {ID && erdDoctypes && <ERDForDoctypes project_branch={ID} doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
+                    {apps && erdDoctypes && <ERDForDoctypes project_branch={apps} doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
                 </div>
             </div>
         </div>
@@ -46,14 +47,17 @@ export const ERDViewer = () => {
 export interface ModuleDoctypeListDrawerProps {
     open: boolean
     setOpen: (open: boolean) => void
-    ID: string
-    erdDoctypes: string[]
-    setERDDocTypes: React.Dispatch<React.SetStateAction<string[]>>
+    apps: string[]
+    erdDoctypes: { doctype: string, project_branch: string }[]
+    setERDDocTypes: React.Dispatch<React.SetStateAction<{ doctype: string; project_branch: string; }[]>>
 }
 
-export const ModuleDoctypeListDrawer = ({ open, setOpen, ID, erdDoctypes, setERDDocTypes }: ModuleDoctypeListDrawerProps) => {
+export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, erdDoctypes, setERDDocTypes }: ModuleDoctypeListDrawerProps) => {
 
-    const [doctype, setDocType] = useState<string[]>(erdDoctypes)
+    const [doctype, setDocType] = useState<{
+        doctype: string
+        project_branch: string
+    }[]>(erdDoctypes)
 
     const onGenerateERD = () => {
         setERDDocTypes(doctype)
@@ -69,7 +73,6 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, ID, erdDoctypes, setERD
         <Transition.Root show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={setOpen}>
                 <div className="fixed inset-0" />
-
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="pointer-events-none fixed inset-y-0 left-0 pr-10 flex max-w-full">
@@ -107,7 +110,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, ID, erdDoctypes, setERD
                                             </div>
                                         </div>
                                         <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                                            <ModuleList ID={ID} doctype={doctype} setDocType={setDocType} />
+                                            <ModuleList apps={apps} doctype={doctype} setDocType={setDocType} />
                                         </div>
 
                                     </div>
@@ -124,20 +127,48 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, ID, erdDoctypes, setERD
     )
 }
 
-export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: string[], setDocType: React.Dispatch<React.SetStateAction<string[]>> }) => {
+export interface DoctypesData {
+    app_name: string,
+    module_name: string,
+    doctype_name: string
+}
 
-    const { data, error, isLoading } = useFrappeGetDoc<CommitProjectBranch>('Commit Project Branch', ID)
+export const ModuleList = ({ apps, doctype, setDocType }: { apps: string[], doctype: { doctype: string, project_branch: string }[], setDocType: React.Dispatch<React.SetStateAction<{ doctype: string; project_branch: string; }[]>> }) => {
+
+    const { data, error, isLoading } = useFrappeGetCall<{ message: AppModuleData }>('commit.commit.doctype.commit_project_branch.commit_project_branch.get_module_doctype_map_for_branches', {
+        branches: JSON.stringify(apps)
+    })
 
     const [filter, setFilter] = useState<string>("")
 
     const filterDoctypes = useMemo(() => {
-        const module_doctypes_map: ModuleData = JSON.parse(data?.module_doctypes_map ?? "{}")
 
-        const allDoctypes = Object.values(module_doctypes_map).map((m) => m?.doctype_names ?? []).flat()
+        const apps_module_data = data?.message ?? {}
+        const allDoctypes: DoctypesData[] = []
+        Object.keys(apps_module_data).forEach((app_name) => {
+            Object.keys(apps_module_data[app_name]).forEach((module_name) => {
+                const moduleData = apps_module_data[app_name][module_name]
 
-        return allDoctypes.filter((d) => d.toLowerCase().includes(filter.toLowerCase()))
+                const doctypeNames: string[] = moduleData?.doctype_names ?? []
+                doctypeNames.forEach((doctype_name) => {
+                    allDoctypes.push({
+                        app_name,
+                        module_name,
+                        doctype_name
+                    })
+                })
+            })
+        })
+
+        const filterDoctypes = allDoctypes.filter((d) =>
+            d.doctype_name.toLowerCase().includes(filter.toLowerCase()) || d.module_name.toLowerCase().includes(filter.toLowerCase())
+        )
+
+        const uniqueDoctypes = filterDoctypes.filter((v, i, a) => a.findIndex(t => (t.doctype_name === v.doctype_name)) === i)
+
+        return uniqueDoctypes
+
     }, [data, filter])
-
 
     if (error) {
         return <ErrorBanner error={error} />
@@ -147,9 +178,6 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
     }
 
     if (data) {
-        const moduleData: ModuleData = JSON.parse(data?.module_doctypes_map ?? "{}")
-
-
         return (
             <div>
                 <Input
@@ -158,22 +186,27 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
                     onChange={(event) => setFilter(event.target.value)}
                     className="w-full"
                 />
-                {filter ? <div>
+                <div>
                     <ul role="list" className="divide-y divide-gray-200">
                         {
-                            filterDoctypes.map((doctypeName: string) => {
+                            filterDoctypes.map((doctypeName: DoctypesData) => {
                                 return (
-                                    <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
-                                        <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
-                                        <div className="min-h-[24px]">
-                                            <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
+                                    <li className="py-3 flex justify-between items-center pl-4" key={doctypeName.doctype_name}>
+                                        <label htmlFor={doctypeName.doctype_name} className="text-sm font-normal" >{doctypeName.doctype_name}</label>
+                                        <div className="min-h-[24px] flex flex-row gap-2">
+                                            {/* add graytext instead of badge */}
+                                            <span className="text-gray-500 text-xs">{doctypeName.module_name}</span>
+                                            <Checkbox id={doctypeName.doctype_name} checked={doctype.some(d => d.doctype === doctypeName.doctype_name)} onCheckedChange={(checked) => {
                                                 if (checked) {
-                                                    setDocType([...new Set([...doctype, doctypeName])])
+                                                    setDocType([...new Set([...doctype, {
+                                                        doctype: doctypeName.doctype_name,
+                                                        project_branch: doctypeName.app_name
+                                                    }])])
                                                 } else {
-                                                    setDocType(doctype.filter((d) => d !== doctypeName))
+                                                    setDocType(doctype.filter((d) => d.doctype !== doctypeName.doctype_name))
                                                 }
                                             }}>
-                                                {doctypeName}
+                                                {doctypeName.doctype_name}
                                             </Checkbox>
                                         </div>
                                     </li>
@@ -181,63 +214,10 @@ export const ModuleList = ({ ID, doctype, setDocType }: { ID: string, doctype: s
                             })
                         }
                     </ul>
-                </div> :
-                    <Accordion type="single" collapsible className="w-full">
-                        {Object.keys(moduleData).map((module: string) => {
-                            return (
-                                <AccordionItem value={module} key={module}>
-                                    <div className="w-full flex justify-between items-center">
-                                        <div className="text-base">
-                                            <AccordionTrigger className="space-x-4">
-                                                {module}&nbsp;
-                                            </AccordionTrigger>
-                                        </div>
-                                        <div className="flex space-x-2 items-center">
-                                            {moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length ?
-                                                <Badge variant="secondary" className="h-6 rounded-full">{moduleData?.[module]?.doctype_names?.filter((d) => doctype.includes(d)).length}</Badge> : null}
-                                            <Checkbox checked={moduleData?.[module]?.doctype_names?.every((d) => doctype.includes(d))}
-                                                onCheckedChange={(checked) => {
-                                                    if (checked) {
-                                                        setDocType([...new Set([...doctype, ...moduleData?.[module]?.doctype_names ?? []])])
-                                                    } else {
-                                                        setDocType(doctype.filter((d) => !moduleData?.[module]?.doctype_names?.includes(d)))
-                                                    }
-
-                                                }} />
-                                        </div>
-                                    </div>
-                                    <AccordionContent>
-                                        <ul role="list" className="divide-y divide-gray-200">
-                                            {
-                                                moduleData?.[module]?.doctype_names?.map((doctypeName: string) => {
-                                                    return (
-                                                        <li className="py-3 flex justify-between items-center pl-4" key={doctypeName}>
-                                                            <label htmlFor={doctypeName} className="text-sm font-normal" >{doctypeName}</label>
-                                                            <div className="min-h-[24px]">
-                                                                <Checkbox id={doctypeName} checked={doctype.includes(doctypeName)} onCheckedChange={(checked) => {
-                                                                    if (checked) {
-                                                                        setDocType([...new Set([...doctype, doctypeName])])
-                                                                    } else {
-                                                                        setDocType(doctype.filter((d) => d !== doctypeName))
-                                                                    }
-                                                                }}>
-                                                                    {doctypeName}
-                                                                </Checkbox>
-                                                            </div>
-                                                        </li>
-                                                    )
-                                                })
-                                            }
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            )
-                        })}
-                    </Accordion>}
+                </div>
             </div>
         )
     }
-
     return null
 
 }

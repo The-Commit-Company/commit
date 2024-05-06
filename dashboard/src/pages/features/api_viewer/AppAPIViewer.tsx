@@ -1,47 +1,41 @@
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
+import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { Header } from "@/components/common/Header"
 import { APIDetails } from "@/components/features/api_viewer/APIDetails"
 import { APIList } from "@/components/features/api_viewer/APIList"
-import { useState } from "react"
-import { useFrappeGetCall } from "frappe-react-sdk"
 import { APIData } from "@/types/APIData"
+import { useFrappeGetCall } from "frappe-react-sdk"
+import { useState } from "react"
 import { useParams } from "react-router-dom"
-import { Header } from "@/components/common/Header"
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
-import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
-
 
 interface GetAPIResponse {
     apis: APIData[]
     app_name: string
     branch_name: string
-    organization_name: string,
-    organization_id: string,
-    app_logo?: string,
-    org_logo?: string,
-    last_updated: string,
-    project_branch: string,
 }
-export const APIViewerContainer = () => {
+export const AppAPIViewerContainer = () => {
     const { ID } = useParams()
 
     if (ID) {
-        return <APIViewer projectBranch={ID} />
+        return <AppAPIViewer appName={ID} />
     }
     return null
 }
 
-export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
+export const AppAPIViewer = ({ appName }: { appName: string }) => {
 
     const [selectedendpoint, setSelectedEndpoint] = useState<string>('')
 
-    const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.api_explorer.get_apis_for_project', {
-        project_branch: projectBranch
+    const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.meta_data.get_apis_for_app', {
+        app_name: appName
     }, undefined, {
-        onSuccess: (d: { message: GetAPIResponse }) => setSelectedEndpoint(d.message.apis[0].name)
+        onSuccess: (d: { message: GetAPIResponse }) => setSelectedEndpoint(d.message.apis?.[0]?.name)
     })
 
     if (isLoading) {
         return <FullPageLoader />
     }
+
     return (
         // show API details column only if there is selected endpoint else show only API list in full width.
         <div className="overflow-hidden">
@@ -60,7 +54,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
 
                 {selectedendpoint && (
                     <div className="w-[45%]">
-                        <APIDetails project_branch={projectBranch} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="project" />
+                        <APIDetails project_branch={appName} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="app" />
                     </div>
                 )}
             </div>}

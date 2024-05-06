@@ -9,12 +9,10 @@ export interface APIListProps {
     apiList: APIData[]
     app_name: string
     branch_name: string
-    last_updated: string
-    organization_id: string
     setSelectedEndpoint: (endpoint: string) => void
 }
 
-export const APIList = ({ apiList, app_name, branch_name, last_updated, organization_id, setSelectedEndpoint }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
@@ -37,18 +35,13 @@ export const APIList = ({ apiList, app_name, branch_name, last_updated, organiza
             <div className="flex space-x-2 items-center">
                 <div className="flex flex-wrap items-center space-x-1">
                     <GoPackage />
-                    <p className="truncate text-md text-gray-700">{organization_id} / {app_name}</p>
+                    <p className="truncate text-md text-gray-700">{app_name}</p>
                 </div>
                 <div className="w-px h-4 bg-gray-200" />
                 <div className="flex flex-wrap items-center space-x-1">
                     <AiOutlineBranches />
                     <p>{branch_name}</p>
                 </div>
-                {/* <div className="w-px h-4 bg-gray-200" />
-                <div className="flex flex-wrap items-center space-x-2">
-                    <MdOutlineUpdate />
-                    <p className="truncate text-sm text-gray-700">{last_updated.split(' ')[0]}</p><h6 className="text-gray-400 text-sm"> (<TimeAgo datetime={last_updated} />)</h6>
-                </div> */}
             </div>
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">
@@ -81,6 +74,7 @@ export const APIList = ({ apiList, app_name, branch_name, last_updated, organiza
 
 export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void }) => {
     return (
+        <div>
         <ul role="list" className="divide-y divide-gray-100 px-1">
             {list.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)] space-y-2" style={{ minHeight: '20rem' }} >
@@ -115,5 +109,10 @@ export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSe
                 </li>
             ))}
         </ul>
+            {/* create a div which is at fixed location  and should be stick bottom which will show total list count at right corner of same w as above ul*/}
+            {list.length && <div className="fixed bottom-0 flex justify-end p-2 w-[54%] bg-white h-10 border-t">
+                <p className="text-sm justify-end">Total {list.length} API's</p>
+            </div>}
+        </div>
     )
 }

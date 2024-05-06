@@ -29,20 +29,28 @@ def get_erd_schema_for_module(project_branch: str, module: str):
 
 
 @frappe.whitelist(allow_guest=True)
-def get_erd_schema_for_doctypes(project_branch: str, doctypes):
+def get_erd_schema_for_doctypes(project_branch: list, doctypes):
     doctypes = json.loads(doctypes)
+    branch_doctypes = {}
+    doctype_list = []
+    for doctype in doctypes:
+        if doctype['project_branch'] not in branch_doctypes:
+            branch_doctypes[doctype['project_branch']] = []
+        branch_doctypes[doctype['project_branch']].append(doctype['doctype'])
+        doctype_list.append(doctype['doctype'])
 
     doctype_jsons = []
-    project_branch = frappe.get_cached_doc(
-        "Commit Project Branch", project_branch)
+    for project_branch, doctypes in branch_doctypes.items():
+        project_branch_doc = frappe.get_cached_doc(
+            "Commit Project Branch", project_branch)
 
-    for doctype in doctypes:
-        doctype_json = project_branch.get_doctype_json(doctype)
-        doctype_jsons.append(doctype_json)
+        for doctype in doctypes:
+            doctype_json = project_branch_doc.get_doctype_json(doctype)
+            doctype_jsons.append(doctype_json)
 
     schema = get_schema_from_doctypes_json({
         'doctypes': doctype_jsons,
-        'doctype_names': doctypes
+        'doctype_names': doctype_list
     })
 
     return schema
