@@ -1,15 +1,19 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { CardDescription } from "@/components/ui/card"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProject } from "@/types/commit/CommitProject"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
+import { AvatarImage } from "@radix-ui/react-avatar"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { AiOutlineApi } from "react-icons/ai"
 import { BsDatabase } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
-import { OrganozationHoverCard } from "./OrganizationHoverCard"
+import { ViewERDDialogContent } from "./ViewERDAppDialog"
+import { MdAddBox } from "react-icons/md";
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[]
@@ -35,11 +39,28 @@ export const Projects = () => {
 
     if (data && data.message) {
         return (
-            <div className="mx-auto p-4 h-[calc(100vh-4rem)]">
-                <div className="h-full space-y-">
-                    <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
-                        Projects
-                    </h1>
+            <div className="mx-auto px-4 h-[calc(100vh-4rem)]">
+                <div className="h-full space-y-2">
+                    <div className="flex flex-row items-center space-x-2 gap-2 justify-between">
+                        <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
+                            Organizations
+                        </h1>
+                        <div className="flex gap-2">
+
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button size='sm'>
+                                    <BsDatabase className='mr-2' /> View ERD
+                                </Button>
+                            </DialogTrigger>
+                            <ViewERDDialogContent data={data.message} />
+                        </Dialog>
+                        <Button size='sm'>
+                            <MdAddBox className="mr-2"/>
+                            Add Organization
+                        </Button>
+                        </div>
+                    </div>
                     <ul role="list" className="divide-y divide-gray-200">
                         {data.message.map((org: ProjectData) => {
                             return org.projects.map((project => {
@@ -55,8 +76,6 @@ export const Projects = () => {
         )
     }
 }
-
-
 export interface ProjectCardProps {
     project: ProjectWithBranch
     org: ProjectData
@@ -70,32 +89,28 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
 
     const onNavigate = () => {
         navigate({
-            pathname: `/viewer/${branch}`
+            pathname: `/project-viewer/${branch}`
         })
     }
-
+    const appNameInitials = useMemo(() => {
+        return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
+    }, [project])
     return (
         <li className="w-full h-auto hover:shadow-sm">
             <div className="py-4 flex flex-col justify-between">
                 <div className="flex space-x-4 items-center justify-between">
                     <div className="flex space-x-3 items-center">
-                        <img
-                            className="inline-block h-11 w-11 rounded-md"
-                            src={project.image}
-                            alt="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmrN1Q7oEaS4Z_oUmK8UVYtRZW5ijuqKuvAEX4U2xZt_Jz2sThi8ihE9uSgwzKjifPed8&usqp=CAU"
-                        />
+                        <Avatar className="h-11 w-11 rounded-md">
+                            <AvatarImage src={project.image} />
+                            <AvatarFallback className="h-11 w-11 rounded-md">{appNameInitials}</AvatarFallback>
+                        </Avatar>
                         <div className="flex flex-col">
                             <div className="flex space-x-2 items-center">
                                 <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
                                 <span className="text-sm text-gray-500">
                                     by
-                                    <OrganozationHoverCard
-                                        onHoverText={org.organization_name}
-                                        organization_image={org.image}
-                                        organization_id={org.name}
-                                        organization_about={org.about}
-                                        joined_on={org.creation} />
                                 </span>
+                                <h1 className="text-md font-normal tracking-normal">{org.organization_name}</h1>
                             </div>
                             <CardDescription className="text-sm text-gray-500">{project.description}</CardDescription>
                         </div>
@@ -122,13 +137,13 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
                             <AiOutlineApi className="mr-2" />
                             API Explorer
                         </Button>
-                        <Button size='sm' onClick={() => {
+                        {/* <Button size='sm' onClick={() => {
                             navigate({
-                                pathname: `/erd/${branch}`
+                                pathname: `/project-erd/${branch}`
                             })
                         }}>
                             <BsDatabase className='mr-2' /> View ERD
-                        </Button>
+                        </Button> */}
                     </div>
                 </div>
             </div >

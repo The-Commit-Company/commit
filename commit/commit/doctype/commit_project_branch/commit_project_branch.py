@@ -119,3 +119,12 @@ def fetch_repo(doc):
     project_branch.fetch_repo()
     project_branch.save()
     return "Hello"
+
+@frappe.whitelist(allow_guest=True)
+def get_module_doctype_map_for_branches(branches: str):
+    branches = json.loads(branches)
+    module_doctypes_map = {}
+    for branch in branches:
+        project_branch = frappe.get_doc("Commit Project Branch", branch)
+        module_doctypes_map[branch] = json.loads(project_branch.module_doctypes_map)
+    return module_doctypes_map

@@ -1,5 +1,6 @@
 import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
+import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
 import { Tabs } from "@/components/common/Tabs"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { APIData, Argument } from "@/types/APIData"
@@ -7,7 +8,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
 
-export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>> }) => {
+export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string }) => {
 
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
@@ -15,7 +16,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
 
     const tabs = [
         { name: 'Parameters', content: <ParametersTable parameters={data?.arguments} /> },
-        { name: 'Code', content: <CodeSnippet apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} /> },
+        { name: 'Code', content: <CodeSnippet apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} viewerType={viewerType} /> },
     ]
 
     const requestTypeBgColor = (requestType: string) => {
@@ -144,43 +145,25 @@ export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => 
 }
 
 
-export const CodeSnippet = ({ apiData, project_branch, file_path }: { apiData: APIData, project_branch: string, file_path: string }) => {
+export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: { apiData: APIData, project_branch: string, file_path: string, viewerType: string }) => {
 
-    const { data, error } = useFrappeGetCall<{ message: { file_content: string } }>('commit.api.api_explorer.get_file_content_from_path', {
+    const { data, error, isLoading } = useFrappeGetCall<{ message: { file_content: string } }>('commit.api.api_explorer.get_file_content_from_path', {
         project_branch: project_branch,
         file_path: file_path,
         block_start: apiData.block_start ?? 0,
         block_end: apiData.block_end ?? 0,
+        viewer_type: viewerType
     })
-
     return (
         <div className="flex flex-col space-y-2">
             {error && <ErrorBanner error={error} />}
-            {/* <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-16rem)]">
-                <pre className="counter-reset" data-prefix={data?.message?.file_content.split('\n').length}>
-                    {data?.message?.file_content.split('\n').map((line, idx) => (
-                        <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
-                    ))}
-                </pre>
-            </code> */}
-            {/* hightlight with light yellow colour those lines which start from the def_index until next @frappe.whitelist occurs */}
-            <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-16rem)]">
-                <pre className="counter-reset">
-                    {/* {data?.message?.file_content.split('\n').map((line, idx) => {
-                        // console.log(idx)
-                        console.log(apiData.def_index)
-                        if (idx === apiData.def_index) {
-                            console.log(line)
-                            if (line.startsWith('@frappe.whitelist')) {
-                                return <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
-                            }
-                            return <span key={idx} className="block bg-yellow-200" data-line-number={idx + 1}>{line}</span>
-                        }
-                        return <span key={idx} className="block" data-line-number={idx + 1}>{line}</span>
-                    }
-                    )} */}
+            {isLoading && <div className="flex items-center justify-center h-[calc(100vh-16rem)]">
+                <FullPageLoader />
+            </div>}
+            <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
+                <pre className="counter-reset mb-2">
+                    {isLoading && <FullPageLoader />}
                     {data?.message?.file_content}
-
                 </pre>
             </code>
         </div >

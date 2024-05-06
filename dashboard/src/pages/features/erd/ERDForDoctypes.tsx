@@ -11,9 +11,9 @@ export interface SchemaData {
 }
 
 export interface Props {
-    project_branch: string
-    doctypes: string[]
-    setDocTypes: React.Dispatch<React.SetStateAction<string[]>>
+    project_branch: string[]
+    doctypes: { doctype: string, project_branch: string }[]
+    setDocTypes: React.Dispatch<React.SetStateAction<{ doctype: string, project_branch: string }[]>>
 }
 
 export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes }: Props) => {
@@ -22,7 +22,6 @@ export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes }: Props)
     const { call, error, loading } = useFrappePostCall<{ message: SchemaData }>('commit.api.erd_viewer.get_erd_schema_for_doctypes')
 
     useEffect(() => {
-
         call({
             project_branch: project_branch,
             doctypes: JSON.stringify(doctypes)
@@ -41,7 +40,7 @@ export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes }: Props)
     }
 
     if (data) {
-        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} setDoctypes={setDocTypes} />
+        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} setDoctypes={setDocTypes} doctypes={doctypes} />
     }
 
     return null

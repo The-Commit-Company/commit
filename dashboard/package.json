@@ -53,6 +53,7 @@
     "reactflow": "^11.7.4",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^3.0.1",
+    "shadcn-ui": "^0.8.0",
     "socket.io-client": "^4.5.1",
     "swr": "^2.1.5",
     "tailwind-merge": "^1.13.2",
