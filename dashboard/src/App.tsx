@@ -4,6 +4,7 @@ import { APIViewerContainer } from './pages/features/api_viewer/APIViewer'
 import { Overview } from './pages/overview/Overview'
 import { ERDViewer } from './pages/features/erd/ERDViewer'
 import { AppAPIViewerContainer } from './pages/features/api_viewer/AppAPIViewer'
+import { CreateERD } from './pages/features/erd/meta/CreateERDForMeta'
 
 function App() {
 
@@ -23,7 +24,9 @@ function App() {
           <Route path='/project-erd' element={<ERDViewer />} />
           <Route path="/project-viewer/:ID" element={<APIViewerContainer />} />
           <Route path="/meta-viewer/:ID" element={<AppAPIViewerContainer />} />
+          <Route path="/meta-viewer/:ID" element={<AppAPIViewerContainer />} />
           <Route path='/meta-erd/:ID' element={<ERDViewer />} />
+          <Route path='/meta-erd/create' element={<CreateERD />} />
         </Routes>
         {/* </UserProvider> */}
       </BrowserRouter>

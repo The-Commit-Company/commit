@@ -1,8 +1,8 @@
-import { DocField } from './DocField'
 import { DocPerm } from './DocPerm'
 import { DocTypeAction } from './DocTypeAction'
 import { DocTypeLink } from './DocTypeLink'
 import { DocTypeState } from './DocTypeState'
+import { DocField } from './DocField'
 
 export interface DocType {
 	creation: string
@@ -43,10 +43,8 @@ export interface DocType {
 	beta?: 0 | 1
 	/**	Is Virtual : Check	*/
 	is_virtual?: 0 | 1
-	/**	Queue in Background : Check - Enabling this will submit documents in background	*/
+	/**	Queue in Background (BETA) : Check - Enabling this will submit documents in background	*/
 	queue_in_background?: 0 | 1
-	/**	Fields : Table - DocField	*/
-	fields?: DocField[]
 	/**	Naming Rule : Select	*/
 	naming_rule?: "" | "Set by user" | "Autoincrement" | "By fieldname" | "By Naming Series field" | "Expression" | "Expression (old style)" | "Random" | "By script"
 	/**	Auto Name : Data - Naming Options:
@@ -111,8 +109,10 @@ export interface DocType {
 	default_email_template?: string
 	/**	Allow document creation via Email : Check	*/
 	email_append_to?: 0 | 1
-	/**	Sender Field : Data	*/
+	/**	Sender Email Field : Data	*/
 	sender_field?: string
+	/**	Sender Name Field : Data	*/
+	sender_name_field?: string
 	/**	Subject Field : Data	*/
 	subject_field?: string
 	/**	Permissions : Table - DocPerm	*/
@@ -145,4 +145,6 @@ export interface DocType {
 	engine?: "InnoDB" | "MyISAM"
 	/**	 : Data	*/
 	migration_hash?: string
+	/**	Fields : Table - DocField	*/
+	fields?: DocField[]
 }
