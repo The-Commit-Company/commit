@@ -39,7 +39,7 @@ export const Projects = () => {
 
     if (data && data.message) {
         return (
-            <div className="mx-auto px-4 h-[calc(100vh-4rem)]">
+            <div className="mx-auto pl-2 pr-4 h-[calc(100vh-4rem)]">
                 <div className="h-full space-y-2">
                     <div className="flex flex-row items-center space-x-2 gap-2 justify-between">
                         <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
