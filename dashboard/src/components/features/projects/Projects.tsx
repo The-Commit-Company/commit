@@ -19,6 +19,9 @@ import CreateProjectModal from "./Projects/CreateProjectModal"
 import { ViewERDDialogContent } from "./ViewERDAppDialog"
 import { KeyedMutator } from "swr"
 import { isSystemManager } from "@/utils/roles"
+import { RxCross2 } from "react-icons/rx";
+import DeleteOrgModal from "./Org/DeleteOrgModal"
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[]
@@ -114,21 +117,30 @@ export const OrgComponent = ({ org, mutate, branchCreation }: {
         <div>
 
             <div className="flex justify-between items-center py-2 border-b-[1px]">
-
                 <h1 className="text-lg font-medium tracking-normal">
                     {org.organization_name}
                 </h1>
-                {isCreateAccess && <Dialog>
-                    <DialogTrigger asChild>
-                        <Button size="icon" className="h-7 w-7">
-                            <MdAdd className="h-4 w-4 " />
-                        </Button>
-                    </DialogTrigger>
-                    <CreateProjectModal org={org} mutate={mutate} />
-                </Dialog>}
+                {isCreateAccess &&
+                    <div className="flex gap-1">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button size="icon" className="h-7 w-7">
+                                    <MdAdd className="h-4 w-4 " />
+                                </Button>
+                            </DialogTrigger>
+                            <CreateProjectModal org={org} mutate={mutate} />
+                        </Dialog>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button size="icon" className="h-7 w-7">
+                                    <RxCross2 className="h-4 w-4 " />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <DeleteOrgModal org={org} mutate={mutate} />
+                        </AlertDialog>
+                    </div>}
             </div>
             <div className="pl-4">
-
                 {org.projects.map((project => {
                     return (
                         <ProjectCard branchCreation={branchCreation} project={project} org={org} key={project.name} mutate={mutate} />
