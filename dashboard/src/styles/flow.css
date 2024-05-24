@@ -1,0 +1,11 @@
+.Flow {
+  width: 100%;
+  height: 100%;
+
+  flex-grow: 1;
+  font-size: 12px;
+}
+
+:not(:root):fullscreen::backdrop {
+  background-color: #fff;
+}
