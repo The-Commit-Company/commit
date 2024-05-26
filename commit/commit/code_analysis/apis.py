@@ -31,7 +31,8 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
 
             ## Comment out later
             # if file.endswith('party.py'):
-            indexes,line_nos = find_indexes_of_whitelist(file_content, no_of_occurrences)
+            indexes,line_nos,no_of_occurrences = find_indexes_of_whitelist(file_content, no_of_occurrences)
+            api_count += no_of_occurrences
             apis = get_api_details(file, file_content, indexes,line_nos, path)
             api_details.extend(apis)
     
@@ -43,17 +44,70 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
 
 def find_indexes_of_whitelist(file_content: str, count: int):
     '''
-    Find indexes of @frappe.whitelist in the file content
+    Find indexes of @frappe.whitelist in the file content,
+    ensuring it's not commented out or inside a string.
     '''
+    def is_in_string_or_comment(file_content, index):
+        # State variables
+        in_single_quote = False
+        in_double_quote = False
+        in_comment = False
+        in_triple_single_quote = False
+        in_triple_double_quote = False
+
+        i = 0
+        while i < index:
+            char = file_content[i]
+            
+            # Handle triple single-quoted strings
+            if file_content[i:i+3] == "'''" and not in_double_quote:
+                if in_triple_single_quote:
+                    in_triple_single_quote = False
+                    i += 2
+                else:
+                    in_triple_single_quote = True
+                    i += 2
+            # Handle triple double-quoted strings
+            elif file_content[i:i+3] == '"""' and not in_single_quote:
+                if in_triple_double_quote:
+                    in_triple_double_quote = False
+                    i += 2
+                else:
+                    in_triple_double_quote = True
+                    i += 2
+            # Handle single-quoted strings
+            elif char == "'" and not in_double_quote and not in_triple_single_quote and not in_triple_double_quote:
+                in_single_quote = not in_single_quote
+            # Handle double-quoted strings
+            elif char == '"' and not in_single_quote and not in_triple_single_quote and not in_triple_double_quote:
+                in_double_quote = not in_double_quote
+            # Handle single-line comments
+            elif char == '#' and not in_single_quote and not in_double_quote and not in_triple_single_quote and not in_triple_double_quote:
+                in_comment = True
+            # Handle end of line for single-line comments
+            elif char == '\n':
+                in_comment = False
+            
+            i += 1
+
+        return in_single_quote or in_double_quote or in_comment or in_triple_single_quote or in_triple_double_quote
+
     indexes = []
     line_nos = []
-    for i in range(count):
-        index = file_content.find('@frappe.whitelist', indexes[i - 1] + len('@frappe.whitelist') if i > 0 else 0)
-        indexes.append(index)
-        line_nos.append((file_content.count('\n', 0, index)+1))
-
+    actual_count = count
     
-    return indexes, line_nos
+    start = 0
+    while actual_count > 0:
+        index = file_content.find('@frappe.whitelist', start)
+        if index == -1:
+            break
+        if not is_in_string_or_comment(file_content, index):
+            indexes.append(index)
+            line_nos.append(file_content.count('\n', 0, index) + 1)
+            actual_count -= 1
+        start = index + len('@frappe.whitelist')
+    
+    return indexes, line_nos, actual_count
 
 def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: str):
     '''
@@ -98,7 +152,10 @@ def get_whitelist_details(file_content: str, index: int):
     '''
     whitelist_end_index = file_content.find(')', index)
     whitelisted_content = file_content[index:whitelist_end_index + 1]
-    args = whitelisted_content.split("(")[1].split(")")[0].split(",")
+    if "(" in whitelisted_content and ")" in whitelisted_content:
+        args = whitelisted_content.split("(")[1].split(")")[0].split(",")
+    else:
+        args = []
     request_types = []
     xss_safe = False
     allow_guest = False
@@ -159,7 +216,10 @@ def extract_arguments_from_def(api_def: str):
     '''
     Extract arguments from def
     '''
-    arguments_with_types_defaults = api_def.split("(")[1].split(")")[0].split(",")
+    if "(" not in api_def or ")" not in api_def:
+        arguments_with_types_defaults = []
+    else:
+        arguments_with_types_defaults = api_def.split("(")[1].split(")")[0].split(",")
 
     arguments = []
     for arg in arguments_with_types_defaults:
@@ -202,7 +262,28 @@ def find_function_end_lines(source_code: str,function_name:str):
 
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
-            end_line = node.end_lineno
-            function_end_lines[node.name] = end_line
+            decorators = get_decorators(node)
+            if 'whitelist' in decorators:
+                end_line = node.end_lineno
+                function_end_lines[node.name] = end_line
 
     return function_end_lines.get(function_name,0)
+
+def get_decorator_name(node):
+    if isinstance(node, ast.Call):
+        if isinstance(node.func, ast.Name):
+            return node.func.id
+        elif isinstance(node.func, ast.Attribute):
+            return node.func.attr
+    elif isinstance(node, ast.Attribute):
+        return node.attr
+    else:
+        return None
+
+def get_decorators(node):
+    decorators = []
+    for decorator in node.decorator_list:
+        decorator_name = get_decorator_name(decorator)
+        if decorator_name is not None:
+            decorators.append(decorator_name)
+    return decorators
