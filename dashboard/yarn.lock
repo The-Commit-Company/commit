@@ -2646,7 +2646,7 @@ frappe-js-sdk@^1.5.0:
   dependencies:
     axios "^1.6.7"
 
-frappe-react-sdk@^1.2.8:
+frappe-react-sdk@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/frappe-react-sdk/-/frappe-react-sdk-1.7.0.tgz#6d7430f2e606dbe733ffbe1fda7566fc815b6a45"
   integrity sha512-UBch8j7nWCkYWQjGG7tOds5tFif/hFdAbg8T+FlOiJAyFmtpbVdBOsWx2ime9aBkNa2U8zqjOkQLLIvL2/qOrg==
@@ -4415,6 +4415,7 @@ stdin-discarder@^0.1.0:
     bl "^5.0.0"
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==

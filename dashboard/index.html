@@ -17,6 +17,10 @@
 <body>
   <div id="root"></div>
   <script>window.csrf_token = '{{ frappe.session.csrf_token }}';</script>
+  <script>
+    if (!window.frappe) window.frappe = {};
+    frappe.boot = JSON.parse({{ boot }});
+  </script>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

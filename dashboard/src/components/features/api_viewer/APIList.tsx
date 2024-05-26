@@ -65,7 +65,7 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }:
                 </div>
             </div>
             {/* fixed height container */}
-            <div className="flex flex-col space-y-4 overflow-y-auto h-[calc(100vh-10rem)]">
+            <div className="flex flex-col space-y-4  overflow-y-auto h-[calc(100vh-12rem)]">
                 <ListView list={filterList} setSelectedEndpoint={setSelectedEndpoint} />
             </div>
         </div>
