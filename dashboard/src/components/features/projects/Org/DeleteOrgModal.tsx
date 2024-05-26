@@ -12,6 +12,7 @@ const DeleteOrgModal = ({ org, mutate }: {
 }) => {
 
     const { deleteDoc, reset } = useFrappeDeleteDoc()
+
     const handleOrgDelete = () => {
 
         deleteDoc("Commit Organization", `${org.name}`)
@@ -26,23 +27,17 @@ const DeleteOrgModal = ({ org, mutate }: {
     return (
         <AlertDialogContent>
             <AlertDialogHeader>
-                <AlertDialogTitle>Delete Organization
-                    <span className="text-red-600">
-                        {' '}
-                        {org.organization_name}?
-                    </span>
+                <AlertDialogTitle>Delete Organization{' '}{org.organization_name}?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                    This will remove this organization from the list.
+                    This will remove this organization and the corresponding projects.
                 </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter >
+            <AlertDialogFooter className='!justify-end '>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                    <Button onClick={handleOrgDelete}>
+                <Button variant="destructive" onClick={handleOrgDelete}>
                         Delete
-                    </Button>
-                </AlertDialogAction>
+                </Button>
             </AlertDialogFooter>
         </AlertDialogContent>
     )

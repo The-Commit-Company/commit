@@ -2,7 +2,7 @@ import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageL
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { CardDescription } from "@/components/ui/card"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProject } from "@/types/commit/CommitProject"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
@@ -19,9 +19,10 @@ import CreateProjectModal from "./Projects/CreateProjectModal"
 import { ViewERDDialogContent } from "./ViewERDAppDialog"
 import { KeyedMutator } from "swr"
 import { isSystemManager } from "@/utils/roles"
-import { RxCross2 } from "react-icons/rx";
+import { AiOutlineDelete } from "react-icons/ai";
 import DeleteOrgModal from "./Org/DeleteOrgModal"
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { RxDragHandleDots1 } from "react-icons/rx";
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[]
@@ -84,7 +85,7 @@ export const Projects = () => {
                                         Add Organization
                                     </Button>
                                 </DialogTrigger>
-                                <CreateOrgModal />
+                                <CreateOrgModal mutate={mutate} />
                             </Dialog>}
 
 
@@ -133,7 +134,7 @@ export const OrgComponent = ({ org, mutate, branchCreation }: {
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button size="icon" className="h-7 w-7">
-                                    <RxCross2 className="h-4 w-4 " />
+                                    <AiOutlineDelete />
                                 </Button>
                             </AlertDialogTrigger>
                             <DeleteOrgModal org={org} mutate={mutate} />
@@ -247,6 +248,19 @@ export const ProjectCard = ({ project, org, mutate, branchCreation }: ProjectCar
                                     </DialogTrigger>
                                     <CreateBranchModal setBranch={setBranch} project={project} mutate={mutate} />
                                 </Dialog>}
+
+                                {isCreateAccess && <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1">
+                                            <RxDragHandleDots1 className="h-4 w-4 mr-1" />
+                                            Manage Branches
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        Manage Branch Modal..
+                                    </DialogContent>
+                                </Dialog>}
+
                             </SelectContent>
                         </Select>
 
