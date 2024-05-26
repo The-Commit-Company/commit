@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button'
-import { DialogDescription, DialogHeader, DialogTitle, DialogContent } from '@/components/ui/dialog'
+import { DialogDescription, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useFrappeCreateDoc } from 'frappe-react-sdk'
 import { useToast } from '@/components/ui/use-toast'
-import { DialogClose } from '@radix-ui/react-dialog'
+import { ProjectData } from '../Projects'
+import { KeyedMutator } from 'swr'
 
 type FormFields = {
     organization_name: string,
@@ -14,16 +15,20 @@ type FormFields = {
 }
 
 
-const CreateOrgModal = () => {
+const CreateOrgModal = ({ mutate }: {
+    mutate: KeyedMutator<{
+        message: ProjectData[];
+    }>
+}) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>()
 
     const { createDoc, reset } = useFrappeCreateDoc()
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
-        // console.log(data);
         createDoc('Commit Organization', data)
             .then(() => {
+                mutate()
                 reset()
             }).then(() => toast({
                 description: "Organization Added",
@@ -47,7 +52,7 @@ const CreateOrgModal = () => {
                         id="orgname"
                         type="text"
                         placeholder="eg. Frappe Framework"
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
                     <Label htmlFor="githuborg">Github Org</Label>
                     <Input
@@ -55,7 +60,7 @@ const CreateOrgModal = () => {
                         id='githuborg'
                         type="text"
                         placeholder="eg. frappe"
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
                     <Label htmlFor="about">About</Label>
                     <Input
@@ -63,13 +68,13 @@ const CreateOrgModal = () => {
                         id='about'
                         type="text"
                         placeholder=""
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
-                    <DialogClose asChild>
-                        <Button type="submit" style={{ padding: '10px 20px', margin: '10px 0 0' }}>
+                    <DialogFooter>
+                        <Button type="submit">
                             Submit
                         </Button>
-                    </DialogClose>
+                    </DialogFooter>
                 </form>
             </FormProvider>
         </DialogContent>

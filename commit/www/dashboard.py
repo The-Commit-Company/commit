@@ -31,11 +31,11 @@ def get_boot():
     except Exception as e:
         raise frappe.SessionBootFailed from e
     
-    commit_settings = frappe.get_doc("Commit Settings")
+    # commit_settings = frappe.get_doc("Commit Settings")
 
-    show_system_apps = commit_settings.show_system_apps
+    # show_system_apps = commit_settings.show_system_apps
     
-    boot["show_system_apps"] = show_system_apps
+    # boot["show_system_apps"] = show_system_apps
 
     boot_json = frappe.as_json(boot, indent=None, separators=(",", ":"))
     boot_json = SCRIPT_TAG_PATTERN.sub("", boot_json)

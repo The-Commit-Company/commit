@@ -1,15 +1,14 @@
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useFrappeCreateDoc } from "frappe-react-sdk"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button'
 import { useToast } from "@/components/ui/use-toast"
-import { DialogClose } from '@radix-ui/react-dialog'
 import { ProjectData } from "../Projects"
 import { KeyedMutator } from "swr"
 
-type FormFields = {
+export type FormFields = {
     org: string,
     repo_name: string,
     display_name: string,
@@ -31,7 +30,6 @@ const CreateProjectModal = ({ org, mutate }: {
     const { createDoc, reset } = useFrappeCreateDoc()
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
-        // console.log("data", data);
         createDoc('Commit Project', data)
             .then(() => {
                 reset()
@@ -43,16 +41,11 @@ const CreateProjectModal = ({ org, mutate }: {
             })
     }
 
-    // console.log("org", org)
 
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Add Project for
-                    <span className="text-green-600">
-                        {' '}
-                        {org.organization_name}
-                    </span>
+                <DialogTitle>Add Project for{' '}{org.organization_name}
                 </DialogTitle>
                 <DialogDescription>
                     Please enter details of the project.
@@ -66,7 +59,7 @@ const CreateProjectModal = ({ org, mutate }: {
                         id='projectdisplayname'
                         type="text"
                         placeholder="eg. Leave Management System"
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
                     <Label htmlFor="reponame">Project Repo Name</Label>
                     <Input
@@ -74,13 +67,13 @@ const CreateProjectModal = ({ org, mutate }: {
                         id='reponame'
                         type="text"
                         placeholder="eg. lms"
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
-                    <DialogClose asChild>
-                        <Button type="submit" style={{ padding: '10px 20px', margin: '10px 0 0' }}>
+                    <DialogFooter>
+                        <Button type="submit">
                             Submit
                         </Button>
-                    </DialogClose>
+                    </DialogFooter>
                 </form>
             </FormProvider>
         </DialogContent>

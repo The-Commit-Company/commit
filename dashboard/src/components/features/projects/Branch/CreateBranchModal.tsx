@@ -1,9 +1,8 @@
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button'
-import { DialogClose } from '@radix-ui/react-dialog'
 import { ProjectData, ProjectWithBranch } from "../Projects"
 import { useToast } from "@/components/ui/use-toast"
 import { useFrappeCreateDoc } from "frappe-react-sdk"
@@ -31,6 +30,8 @@ const CreateBranchModal = ({ project, mutate, setBranch }: BranchProps) => {
         }
     })
 
+    const { handleSubmit, register } = methods;
+
     const { createDoc, reset } = useFrappeCreateDoc()
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
@@ -49,31 +50,27 @@ const CreateBranchModal = ({ project, mutate, setBranch }: BranchProps) => {
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Adding Branch of
-                    <span className="text-green-600">
-                        {' '}
-                        {project.display_name}
-                    </span>
+                <DialogTitle>Adding Branch of{' '}{project.display_name}
                 </DialogTitle>
                 <DialogDescription>
                     Please enter the branch name.
                 </DialogDescription>
             </DialogHeader>
             <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Label htmlFor="branchname">Branch Name</Label>
                     <Input
-                        {...methods.register("branch_name")}
+                        {...register("branch_name")}
                         id='branchname'
                         type="text"
                         placeholder="eg. main"
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
-                    <DialogClose asChild>
-                        <Button type="submit" style={{ padding: '10px 20px', margin: '10px 0 0' }}>
+                    <DialogFooter>
+                        <Button type="submit">
                             Submit
                         </Button>
-                    </DialogClose>
+                    </DialogFooter>
                 </form>
             </FormProvider>
         </DialogContent>
