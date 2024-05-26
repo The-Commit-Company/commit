@@ -17,9 +17,16 @@ class CommitProjectBranch(Document):
     def before_insert(self):
         self.path_to_folder = self.get_path_to_folder()
         self.create_branch_folder()
-        self.clone_repo()
-        self.get_modules()
-        self.find_all_apis()
+    
+    def after_insert(self):
+        frappe.enqueue(
+            method = background_fetch_process,
+            is_async = True,
+            job_name="Fetch Project Branch",
+            enqueue_after_commit = True,
+            at_front = True,
+            project_branch = self.name
+        )
 
     def create_branch_folder(self):
         if not os.path.exists(self.path_to_folder):
@@ -44,7 +51,6 @@ class CommitProjectBranch(Document):
         # print("Cloned repo")
         self.last_fetched = frappe.utils.now_datetime()
         self.commit_hash = repo.head.object.hexsha
-        pass
 
     def fetch_repo(self):
         repo = git.Repo(self.path_to_folder)
@@ -107,10 +113,58 @@ class CommitProjectBranch(Document):
 
     def on_trash(self):
         # Delete the folder
-        if os.path.exists(self.path_to_folder):
+        if self.path_to_folder and os.path.exists(self.path_to_folder):
             shutil.rmtree(self.path_to_folder)
-    pass
 
+def background_fetch_process(project_branch):
+    try:
+        doc = frappe.get_doc("Commit Project Branch", project_branch)
+        frappe.publish_realtime('commit_branch_clone_repo',
+            {
+                'branch_name': doc.branch_name,
+                'project': doc.project,
+                'text': "Cloning repository...",
+                'is_completed': False
+            }, user=frappe.session.user)
+
+
+        doc.clone_repo()
+        frappe.publish_realtime('commit_branch_get_modules',
+            {
+                'branch_name': doc.branch_name,
+                'project': doc.project,
+                'text': "Getting all modules for your app...",
+                'is_completed': False
+            }, user=frappe.session.user)
+
+        doc.get_modules()
+
+        frappe.publish_realtime('commit_branch_find_apis',
+            {
+                'branch_name': doc.branch_name,
+                'project': doc.project,
+                'text': "Finding all APIs...",
+                'is_completed': False
+            }, user=frappe.session.user)
+
+        doc.find_all_apis()
+        doc.save()
+
+        frappe.publish_realtime("commit_project_branch_created", {
+                'name': doc.name,
+                'branch_name': doc.branch_name,
+                'project': doc.project,
+                'text': "Branch created successfully.",
+                'is_completed': True
+            }, user=frappe.session.user)
+
+        
+    
+    except frappe.DoesNotExistError:
+        # throw the error and delete the document
+        frappe.throw("Project Branch not found")
+        frappe.delete_doc("Commit Project Branch", project_branch)
+       
 
 @frappe.whitelist(allow_guest=True)
 def fetch_repo(doc):

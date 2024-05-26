@@ -8,7 +8,7 @@ import { CommitProject } from "@/types/commit/CommitProject"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { AiOutlineApi } from "react-icons/ai"
 import { BsDatabase } from "react-icons/bs"
 import { MdAdd, MdAddBox } from "react-icons/md"
@@ -190,9 +190,6 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
                                     <h1 className="text-md font-normal tracking-normal">{org.organization_name}</h1>
                                 </div>
                                 <CardDescription className="text-sm text-gray-500">{project.description}</CardDescription>
-
-                                {/* <BranchCreationLoadingState branch_name="main" /> */}
-
                             </div>
                         </div>
                     </div>
@@ -239,46 +236,3 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
         </li >
     )
 }
-
-
-const BranchCreationLoadingState = ({ branch_name }: { branch_name: string }) => {
-
-    const [currentLoadingText, setCurrentLoadingText] = useState<string>("")
-    const loadingTexts = [
-        "May the forks be with you...",
-        "A commit a day keeps the mobs away...",
-        "Tickling the servers...",
-        "Why so serious?...",
-        "It's not you. It's me...",
-        "Counting backwards from Infinity...",
-        "Don't panic...",
-        "Don't break your screen yet!...",
-        "I swear it's almost done...",
-        "Let's take a mindfulness minute...",
-    ]
-
-    useEffect(() => {
-        const changeInterval = setInterval(() => setCurrentLoadingText(loadingTexts[Math.floor(Math.random() * 10)]), 3000)
-
-        return () => {
-            clearInterval(changeInterval);
-        }
-    }, [])
-
-    return (
-        <div className="flex space-x-2 items-center ">
-            <div
-                className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-solid border-current text-gray-500 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-                role="status">
-            </div>
-            <div className="text-sm text-gray-500">
-                {currentLoadingText}
-                {'Loading branch '}
-                <b>{branch_name}</b>
-            </div>
-        </div>
-    )
-}
-
-export default BranchCreationLoadingState
-
