@@ -37,4 +37,12 @@ class CommitProject(Document):
 
 
 		return 
-	pass
+
+	def on_trash(self):
+		# find all branches which are linked with this project 
+		# delete all branches
+		branches = frappe.get_all("Commit Project Branch", filters={
+			'project' : self.name
+		}, pluck='name')
+		for branch in branches:
+			frappe.db.delete("Commit Project Branch", branch)

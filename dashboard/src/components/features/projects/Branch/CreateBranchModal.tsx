@@ -77,6 +77,8 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
         setDesc("")
         setOpen(false)
     }
+    const { handleSubmit, register } = methods;
+
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
         createDoc('Commit Project Branch', data)
@@ -90,7 +92,7 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Adding Branch of {' '}  {project.display_name}
+                <DialogTitle>Adding Branch of{' '}{project.display_name}
                 </DialogTitle>
                 <DialogDescription>
                     {desc}
@@ -98,14 +100,14 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
             <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Label htmlFor="branchname">Branch Name</Label>
                     <Input
-                        {...methods.register("branch_name")}
+                        {...register("branch_name")}
                         id='branchname'
                         type="text"
                         placeholder="eg. main"
-                        style={{ marginBottom: '10px', padding: '10px', width: '100%' }}
+                        className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
                         <Button type="submit" style={{ padding: '10px 20px', margin: '10px 0 0' }} disabled={loading || eventLoading}>
@@ -113,8 +115,7 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
                                 className="inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current text-gray-200 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
                                 role="status">
                             </div>}
-                            Submit
-                        </Button>
+                      </Button>
                     </DialogFooter>
                 </form>
             </FormProvider>
