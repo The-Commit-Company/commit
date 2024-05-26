@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label"
 import { useFrappeCreateDoc } from 'frappe-react-sdk'
 import { useToast } from '@/components/ui/use-toast'
 import { DialogClose } from '@radix-ui/react-dialog'
+import { KeyedMutator } from 'swr'
+import { ProjectData } from '../Projects'
 
 type FormFields = {
     organization_name: string,
@@ -14,16 +16,20 @@ type FormFields = {
 }
 
 
-const CreateOrgModal = () => {
+const CreateOrgModal = ({ mutate }: {
+    mutate: KeyedMutator<{
+        message: ProjectData[];
+    }>
+}) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>()
 
     const { createDoc, reset } = useFrappeCreateDoc()
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
-        // console.log(data);
         createDoc('Commit Organization', data)
             .then(() => {
+                mutate()
                 reset()
             }).then(() => toast({
                 description: "Organization Added",
