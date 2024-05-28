@@ -158,12 +158,10 @@ def background_fetch_process(project_branch):
                 'is_completed': True
             }, user=frappe.session.user)
 
-        
-    
-    except frappe.DoesNotExistError:
+    except e:
         # throw the error and delete the document
         frappe.throw("Project Branch not found")
-        frappe.delete_doc("Commit Project Branch", project_branch)
+        frappe.db.delete("Commit Project Branch", project_branch)
        
 
 @frappe.whitelist(allow_guest=True)

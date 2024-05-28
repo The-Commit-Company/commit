@@ -110,11 +110,13 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
-                        <Button type="submit" style={{ padding: '10px 20px', margin: '10px 0 0' }} disabled={loading || eventLoading}>
-                            {(loading || eventLoading) && <div
+                        <Button type="submit" disabled={loading || eventLoading}>
+                            {(loading || eventLoading) &&
+                                <div
                                 className="inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current text-gray-200 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
                                 role="status">
                             </div>}
+                            Submit
                       </Button>
                     </DialogFooter>
                 </form>

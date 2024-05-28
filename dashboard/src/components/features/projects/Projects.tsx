@@ -2,10 +2,9 @@ import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageL
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { CardDescription } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProject } from "@/types/commit/CommitProject"
-import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo, useState } from "react"
@@ -23,6 +22,8 @@ import { AiOutlineDelete } from "react-icons/ai";
 import DeleteOrgModal from "./Org/DeleteOrgModal"
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { RxDragHandleDots1 } from "react-icons/rx";
+import ManageBranchModal from "./Branch/ManageBranchModal"
+import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[]
@@ -67,12 +68,12 @@ export const Projects = () => {
 
                             {isCreateAccess &&
                                 <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button size='sm'>
-                                        <MdAddBox className="mr-2" />
-                                        Add Organization
-                                    </Button>
-                                </DialogTrigger>
+                                    <DialogTrigger asChild>
+                                        <Button size='sm'>
+                                            <MdAddBox className="mr-2" />
+                                            Add Organization
+                                        </Button>
+                                    </DialogTrigger>
                                     <CreateOrgModal mutate={mutate} />
                                 </Dialog>}
                         </div>
@@ -127,7 +128,7 @@ export const OrgComponent = ({ org, mutate }: {
                     </div>}
             </div>
 
-            {org?.projects?.length === 0 && <div className="text-sm text-gray-500 pl-4 py-2">No Projects Found, Click <button className="text-blue-500 underline" onClick={() => setCreateProject(true)}>
+            {org?.projects?.length === 0 && <div className="text-sm text-gray-500 pl-4 py-2">No Projects Found. Click <button className="text-blue-500 underline" onClick={() => setCreateProject(true)}>
                 here</button> to add a new project.
             </div>}
             <div className="pl-4">
@@ -168,6 +169,8 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
     const isCreateAccess = isSystemManager()
 
     const [open, setOpen] = useState(false)
+
+    const [openManageModal, setOpenManageModal] = useState(false)
 
     const [selectOpen, setSelectOpen] = useState(false)
 
@@ -219,27 +222,33 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
                                         setOpen(true)
                                         setSelectOpen(false)
                                     }}>
-                                            <MdAdd className="h-4 w-4 mr-1" />
-                                            Add Branch
+                                        <MdAdd className="h-4 w-4 mr-1" />
+                                        Add Branch
                                     </Button>}
 
-                                {isCreateAccess && <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1">
-                                            <RxDragHandleDots1 className="h-4 w-4 mr-1" />
-                                            Manage Branches
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        Manage Branch Modal..
-                                    </DialogContent>
-                                </Dialog>}
+                                {isCreateAccess &&
+                                    <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1" onClick={() => {
+                                        setOpenManageModal(true)
+                                        setSelectOpen(false)
+                                    }}>
+                                        <RxDragHandleDots1 className="h-4 w-4 mr-1" />
+                                        Manage Branches
+                                    </Button>
+                                }
 
                             </SelectContent>
                         </Select>
+
+
+
+                        <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
+                            <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
+                        </Dialog>
+
                         <Dialog open={open} onOpenChange={setOpen}>
                             <CreateBranchModal setBranch={setBranch} project={project} mutate={mutate} setOpen={setOpen} />
                         </Dialog>
+
                         <Button size='sm' onClick={onNavigate}>
                             <AiOutlineApi className="mr-2" />
                             API Explorer
