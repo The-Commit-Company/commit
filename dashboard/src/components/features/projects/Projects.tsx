@@ -2,7 +2,7 @@ import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageL
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { CardDescription } from "@/components/ui/card"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProject } from "@/types/commit/CommitProject"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
@@ -11,9 +11,18 @@ import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo, useState } from "react"
 import { AiOutlineApi } from "react-icons/ai"
 import { BsDatabase } from "react-icons/bs"
+import { MdAdd, MdAddBox } from "react-icons/md"
 import { useNavigate } from "react-router-dom"
+import CreateBranchModal from "./Branch/CreateBranchModal"
+import CreateOrgModal from "./Org/CreateOrgModal"
+import CreateProjectModal from "./Projects/CreateProjectModal"
 import { ViewERDDialogContent } from "./ViewERDAppDialog"
-import { MdAddBox } from "react-icons/md";
+import { KeyedMutator } from "swr"
+import { isSystemManager } from "@/utils/roles"
+import { AiOutlineDelete } from "react-icons/ai";
+import DeleteOrgModal from "./Org/DeleteOrgModal"
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { RxDragHandleDots1 } from "react-icons/rx";
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[]
@@ -27,7 +36,9 @@ export interface ProjectData extends CommitProjectBranch {
 }
 export const Projects = () => {
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches')
+    const isCreateAccess = isSystemManager()
+
+    const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches')
 
     if (error) {
         return <div>Error</div>
@@ -37,38 +48,38 @@ export const Projects = () => {
         return <FullPageLoader />
     }
 
+
     if (data && data.message) {
         return (
             <div className="mx-auto pl-2 pr-4 h-[calc(100vh-4rem)]">
                 <div className="h-full space-y-2">
-                    <div className="flex flex-row items-center space-x-2 gap-2 justify-between">
-                        <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
-                            Organizations
-                        </h1>
+                    <div className="flex flex-row items-center justify-end">
                         <div className="flex gap-2">
 
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button size='sm'>
-                                    <BsDatabase className='mr-2' /> View ERD
-                                </Button>
-                            </DialogTrigger>
-                            <ViewERDDialogContent data={data.message} />
-                        </Dialog>
-                        <Button size='sm'>
-                            <MdAddBox className="mr-2"/>
-                            Add Organization
-                        </Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button size='sm' disabled={data.message.length === 0}>
+                                        <BsDatabase className='mr-2' /> View ERD
+                                    </Button>
+                                </DialogTrigger>
+                                <ViewERDDialogContent data={data.message} />
+                            </Dialog>
+
+                            {isCreateAccess &&
+                                <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button size='sm'>
+                                        <MdAddBox className="mr-2" />
+                                        Add Organization
+                                    </Button>
+                                </DialogTrigger>
+                                    <CreateOrgModal mutate={mutate} />
+                                </Dialog>}
                         </div>
                     </div>
-                    <ul role="list" className="divide-y divide-gray-200">
+                    <ul role="list" className="space-y-2 py-2">
                         {data.message.map((org: ProjectData) => {
-                            return org.projects.map((project => {
-                                return (
-                                    <ProjectCard project={project} org={org} key={project.name} />
-                                )
-                            }
-                            ))
+                            return <OrgComponent org={org} key={org.organization_name} mutate={mutate} />
                         })}
                     </ul>
                 </div>
@@ -76,12 +87,70 @@ export const Projects = () => {
         )
     }
 }
+
+
+export const OrgComponent = ({ org, mutate }: {
+    org: ProjectData, mutate: KeyedMutator<{
+        message: ProjectData[];
+    }>
+}) => {
+
+    const isCreateAccess = isSystemManager()
+
+    const [createProject, setCreateProject] = useState<boolean>(false)
+
+    return (
+        <div>
+
+            <div className="flex justify-between items-center py-2 border-b-[1px]">
+                <h1 className="text-lg font-medium tracking-normal">
+                    {org.organization_name}
+                </h1>
+                {isCreateAccess &&
+                    <div className="flex gap-1">
+                        <Dialog open={createProject} onOpenChange={setCreateProject}>
+                            <DialogTrigger asChild>
+                                <Button size="icon" className="h-7 w-7">
+                                    <MdAdd className="h-4 w-4 " />
+                                </Button>
+                            </DialogTrigger>
+                            <CreateProjectModal org={org} mutate={mutate} />
+                        </Dialog>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button size="icon" className="h-7 w-7">
+                                    <AiOutlineDelete />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <DeleteOrgModal org={org} mutate={mutate} />
+                        </AlertDialog>
+                    </div>}
+            </div>
+
+            {org?.projects?.length === 0 && <div className="text-sm text-gray-500 pl-4 py-2">No Projects Found, Click <button className="text-blue-500 underline" onClick={() => setCreateProject(true)}>
+                here</button> to add a new project.
+            </div>}
+            <div className="pl-4">
+                {org.projects.map((project => {
+                    return (
+                        <ProjectCard project={project} org={org} key={project.name} mutate={mutate} />
+                    )
+                }
+                ))}
+            </div>
+        </div>
+    )
+}
 export interface ProjectCardProps {
     project: ProjectWithBranch
     org: ProjectData
+    mutate: KeyedMutator<{
+        message: ProjectData[];
+    }>
+
 }
 
-export const ProjectCard = ({ project, org }: ProjectCardProps) => {
+export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
 
     const navigate = useNavigate()
 
@@ -95,33 +164,45 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
     const appNameInitials = useMemo(() => {
         return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
     }, [project])
+
+    const isCreateAccess = isSystemManager()
+
+    const [open, setOpen] = useState(false)
+
+    const [selectOpen, setSelectOpen] = useState(false)
+
     return (
         <li className="w-full h-auto hover:shadow-sm">
-            <div className="py-4 flex flex-col justify-between">
+            <div className="py-2 flex flex-col justify-between">
                 <div className="flex space-x-4 items-center justify-between">
-                    <div className="flex space-x-3 items-center">
-                        <Avatar className="h-11 w-11 rounded-md">
-                            <AvatarImage src={project.image} />
-                            <AvatarFallback className="h-11 w-11 rounded-md">{appNameInitials}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                            <div className="flex space-x-2 items-center">
-                                <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
-                                <span className="text-sm text-gray-500">
-                                    by
-                                </span>
-                                <h1 className="text-md font-normal tracking-normal">{org.organization_name}</h1>
+                    <div className="flex flex-col">
+
+                        <div className="flex space-x-3 items-start">
+                            <Avatar className="h-11 w-11 rounded-md">
+                                <AvatarImage src={project.image} />
+                                <AvatarFallback className="h-11 w-11 rounded-md">{appNameInitials}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col">
+                                <div className="flex space-x-2 items-center">
+                                    <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
+                                    <span className="text-sm text-gray-500">
+                                        by
+                                    </span>
+                                    <h1 className="text-md font-normal tracking-normal">{org.organization_name}</h1>
+                                </div>
+                                <CardDescription className="text-sm text-gray-500">{project.description}</CardDescription>
                             </div>
-                            <CardDescription className="text-sm text-gray-500">{project.description}</CardDescription>
                         </div>
                     </div>
 
                     <div className="flex items-center space-x-4">
                         <Select
+                            open={selectOpen}
+                            onOpenChange={setSelectOpen}
                             onValueChange={(value) => setBranch(value)}
                             defaultValue={project.branches[0]?.name}
                         >
-                            <SelectTrigger className="h-8 w-40">
+                            <SelectTrigger className="h-8 w-40" onClick={() => setSelectOpen(!selectOpen)}>
                                 <SelectValue placeholder="Select Branch" />
                             </SelectTrigger>
                             <SelectContent>
@@ -130,20 +211,39 @@ export const ProjectCard = ({ project, org }: ProjectCardProps) => {
                                         <SelectItem value={branch.name} key={branch.name}>{branch.branch_name}</SelectItem>
                                     )
                                 })}
+                                {
+                                    project.branches.length > 0 && isCreateAccess &&
+                                    <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
+                                {isCreateAccess &&
+                                    <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1" onClick={() => {
+                                        setOpen(true)
+                                        setSelectOpen(false)
+                                    }}>
+                                            <MdAdd className="h-4 w-4 mr-1" />
+                                            Add Branch
+                                    </Button>}
+
+                                {isCreateAccess && <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1">
+                                            <RxDragHandleDots1 className="h-4 w-4 mr-1" />
+                                            Manage Branches
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        Manage Branch Modal..
+                                    </DialogContent>
+                                </Dialog>}
+
                             </SelectContent>
                         </Select>
-
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <CreateBranchModal setBranch={setBranch} project={project} mutate={mutate} setOpen={setOpen} />
+                        </Dialog>
                         <Button size='sm' onClick={onNavigate}>
                             <AiOutlineApi className="mr-2" />
                             API Explorer
                         </Button>
-                        {/* <Button size='sm' onClick={() => {
-                            navigate({
-                                pathname: `/project-erd/${branch}`
-                            })
-                        }}>
-                            <BsDatabase className='mr-2' /> View ERD
-                        </Button> */}
                     </div>
                 </div>
             </div >
