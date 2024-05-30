@@ -165,9 +165,12 @@ def background_fetch_process(project_branch):
        
 
 @frappe.whitelist(allow_guest=True)
-def fetch_repo(doc):
-    doc = json.loads(doc)
-    project_branch = frappe.get_doc("Commit Project Branch", doc.get("name"))
+def fetch_repo(doc, name = None):
+    if name :
+        project_branch = frappe.get_doc("Commit Project Branch", name)
+    else:
+        doc = json.loads(doc)
+        project_branch = frappe.get_doc("Commit Project Branch", doc.get("name"))
     project_branch.fetch_repo()
     project_branch.save()
     return "Hello"
