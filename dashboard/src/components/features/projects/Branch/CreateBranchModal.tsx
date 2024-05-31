@@ -66,9 +66,22 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
         }
     })
 
+    useFrappeEventListener('commit_branch_creation_error', (data) => {
+        if (data.branch_name === branchName && data.project === project.name) {
+            setDesc("")
+            setCreationError(data.error)
+            setEventLoading(false)
+            setBranch("")
+        }
+    })
+
+    const [creationError, setCreationError] = useState(null)
+
+
     const handleClose = (name: string, branch_name: string) => {
         setEventLoading(false)
         setBranch(name)
+        setCreationError(null)
         methods.reset()
         toast({
             description: `Branch ${branch_name} added for ${project.app_name}`
@@ -99,6 +112,7 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
                 </DialogDescription>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
+            {creationError && <ErrorBanner error={creationError} />}
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label htmlFor="branchname">Branch Name</Label>
