@@ -14,12 +14,12 @@ type FormFields = {
     about: string,
 }
 
+interface CreateOrgModalProps {
+    mutate: KeyedMutator<{ message: ProjectData[]; }>
+}
 
-const CreateOrgModal = ({ mutate }: {
-    mutate: KeyedMutator<{
-        message: ProjectData[];
-    }>
-}) => {
+
+const CreateOrgModal = ({ mutate }: CreateOrgModalProps) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>()
 
@@ -71,7 +71,7 @@ const CreateOrgModal = ({ mutate }: {
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
-                        <Button type="submit">
+                        <Button type="submit" >
                             Submit
                         </Button>
                     </DialogFooter>

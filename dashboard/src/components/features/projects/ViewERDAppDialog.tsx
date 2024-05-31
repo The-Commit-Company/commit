@@ -32,7 +32,7 @@ export const ViewERDDialogContent = ({ data }: { data: ProjectData[] }) => {
             </DialogHeader>
             <ul role="list" className="divide-y divide-gray-200">
                 {data?.map((org: ProjectData) => {
-                    return org.projects.map((project => {
+                    return org.projects?.filter((project) => project.branches?.length > 0)?.map((project => {
                         return (
                             <ViewERDProjectCard project={project} key={project.name} setApps={setApps} apps={apps} />
                         )
@@ -62,7 +62,7 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
     }, [project])
     return (
         <li className="w-full h-auto hover:shadow-sm">
-            <div className="py-2 flex flex-col justify-between">
+            <div className="py-2">
                 <div className="flex space-x-4 items-center justify-between">
                     <div className="flex space-x-3 items-center">
                         <Checkbox

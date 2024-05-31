@@ -1,15 +1,17 @@
-import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { ProjectData } from '../Projects'
 import { useFrappeDeleteDoc } from 'frappe-react-sdk'
 import { toast } from '@/components/ui/use-toast'
 import { KeyedMutator } from 'swr'
 
-const DeleteOrgModal = ({ org, mutate }: {
-    org: ProjectData, mutate: KeyedMutator<{
-        message: ProjectData[];
-    }>
-}) => {
+interface DeleteOrgModalProps {
+    org: ProjectData,
+    mutate: KeyedMutator<{ message: ProjectData[]; }>
+}
+
+
+const DeleteOrgModal = ({ org, mutate }: DeleteOrgModalProps) => {
 
     const { deleteDoc, reset } = useFrappeDeleteDoc()
 
@@ -21,7 +23,6 @@ const DeleteOrgModal = ({ org, mutate }: {
                 reset()
             }).then(() => toast({
                 description: `Organization ${org.organization_name} Deleted`,
-                variant: "destructive"
             }))
     }
     return (
@@ -36,7 +37,7 @@ const DeleteOrgModal = ({ org, mutate }: {
             <AlertDialogFooter className='!justify-end '>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <Button variant="destructive" onClick={handleOrgDelete}>
-                        Delete
+                    Delete
                 </Button>
             </AlertDialogFooter>
         </AlertDialogContent>

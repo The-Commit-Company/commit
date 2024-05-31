@@ -12,14 +12,15 @@ export type FormFields = {
     org: string,
     repo_name: string,
     display_name: string,
+    description: string,
+}
+interface CreateProjectModalProps {
+    org: ProjectData,
+    mutate: KeyedMutator<{ message: ProjectData[]; }>,
+    onClose: VoidFunction
 }
 
-
-const CreateProjectModal = ({ org, mutate }: {
-    org: ProjectData, mutate: KeyedMutator<{
-        message: ProjectData[];
-    }>
-}) => {
+const CreateProjectModal = ({ org, mutate, onClose }: CreateProjectModalProps) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>({
         defaultValues: {
@@ -34,7 +35,8 @@ const CreateProjectModal = ({ org, mutate }: {
             .then(() => {
                 reset()
             }).then(() => {
-                mutate();
+                mutate()
+                onClose()
                 return toast({
                     description: "Project Added",
                 })
@@ -67,6 +69,14 @@ const CreateProjectModal = ({ org, mutate }: {
                         id='reponame'
                         type="text"
                         placeholder="eg. lms"
+                        className="mb-3 p-3 w-full"
+                    />
+                    <Label htmlFor="description">Description</Label>
+                    <Input
+                        {...methods.register("description")}
+                        id='about'
+                        type="text"
+                        placeholder=""
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>

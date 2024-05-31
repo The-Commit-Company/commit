@@ -10,6 +10,7 @@ from frappe.model.document import Document
 from commit.commit.code_analysis.apis import find_all_occurrences_of_whitelist
 from commit.commit.code_analysis.doctypes import get_doctypes_in_module, get_doctype_json
 from frappe.utils import now
+from frappe.app import handle_exception
 
 
 class CommitProjectBranch(Document):
@@ -46,8 +47,7 @@ class CommitProjectBranch(Document):
         # print("Folder path", folder_path)
         # print("Repo url", repo_url)
         # print("Branch name", self.branch_name)
-        repo = git.Repo.clone_from(
-            repo_url, folder_path, branch=self.branch_name, single_branch=True)
+        repo = git.Repo.clone_from(repo_url, folder_path, branch=self.branch_name, single_branch=True)
         # print("Cloned repo")
         self.last_fetched = frappe.utils.now_datetime()
         self.commit_hash = repo.head.object.hexsha
@@ -158,18 +158,36 @@ def background_fetch_process(project_branch):
                 'is_completed': True
             }, user=frappe.session.user)
 
-        
-    
-    except frappe.DoesNotExistError:
+    except Exception as e:
         # throw the error and delete the document
-        frappe.throw("Project Branch not found")
+        messages = [json.dumps({'message' :'There was an error while fetching branch repo.'})]
+        frappe.clear_messages()
+        frappe.publish_realtime('commit_branch_creation_error',
+            {
+                'branch_name': doc.branch_name,
+                'project': doc.project,
+                'error':{
+						"exception": frappe.get_traceback(),
+						"_server_messages": json.dumps(messages),
+						},
+                # 'response': handle_exception(e),
+                'is_completed': False
+            }, user=frappe.session.user)
+
         frappe.delete_doc("Commit Project Branch", project_branch)
+        # frappe.throw("Project Branch not found")
+        frappe.log(frappe.get_traceback())
+        
+        # raise e
        
 
 @frappe.whitelist(allow_guest=True)
-def fetch_repo(doc):
-    doc = json.loads(doc)
-    project_branch = frappe.get_doc("Commit Project Branch", doc.get("name"))
+def fetch_repo(doc, name = None):
+    if name :
+        project_branch = frappe.get_doc("Commit Project Branch", name)
+    else:
+        doc = json.loads(doc)
+        project_branch = frappe.get_doc("Commit Project Branch", doc.get("name"))
     project_branch.fetch_repo()
     project_branch.save()
     return "Hello"
