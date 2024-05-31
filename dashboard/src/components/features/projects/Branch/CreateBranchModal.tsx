@@ -66,9 +66,22 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
         }
     })
 
+    useFrappeEventListener('commit_branch_creation_error', (data) => {
+        if (data.branch_name === branchName && data.project === project.name) {
+            setDesc("")
+            setCreationError(data.error)
+            setEventLoading(false)
+            setBranch("")
+        }
+    })
+
+    const [creationError, setCreationError] = useState(null)
+
+
     const handleClose = (name: string, branch_name: string) => {
         setEventLoading(false)
         setBranch(name)
+        setCreationError(null)
         methods.reset()
         toast({
             description: `Branch ${branch_name} added for ${project.app_name}`
@@ -99,6 +112,7 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
                 </DialogDescription>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
+            {creationError && <ErrorBanner error={creationError} />}
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Label htmlFor="branchname">Branch Name</Label>
@@ -110,11 +124,13 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
-                        <Button type="submit" style={{ padding: '10px 20px', margin: '10px 0 0' }} disabled={loading || eventLoading}>
-                            {(loading || eventLoading) && <div
+                        <Button type="submit" disabled={loading || eventLoading}>
+                            {(loading || eventLoading) &&
+                                <div
                                 className="inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current text-gray-200 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
                                 role="status">
                             </div>}
+                            Submit
                       </Button>
                     </DialogFooter>
                 </form>
