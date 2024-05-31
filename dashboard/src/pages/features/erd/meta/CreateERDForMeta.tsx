@@ -1,5 +1,4 @@
 import { Header } from "@/components/common/Header"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useEffect, useState } from "react"
@@ -12,6 +11,8 @@ import { DocType } from "@/types/Core/DocType"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useDebounce } from "@/hooks/useDebounce"
 import { ERDForMetaDoctypes } from "./ERDForMetaDoctype"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { DoctypeListPopoverForMeta } from "./ERDDoctypeAndAppModal"
 
 export const CreateERD = () => {
     const [open, setOpen] = useState(true)
@@ -86,7 +87,12 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
                                                     <div className="text-base font-semibold leading-6 text-gray-900">
                                                         Select DocTypes
                                                     </div>
-                                                    {doctype.length ? <Badge variant="secondary" className="h-6">{doctype.length} DocTypes</Badge> : null}
+                                                    <Popover>
+                                                        {doctype.length ? <PopoverTrigger asChild>
+                                                            <Button variant={'outline'} className="h-6 px-2">{doctype.length} DocTypes</Button>
+                                                        </PopoverTrigger> : null}
+                                                        <DoctypeListPopoverForMeta doctypes={doctype} setDoctypes={setDocType} />
+                                                    </Popover>
 
                                                 </Dialog.Title>
                                                 <div className="ml-3 flex h-7 items-center">
