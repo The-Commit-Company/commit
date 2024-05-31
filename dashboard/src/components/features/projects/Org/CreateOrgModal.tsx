@@ -16,10 +16,11 @@ type FormFields = {
 
 interface CreateOrgModalProps {
     mutate: KeyedMutator<{ message: ProjectData[]; }>
+    onClose: () => void
 }
 
 
-const CreateOrgModal = ({ mutate }: CreateOrgModalProps) => {
+const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>()
 
@@ -30,6 +31,7 @@ const CreateOrgModal = ({ mutate }: CreateOrgModalProps) => {
             .then(() => {
                 mutate()
                 reset()
+                onClose()
             }).then(() => toast({
                 description: "Organization Added",
             }))
@@ -67,7 +69,7 @@ const CreateOrgModal = ({ mutate }: CreateOrgModalProps) => {
                         {...methods.register("about")}
                         id='about'
                         type="text"
-                        placeholder=""
+                        placeholder="Frappe Framework is a full-stack web application."
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>

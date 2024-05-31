@@ -42,6 +42,12 @@ export const Projects = () => {
 
     const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches')
 
+    const [createOrg, setCreateOrg] = useState<boolean>(false)
+
+    const handleOrgClose = () => {
+        setCreateOrg(false)
+    }
+
     if (error) {
         return <div>Error</div>
     }
@@ -49,9 +55,6 @@ export const Projects = () => {
     if (isLoading) {
         return <FullPageLoader />
     }
-
-    // const [createOrg, setCreateOrg] = useState<boolean>(false)
-
 
     if (data && data.message) {
         return (
@@ -62,23 +65,17 @@ export const Projects = () => {
 
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button size='sm' disabled={data.message.length === 0}>
+                                    <Button size='sm' disabled={data.message.length === 0} variant={'outline'}>
                                         <BsDatabase className='mr-2' /> View ERD
                                     </Button>
                                 </DialogTrigger>
                                 <ViewERDDialogContent data={data.message} />
                             </Dialog>
 
-                            {isCreateAccess &&
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button size='sm'>
+                            {isCreateAccess && <Button size='sm' onClick={() => setCreateOrg(true)}>
                                             <MdAddBox className="mr-2" />
                                             Add Organization
-                                        </Button>
-                                    </DialogTrigger>
-                                    <CreateOrgModal mutate={mutate} />
-                                </Dialog>}
+                            </Button>}
                         </div>
                     </div>
                     <ul role="list" className="space-y-2 py-2">
@@ -87,6 +84,9 @@ export const Projects = () => {
                         })}
                     </ul>
                 </div>
+                <Dialog open={createOrg} onOpenChange={setCreateOrg}>
+                    <CreateOrgModal mutate={mutate} onClose={handleOrgClose} />
+                </Dialog>
             </div>
         )
     }
@@ -115,13 +115,13 @@ export const OrgComponent = ({ org, mutate }: OrgComponentProps) => {
                     {org.organization_name}
                 </h1>
                 {isCreateAccess &&
-                    <div className="flex gap-1">
+                    <div className="flex space-x-2">
                         <Button size="icon" onClick={() => setCreateProject(true)} className="h-7 w-7">
                                     <MdAdd className="h-4 w-4 " />
                         </Button>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button size="icon" variant="secondary" className="h-7 w-7">
+                                <Button size="icon" variant="outline" className="h-7 w-7">
                                     <AiOutlineDelete />
                                 </Button>
                             </AlertDialogTrigger>
@@ -203,7 +203,7 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
                         </div>
                     </div>
 
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
                         <Select
                             open={selectOpen}
                             onOpenChange={setSelectOpen}
@@ -251,8 +251,6 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
                             </SelectContent>
                         </Select>
 
-
-
                         <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
                             <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
                         </Dialog>
@@ -261,21 +259,19 @@ export const ProjectCard = ({ project, org, mutate }: ProjectCardProps) => {
                             <CreateBranchModal setBranch={setBranch} project={project} mutate={mutate} setOpen={setOpen} />
                         </Dialog>
 
-                        <div className="flex gap-1">
-                        <Button size='sm' onClick={onNavigate}>
+
+                        <Button size='sm' onClick={onNavigate} disabled={branch ? false : true}>
                             <AiOutlineApi className="mr-2" />
                             API Explorer
                         </Button>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button size='icon' variant='secondary' className="h-7 w-7">
+                                <Button size='icon' variant='outline' className="h-8 w-8">
                                         <AiOutlineDelete />
                                     </Button>
                                 </AlertDialogTrigger>
                                 <DeleteProjectModal project={project} mutate={mutate} />
-                            </AlertDialog>
-                        </div>
-
+                        </AlertDialog>
                     </div>
                 </div>
             </div >

@@ -1,4 +1,4 @@
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ProjectData } from "../Projects"
 import { Button } from "@/components/ui/button"
 import { KeyedMutator } from "swr"
@@ -18,9 +18,6 @@ const ManageBranchModal = ({ branches, mutate, setOpenManageModal }: ManageBranc
         <DialogContent className="sm:max-w-[600px] sm:max-h-[800px] overflow-y-scroll">
             <DialogHeader>
                 <DialogTitle>Manage Branches</DialogTitle>
-                <DialogDescription>
-                    Update or Delete Branches
-                </DialogDescription>
             </DialogHeader>
             <ul role="list" className="divide-y divide-gray-200">
                 {branches?.map((branch: CommitProjectBranch) => {

@@ -39,7 +39,7 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
 
     return (
         <li className="pl-0 pt-2 hover:shadow-sm flex justify-between">
-            <div className="flex flex-col items-start text-lg tracking-normal">
+            <div className="flex flex-col items-start text-md tracking-normal">
                 {branch.branch_name}
                 <div className='text-xs text-gray-500 pl-0'>
                     Last synced {convertFrappeTimestampToTimeAgo(branch.last_fetched)}
@@ -49,13 +49,16 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                 <Button
                     className="flex gap-2 text-sm"
                     variant="secondary"
+                    size={'sm'}
                     onClick={() => handleSync()}
                     disabled={deleteLoading || loading}
                 >
                     <IoMdSync className={loading ? 'animate-spin' : ''} />
                     Sync
                 </Button>
-                <Button className="text-lg p-2" variant="destructive"
+                <Button
+                    size={'sm'}
+                    className="text-lg p-2" variant="destructive"
                     onClick={() => handleDelete()}
                     disabled={deleteLoading || loading}
                 >

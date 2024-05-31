@@ -76,7 +76,7 @@ const CreateProjectModal = ({ org, mutate, onClose }: CreateProjectModalProps) =
                         {...methods.register("description")}
                         id='about'
                         type="text"
-                        placeholder=""
+                        placeholder="Leave Management System is a full-stack web application."
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
