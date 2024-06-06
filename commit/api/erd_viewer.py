@@ -62,7 +62,7 @@ def get_meta_erd_schema_for_doctypes(doctypes:list):
     '''
     doctype_jsons = []
     for doctype in doctypes:
-        doctype_json = frappe.get_cached_doc("DocType", doctype)
+        doctype_json = frappe.get_meta(doctype)
         doctype_jsons.append(doctype_json)
 
     schema = get_schema_from_doctypes_json({
@@ -72,3 +72,9 @@ def get_meta_erd_schema_for_doctypes(doctypes:list):
 
     return schema
 
+@frappe.whitelist()
+def get_meta_for_doctype(doctype):
+    '''
+    Get meta for a doctype
+    '''
+    return frappe.get_meta(doctype)
