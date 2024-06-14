@@ -1,19 +1,19 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
-import { Button } from "@/components/ui/button"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { ProjectData, ProjectWithBranch } from "./Projects"
+import { useNavigate } from "react-router-dom"
+import { AppsData } from "./YourApps"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { AiOutlineApi } from "react-icons/ai"
 import { useCallback, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
-import { Label } from "@/components/ui/label"
 
-export const APIExplorer = () => {
-    const { data, error, isLoading } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches', {}, 'get_project_list_with_branches', {
+export const YourAppAPIExplorer = () => {
+
+    const { data, error, isLoading } = useFrappeGetCall<{ message: AppsData[] }>('commit.api.meta_data.get_installed_apps', {}, 'get_installed_apps', {
         keepPreviousData: true,
         revalidateOnFocus: true,
         revalidateIfStale: false,
@@ -40,18 +40,17 @@ export const APIExplorer = () => {
             </Dialog>
         )
     }
-    return null
 }
 
-export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
+export const ViewAPIExplorerContent = ({ data }: { data: AppsData[] }) => {
 
-    const [branch, setBranch] = useState<string>(data?.[0]?.projects?.[0]?.branches?.[0]?.name)
+    const [branch, setBranch] = useState<string>(data?.[0]?.app_name)
 
     const navigate = useNavigate()
 
     const onNavigate = useCallback(() => {
         navigate({
-            pathname: `/project-viewer/${branch}`
+            pathname: `/meta-viewer/${branch}`
         })
     }, [branch, navigate])
 
@@ -65,17 +64,13 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
             </DialogHeader>
             <ul role="list" className="divide-y divide-gray-200">
                 <RadioGroup defaultValue={branch} onValueChange={(value) => setBranch(value)} className="flex flex-col space-y-1" >
-                    {data?.map((org: ProjectData) => {
-                        return org.projects?.filter((project) => project.branches?.length > 0)?.map((project => {
-                            return (
-                                <ViewAPIExplorerCard project={project} key={project.name} />
-                            )
-                        }
-                        ))
+                    {data?.map((app: AppsData) => {
+                        return (
+                            <ViewAPIExplorerCard app={app} key={app.app_name} />
+                        )
                     })}
                 </RadioGroup>
             </ul>
-
             <DialogFooter>
                 <Button onClick={onNavigate} disabled={branch.length === 0}>
                     API Explorer
@@ -85,46 +80,39 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
     )
 }
 
-export interface ViewERDProjectCardProps {
-    project: ProjectWithBranch
+export interface ViewAPIExplorerProps {
+    app: AppsData
 }
 
-export const ViewAPIExplorerCard = ({ project }: ViewERDProjectCardProps) => {
-
-    const [branch, setBranch] = useState<string>(project.branches[0]?.name)
-
+export const ViewAPIExplorerCard = ({ app }: ViewAPIExplorerProps) => {
     const appNameInitials = useMemo(() => {
-        return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
-    }, [project])
+        return app.app_name.split('_').map((word) => word[0]).join('').toUpperCase()
+    }, [app])
+
     return (
         <li className="w-full h-auto p-1">
             <div className="flex items-center justify-between">
                 <div className="flex space-x-3 items-center">
-                    <RadioGroupItem value={branch} key={branch} id={`${project.name}-${branch}`} />
-                    <Label htmlFor={`${project.name}-${branch}`} className="flex items-center space-x-3">
+                    <RadioGroupItem value={app.app_name} key={app.app_name} id={`${app.app_name}`} />
+                    <Label htmlFor={`${app.app_name}`} className="flex items-center space-x-3">
                         <Avatar className="h-8 w-8 rounded-md">
-                            <AvatarImage src={project.image} />
+                            <AvatarImage src={app.app_logo_url} />
                             <AvatarFallback className="h-8 w-8 rounded-md">{appNameInitials}</AvatarFallback>
                         </Avatar>
-                        <h1 className="text-lg font-medium tracking-normal" >{project.display_name}</h1>
+                        <h1 className="text-lg font-medium tracking-normal" >{app.app_name}</h1>
                     </Label>
                 </div>
                 <Select
-                    onValueChange={(value) => setBranch(value)}
-                    defaultValue={project.branches[0]?.name}
+                    disabled
+                    defaultValue={app.git_branch}
                 >
-                    <SelectTrigger className="h-8 w-40">
+                    <SelectTrigger className="h-8 w-40 truncate">
                         <SelectValue placeholder="Select Branch" />
                     </SelectTrigger>
                     <SelectContent>
-                        {project.branches.map((branch: CommitProjectBranch) => {
-                            return (
-                                <SelectItem value={branch.name} key={branch.name}>{branch.branch_name}</SelectItem>
-                            )
-                        })}
+                        <SelectItem value={app.git_branch ?? ''} key={app.git_branch} >{app.git_branch}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
         </li >)
 }
-

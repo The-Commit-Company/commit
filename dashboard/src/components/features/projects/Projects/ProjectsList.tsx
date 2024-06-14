@@ -2,9 +2,8 @@ import { Button } from "@/components/ui/button";
 import { CardDescription } from "@/components/ui/card";
 import { isSystemManager } from "@/utils/roles";
 import { useState, useMemo } from "react";
-import { AiOutlineApi, AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete } from "react-icons/ai";
 import { RxDragHandleDots1 } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
 import { KeyedMutator } from "swr";
 import ManageBranchModal from "../Branch/ManageBranchModal";
 import { ProjectWithBranch, ProjectData } from "../Projects";
@@ -25,15 +24,8 @@ export interface ProjectCardProps {
 
 export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
 
-    const navigate = useNavigate()
-
     const [branch, setBranch] = useState<string>(project.branches[0]?.name)
 
-    const onNavigate = () => {
-        navigate({
-            pathname: `/project-viewer/${branch}`
-        })
-    }
     const appNameInitials = useMemo(() => {
         return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
     }, [project])
@@ -105,10 +97,6 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
                         <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
                             <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
                         </Dialog>
-                        <Button size='sm' onClick={onNavigate} disabled={branch ? false : true}>
-                            <AiOutlineApi className="mr-2" />
-                            API Explorer
-                        </Button>
                         <AlertDialog>
                             {isCreateAccess && <AlertDialogTrigger asChild>
                                 <Button size='icon' variant='outline' className="h-8 w-8">
