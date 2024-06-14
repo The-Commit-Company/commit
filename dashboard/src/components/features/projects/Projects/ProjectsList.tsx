@@ -37,15 +37,15 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
     const [selectOpen, setSelectOpen] = useState(false)
 
     return (
-        <li className="w-full h-auto hover:shadow-sm">
+        <li className="w-full h-auto hover:shadow-sm px-2">
             <div className="py-2 flex flex-col justify-between">
                 <div className="flex space-x-4 items-center justify-between">
                     <div className="flex flex-col">
 
                         <div className="flex space-x-3 items-start">
-                            <Avatar className="h-11 w-11 rounded-md">
+                            <Avatar className="h-11 w-11 rounded-md border border-gray-100">
                                 <AvatarImage src={project.image} />
-                                <AvatarFallback className="h-11 w-11 rounded-md">{appNameInitials}</AvatarFallback>
+                                <AvatarFallback className="rounded-md">{appNameInitials}</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
                                 <div className="flex space-x-2 items-center">
