@@ -1,5 +1,5 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Header } from "@/components/common/Header"
 import { APIDetails } from "@/components/features/api_viewer/APIDetails"
 import { APIList } from "@/components/features/api_viewer/APIList"

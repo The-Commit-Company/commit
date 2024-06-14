@@ -1,5 +1,5 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader";
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
 import { ProjectData } from "@/components/features/projects/Projects";
 import { ViewERDProjectCard } from "@/components/features/projects/ViewERDAppDialog";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,11 @@ export const DoctypeListPopoverForMeta = ({ doctypes, setDoctypes }: {doctypes: 
 export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], setApps: React.Dispatch<React.SetStateAction<string[]>>, onClose: () => void }) => {
     const [selectApp, setSelectApp] = useState<string[]>(apps)
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches')
+    const { data, error, isLoading } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches', {}, 'get_project_list_with_branches', {
+        keepPreviousData: true,
+        revalidateOnFocus: true,
+        revalidateIfStale: false,
+    })
 
     const onViewERD = () => {
         setApps(selectApp)

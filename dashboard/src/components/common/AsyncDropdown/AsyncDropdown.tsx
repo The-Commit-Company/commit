@@ -10,7 +10,7 @@ import { getSystemDefault } from '@/utils/defaults';
 import { useGetDoctypeMeta } from '@/hooks/useGetDoctypeMeta';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getLinkTitleAtom, setLinkTitleAtom } from './LinkTitles';
-import { SpinnerLoader } from '../FullPageLoader.tsx/SpinnerLoader';
+import { SpinnerLoader } from '../FullPageLoader/SpinnerLoader';
 import { getErrorMessages } from '../ErrorBanner/ErrorBanner';
 import { MarkdownRenderer } from '../MarkdownRenderer/MarkdownRenderer';
 
