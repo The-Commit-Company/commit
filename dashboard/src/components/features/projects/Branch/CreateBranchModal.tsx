@@ -9,6 +9,7 @@ import { useFrappeCreateDoc, useFrappeEventListener } from "frappe-react-sdk"
 import { KeyedMutator } from "swr"
 import { useState } from "react"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
+import { AsyncDropdown } from "@/components/common/AsyncDropdown/AsyncDropdown"
 
 type FormFields = {
     project: string,
@@ -107,6 +108,8 @@ const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
             {creationError && <ErrorBanner error={creationError} />}
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
+                    <Label htmlFor="project">Project</Label>
+                    <AsyncDropdown name="project" doctype="Commit Project" placeholder="Select Project" className="mb-3 p-3 w-full" />
                     <Label htmlFor="branchname">Branch Name</Label>
                     <Input
                         {...register("branch_name")}

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from "@/components/ui/use-toast"
 import { ProjectData } from "../Projects"
 import { KeyedMutator } from "swr"
+import { AsyncDropdown } from "@/components/common/AsyncDropdown/AsyncDropdown"
 
 export type FormFields = {
     org: string,
@@ -49,6 +50,8 @@ const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
             </DialogHeader>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
+                    <Label htmlFor="org">Organization</Label>
+                    <AsyncDropdown name="org" doctype="Commit Organization" placeholder="Select Organization" className="mb-3 p-3 w-full" />
                     <Label htmlFor="projectdisplayname">Project Display Name</Label>
                     <Input
                         {...methods.register("display_name")}
