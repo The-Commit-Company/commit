@@ -7,6 +7,8 @@ import { useFrappeCreateDoc } from 'frappe-react-sdk'
 import { useToast } from '@/components/ui/use-toast'
 import { ProjectData } from '../Projects'
 import { KeyedMutator } from 'swr'
+import { ErrorBanner } from '@/components/common/ErrorBanner/ErrorBanner'
+import { SpinnerLoader } from '@/components/common/FullPageLoader/SpinnerLoader'
 
 type FormFields = {
     organization_name: string,
@@ -24,7 +26,7 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>()
 
-    const { createDoc, reset } = useFrappeCreateDoc()
+    const { createDoc, reset, loading, error } = useFrappeCreateDoc()
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
         createDoc('Commit Organization', data)
@@ -37,7 +39,6 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
             }))
     }
 
-
     return (
         <DialogContent>
             <DialogHeader>
@@ -46,11 +47,15 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
                     Please enter the Name and the Github Repo Name of the Organization.
                 </DialogDescription>
             </DialogHeader>
+            {error && <ErrorBanner error={error} />}
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <Label htmlFor="orgname">Organization Name</Label>
                     <Input
-                        {...methods.register("organization_name")}
+                        {...methods.register("organization_name", {
+                            required: 'Organization Name is required'
+                        })}
+                        required
                         id="orgname"
                         type="text"
                         placeholder="eg. Frappe Framework"
@@ -73,7 +78,8 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
-                        <Button type="submit" >
+                        <Button type="submit" disabled={loading}>
+                            {loading && <SpinnerLoader />}
                             Submit
                         </Button>
                     </DialogFooter>

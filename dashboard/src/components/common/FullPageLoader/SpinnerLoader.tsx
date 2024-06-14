@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface SpinnerLoaderProps {
+interface AsyncSpinnerLoaderProps {
     size?: number;
     color?: string;
     position?: 'absolute' | 'fixed';
@@ -10,7 +10,7 @@ interface SpinnerLoaderProps {
     left?: string;
 }
 
-export const SpinnerLoader: React.FC<SpinnerLoaderProps> = ({
+export const AsyncSpinnerLoader: React.FC<AsyncSpinnerLoaderProps> = ({
     size = 4,
     color = 'text-gray-200',
     position = 'fixed',
@@ -42,3 +42,17 @@ export const SpinnerLoader: React.FC<SpinnerLoaderProps> = ({
         ></div>
     );
 };
+
+export interface SpinnerLoaderProps {
+    className?: string;
+}
+
+export const SpinnerLoader = ({ className }: SpinnerLoaderProps) => {
+
+    return (
+        <div
+            className={`inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current text-gray-200 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white ${className}`}
+            role="status">
+        </div>
+    )
+}

@@ -31,7 +31,7 @@ export const APIExplorer = () => {
         return (
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button size='sm' disabled={data.message.length === 0} variant={'outline'}>
+                    <Button size='sm' disabled={data.message?.length === 0} variant={'outline'}>
                         <AiOutlineApi className="mr-2" />
                         API Explorer
                     </Button>
@@ -77,7 +77,7 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
             </ul>
 
             <DialogFooter>
-                <Button onClick={onNavigate} disabled={branch.length === 0}>
+                <Button onClick={onNavigate} disabled={branch?.length === 0}>
                     API Explorer
                 </Button>
             </DialogFooter>

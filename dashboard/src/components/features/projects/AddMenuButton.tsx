@@ -4,7 +4,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
@@ -49,17 +48,14 @@ export const DropdownMenuDemo = ({ mutate }: {
                 <DropdownMenuItem onClick={() => setCreateOrg(true)} >
                     <VscOrganization className="mr-2 h-4 w-4" />
                     <span>Add Org</span>
-                    <DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCreateProject(true)}>
                     <VscGithubProject className="mr-2 h-4 w-4" />
                     <span>Add Project</span>
-                    <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setOpen(true)} >
                     <IoIosGitBranch className="mr-2 h-4 w-4" />
                     <span>Add Branch</span>
-                    <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                 </DropdownMenuItem>
             </DropdownMenuContent>
             <Dialog open={createOrg} onOpenChange={setCreateOrg}>
