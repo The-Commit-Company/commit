@@ -15,18 +15,13 @@ export type FormFields = {
     description: string,
 }
 interface CreateProjectModalProps {
-    org: ProjectData,
     mutate: KeyedMutator<{ message: ProjectData[]; }>,
     onClose: VoidFunction
 }
 
-const CreateProjectModal = ({ org, mutate, onClose }: CreateProjectModalProps) => {
+const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
     const { toast } = useToast()
-    const methods = useForm<FormFields>({
-        defaultValues: {
-            org: org.name
-        }
-    })
+    const methods = useForm<FormFields>()
 
     const { createDoc, reset } = useFrappeCreateDoc()
 
@@ -47,8 +42,7 @@ const CreateProjectModal = ({ org, mutate, onClose }: CreateProjectModalProps) =
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Add Project for{' '}{org.organization_name}
-                </DialogTitle>
+                <DialogTitle>Add Project</DialogTitle>
                 <DialogDescription>
                     Please enter details of the project.
                 </DialogDescription>

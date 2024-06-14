@@ -3,11 +3,9 @@ import { CardDescription } from "@/components/ui/card";
 import { isSystemManager } from "@/utils/roles";
 import { useState, useMemo } from "react";
 import { AiOutlineApi, AiOutlineDelete } from "react-icons/ai";
-import { MdAdd } from "react-icons/md";
 import { RxDragHandleDots1 } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { KeyedMutator } from "swr";
-import CreateBranchModal from "../Branch/CreateBranchModal";
 import ManageBranchModal from "../Branch/ManageBranchModal";
 import { ProjectWithBranch, ProjectData } from "../Projects";
 import DeleteProjectModal from "./DeleteProjectModal";
@@ -41,8 +39,6 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
     }, [project])
 
     const isCreateAccess = isSystemManager()
-
-    const [open, setOpen] = useState(false)
 
     const [openManageModal, setOpenManageModal] = useState(false)
 
@@ -88,17 +84,8 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
 
                                 {isCreateAccess &&
                                     <>
-                                        {
-                                            project.branches.length > 0 &&
-                                            <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
-                                        <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1" onClick={() => {
-                                            setOpen(true)
-                                            setSelectOpen(false)
-                                        }}>
-                                            <MdAdd className="h-4 w-4 mr-1" />
-                                            Add Branch
-                                        </Button>
-
+                                    {project.branches.length > 0 &&
+                                        <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
                                         {project.branches.length > 0 &&
                                             <Button
                                                 variant="ghost"
@@ -112,19 +99,12 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
                                             </Button>}
                                     </>
                                 }
-
                             </SelectContent>
                         </Select>
 
                         <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
                             <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
                         </Dialog>
-
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <CreateBranchModal setBranch={setBranch} project={project} mutate={mutate} setOpen={setOpen} />
-                        </Dialog>
-
-
                         <Button size='sm' onClick={onNavigate} disabled={branch ? false : true}>
                             <AiOutlineApi className="mr-2" />
                             API Explorer

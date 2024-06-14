@@ -3,7 +3,7 @@ import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button'
-import { ProjectData, ProjectWithBranch } from "../Projects"
+import { ProjectData } from "../Projects"
 import { useToast } from "@/components/ui/use-toast"
 import { useFrappeCreateDoc, useFrappeEventListener } from "frappe-react-sdk"
 import { KeyedMutator } from "swr"
@@ -16,75 +16,68 @@ type FormFields = {
 }
 
 export interface BranchProps {
-    project: ProjectWithBranch
     mutate: KeyedMutator<{
         message: ProjectData[];
     }>
-    setBranch: React.Dispatch<React.SetStateAction<string>>
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps) => {
+const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
 
     const [desc, setDesc] = useState<string>("Please enter the branch name.")
     const [eventLoading, setEventLoading] = useState<boolean>(false)
 
     const { toast } = useToast()
-    const methods = useForm<FormFields>({
-        defaultValues: {
-            project: project.name
-        }
-    })
+    const methods = useForm<FormFields>()
+
+    const project = methods.watch('project')
 
     const { createDoc, reset, loading, error } = useFrappeCreateDoc()
 
     const branchName = methods.watch('branch_name')
 
-
     useFrappeEventListener('commit_branch_clone_repo', (data) => {
-        if (data.branch_name === branchName && data.project === project.name) {
+        if (data.branch_name === branchName && data.project === project) {
             setDesc("Cloning repository...")
         }
     })
 
     useFrappeEventListener('commit_branch_get_modules', (data) => {
-        if (data.branch_name === branchName && data.project === project.name) {
+        if (data.branch_name === branchName && data.project === project) {
             setDesc("Getting modules for app...")
         }
     })
 
     useFrappeEventListener('commit_branch_find_apis', (data) => {
-        if (data.branch_name === branchName && data.project === project.name) {
+        if (data.branch_name === branchName && data.project === project) {
             setDesc("Finding all APIs...")
         }
     })
 
     useFrappeEventListener('commit_project_branch_created', (data) => {
-        if (data.branch_name === branchName && data.project === project.name) {
+        if (data.branch_name === branchName && data.project === project) {
             setDesc("Branch created successfully.")
-            handleClose(data.name, data.branch_name)
+            handleClose(data.branch_name)
         }
     })
 
     useFrappeEventListener('commit_branch_creation_error', (data) => {
-        if (data.branch_name === branchName && data.project === project.name) {
+        if (data.branch_name === branchName && data.project === project) {
             setDesc("")
             setCreationError(data.error)
             setEventLoading(false)
-            setBranch("")
         }
     })
 
     const [creationError, setCreationError] = useState(null)
 
 
-    const handleClose = (name: string, branch_name: string) => {
+    const handleClose = (branch_name: string) => {
         setEventLoading(false)
-        setBranch(name)
         setCreationError(null)
         methods.reset()
         toast({
-            description: `Branch ${branch_name} added for ${project.display_name}`
+            description: `Branch ${branch_name} added.`
         })
         reset()
         setDesc("")
@@ -95,9 +88,8 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
 
     const onSubmit: SubmitHandler<FormFields> = (data) => {
         createDoc('Commit Project Branch', data)
-            .then((doc) => {
+            .then(() => {
                 mutate()
-                setBranch(doc.name)
                 setEventLoading(true)
             })
     }
@@ -105,7 +97,7 @@ const CreateBranchModal = ({ project, mutate, setBranch, setOpen }: BranchProps)
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Adding Branch of{' '}{project.display_name}
+                <DialogTitle>Add Branch.
                 </DialogTitle>
                 <DialogDescription>
                     {desc}
