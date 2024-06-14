@@ -1,4 +1,4 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AppModuleData } from "@/types/CommitProjectBranch"

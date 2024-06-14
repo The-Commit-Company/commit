@@ -1,6 +1,6 @@
 import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Tabs } from "@/components/common/Tabs"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { APIData, Argument } from "@/types/APIData"

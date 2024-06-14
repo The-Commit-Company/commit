@@ -1,4 +1,4 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { PostgresRelationship, PostgresTable } from "@/types/Table"
 import { useFrappePostCall } from "frappe-react-sdk"
 import { useEffect, useState } from "react"

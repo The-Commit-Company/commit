@@ -5,7 +5,7 @@ import { useFrappeGetCall } from "frappe-react-sdk"
 import { APIData } from "@/types/APIData"
 import { useParams } from "react-router-dom"
 import { Header } from "@/components/common/Header"
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 
 

@@ -1,4 +1,4 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { CardDescription } from "@/components/ui/card"
@@ -6,9 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
-import { AiOutlineApi } from "react-icons/ai"
 import { BsDatabase } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
+import { YourAppAPIExplorer } from "./YourAppAPIExplorer"
 
 export interface AppsData {
     app_name: string
@@ -22,7 +22,11 @@ export interface AppsData {
 export const YourApps = () => {
     const navigate = useNavigate()
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: AppsData[] }>('commit.api.meta_data.get_installed_apps')
+    const { data, error, isLoading } = useFrappeGetCall<{ message: AppsData[] }>('commit.api.meta_data.get_installed_apps', {}, 'get_installed_apps', {
+        keepPreviousData: true,
+        revalidateOnFocus: true,
+        revalidateIfStale: false,
+    })
 
     if (error) {
         return <div>Error</div>
@@ -38,13 +42,16 @@ export const YourApps = () => {
                 <div className="flex flex-row items-center space-x-2 gap-2 justify-between">
                     <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
                     </h1>
-                    <Button size='sm' onClick={() => {
-                        navigate({
-                            pathname: `/meta-erd/create`,
-                        })
-                    }}>
-                        <BsDatabase className='mr-2' /> View ERD
-                    </Button>
+                    <div className="flex items-center space-x-2">
+                        <YourAppAPIExplorer />
+                        <Button size='sm' onClick={() => {
+                            navigate({
+                                pathname: `/meta-erd/create`,
+                            })
+                        }}>
+                            <BsDatabase className='mr-2' /> View ERD
+                        </Button>
+                    </div>
                 </div>
                 <div className="h-full space-y-">
                     <ul role="list" className="divide-y divide-gray-200">
@@ -60,14 +67,6 @@ export const YourApps = () => {
 
 
 export const ProjectCard = ({ app }: { app: AppsData }) => {
-
-    const navigate = useNavigate()
-
-    const onNavigate = () => {
-        navigate({
-            pathname: `/meta-viewer/${app.app_name}`
-        })
-    }
 
     const appNameInitials = useMemo(() => {
         return app.app_name.split('_').map((word) => word[0]).join('').toUpperCase()
@@ -93,9 +92,7 @@ export const ProjectCard = ({ app }: { app: AppsData }) => {
                             <CardDescription className="text-sm text-gray-500">{app.app_description}</CardDescription>
                         </div>
                     </div>
-
-                    <div className="flex items-center space-x-4">
-                        <Select
+                    <Select
                             disabled
                             defaultValue={app.git_branch}
                         >
@@ -105,13 +102,7 @@ export const ProjectCard = ({ app }: { app: AppsData }) => {
                             <SelectContent>
                                 <SelectItem value={app.git_branch ?? ''} key={app.git_branch} >{app.git_branch}</SelectItem>
                             </SelectContent>
-                        </Select>
-
-                        <Button size='sm' onClick={onNavigate}>
-                            <AiOutlineApi className="mr-2" />
-                            API Explorer
-                        </Button>
-                    </div>
+                    </Select>
                 </div>
             </div >
         </li >

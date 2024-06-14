@@ -2,12 +2,9 @@ import { Button } from "@/components/ui/button";
 import { CardDescription } from "@/components/ui/card";
 import { isSystemManager } from "@/utils/roles";
 import { useState, useMemo } from "react";
-import { AiOutlineApi, AiOutlineDelete } from "react-icons/ai";
-import { MdAdd } from "react-icons/md";
+import { AiOutlineDelete } from "react-icons/ai";
 import { RxDragHandleDots1 } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
 import { KeyedMutator } from "swr";
-import CreateBranchModal from "../Branch/CreateBranchModal";
 import ManageBranchModal from "../Branch/ManageBranchModal";
 import { ProjectWithBranch, ProjectData } from "../Projects";
 import DeleteProjectModal from "./DeleteProjectModal";
@@ -27,37 +24,28 @@ export interface ProjectCardProps {
 
 export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
 
-    const navigate = useNavigate()
-
     const [branch, setBranch] = useState<string>(project.branches[0]?.name)
 
-    const onNavigate = () => {
-        navigate({
-            pathname: `/project-viewer/${branch}`
-        })
-    }
     const appNameInitials = useMemo(() => {
         return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
     }, [project])
 
     const isCreateAccess = isSystemManager()
 
-    const [open, setOpen] = useState(false)
-
     const [openManageModal, setOpenManageModal] = useState(false)
 
     const [selectOpen, setSelectOpen] = useState(false)
 
     return (
-        <li className="w-full h-auto hover:shadow-sm">
+        <li className="w-full h-auto hover:shadow-sm px-2">
             <div className="py-2 flex flex-col justify-between">
                 <div className="flex space-x-4 items-center justify-between">
                     <div className="flex flex-col">
 
                         <div className="flex space-x-3 items-start">
-                            <Avatar className="h-11 w-11 rounded-md">
+                            <Avatar className="h-11 w-11 rounded-md border border-gray-100">
                                 <AvatarImage src={project.image} />
-                                <AvatarFallback className="h-11 w-11 rounded-md">{appNameInitials}</AvatarFallback>
+                                <AvatarFallback className="rounded-md">{appNameInitials}</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col">
                                 <div className="flex space-x-2 items-center">
@@ -88,17 +76,8 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
 
                                 {isCreateAccess &&
                                     <>
-                                        {
-                                            project.branches.length > 0 &&
-                                            <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
-                                        <Button variant="ghost" className="w-full h-8 font-normal text-sm left-0 flex justify-start pl-1" onClick={() => {
-                                            setOpen(true)
-                                            setSelectOpen(false)
-                                        }}>
-                                            <MdAdd className="h-4 w-4 mr-1" />
-                                            Add Branch
-                                        </Button>
-
+                                    {project.branches.length > 0 &&
+                                        <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
                                         {project.branches.length > 0 &&
                                             <Button
                                                 variant="ghost"
@@ -112,23 +91,12 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
                                             </Button>}
                                     </>
                                 }
-
                             </SelectContent>
                         </Select>
 
                         <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
                             <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
                         </Dialog>
-
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <CreateBranchModal setBranch={setBranch} project={project} mutate={mutate} setOpen={setOpen} />
-                        </Dialog>
-
-
-                        <Button size='sm' onClick={onNavigate} disabled={branch ? false : true}>
-                            <AiOutlineApi className="mr-2" />
-                            API Explorer
-                        </Button>
                         <AlertDialog>
                             {isCreateAccess && <AlertDialogTrigger asChild>
                                 <Button size='icon' variant='outline' className="h-8 w-8">

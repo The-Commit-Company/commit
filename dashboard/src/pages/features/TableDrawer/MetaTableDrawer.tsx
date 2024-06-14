@@ -1,4 +1,3 @@
-// import { Dialog, Transition } from '@headlessui/react'
 import { LinkIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { DocType } from "@/types/Core/DocType"
@@ -11,7 +10,7 @@ import { PermissionsTable } from './PermissionsTable/PermissionsTable'
 import { DocPerm } from '@/types/Core/DocPerm'
 import { LinkTable } from './LinkTable/LinkTable'
 import { DocTypeLink } from '@/types/Core/DocTypeLink'
-import { FullPageLoader } from '@/components/common/FullPageLoader.tsx/FullPageLoader'
+import { FullPageLoader } from '@/components/common/FullPageLoader/FullPageLoader'
 
 
 export interface Props {
