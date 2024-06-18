@@ -76,8 +76,8 @@ export const ProjectCard = ({ project, mutate }: ProjectCardProps) => {
 
                                 {isCreateAccess &&
                                     <>
-                                    {project.branches.length > 0 &&
-                                        <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
+                                        {project.branches.length > 0 &&
+                                            <div className="w-full h-[1px] bg-gray-200 shadow-sm my-1" />}
                                         {project.branches.length > 0 &&
                                             <Button
                                                 variant="ghost"

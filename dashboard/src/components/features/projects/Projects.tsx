@@ -1,43 +1,51 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import { CommitProject } from "@/types/commit/CommitProject"
-import { useFrappeGetCall } from "frappe-react-sdk"
-import { BsDatabase } from "react-icons/bs"
-import { ViewERDDialogContent } from "./ViewERDAppDialog"
-import { isSystemManager } from "@/utils/roles"
-import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
-import { OrgComponent } from "./Org/OrgList"
-import { DropdownMenuDemo } from "./AddMenuButton"
-import { APIExplorer } from "./APIExplorer"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { CommitProject } from "@/types/commit/CommitProject";
+import { useFrappeGetCall } from "frappe-react-sdk";
+import { BsDatabase } from "react-icons/bs";
+import { ViewERDDialogContent } from "./ViewERDAppDialog";
+import { isSystemManager } from "@/utils/roles";
+import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch";
+import { DropdownMenuDemo } from "./AddMenuButton";
+import { APIExplorer } from "./APIExplorer";
+import ProjectCard2 from "./ProjectCard2";
 
 export interface ProjectWithBranch extends CommitProject {
-    branches: CommitProjectBranch[]
+    branches: CommitProjectBranch[];
 }
 export interface ProjectData extends CommitProjectBranch {
-    projects: ProjectWithBranch[]
-    organization_name: string
-    image: string
-    name: string
-    about: string
+    projects: ProjectWithBranch[];
+    organization_name: string;
+    image: string;
+    name: string;
+    about: string;
 }
 export const Projects = () => {
+    const isCreateAccess = isSystemManager();
 
-    const isCreateAccess = isSystemManager()
-
-    const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches', {}, 'get_project_list_with_branches', {
-        keepPreviousData: true,
-        revalidateOnFocus: true,
-        revalidateIfStale: false,
-    })
+    const { data, error, isLoading, mutate } = useFrappeGetCall<{
+        message: ProjectData[];
+    }>(
+        "commit.api.commit_project.commit_project.get_project_list_with_branches",
+        {},
+        "get_project_list_with_branches",
+        {
+            keepPreviousData: true,
+            revalidateOnFocus: true,
+            revalidateIfStale: false,
+        }
+    );
 
     if (error) {
-        return <div>Error</div>
+        return <div>Error</div>;
     }
 
     if (isLoading) {
-        return <FullPageLoader />
+        return <FullPageLoader />;
     }
+
+    console.log("data", data?.message);
 
     if (data && data.message) {
         return (
@@ -48,20 +56,34 @@ export const Projects = () => {
                         <APIExplorer />
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button size='sm' disabled={data.message.length === 0}>
-                                    <BsDatabase className='mr-2' /> View ERD
+                                <Button size="sm" disabled={data.message.length === 0}>
+                                    <BsDatabase className="mr-2" /> View ERD
                                 </Button>
                             </DialogTrigger>
                             <ViewERDDialogContent data={data.message} />
                         </Dialog>
                     </div>
                     <ul role="list" className="space-y-2 py-2">
-                        {data.message.map((org: ProjectData) => {
+                        {/* {data.message.map((org: ProjectData) => {
                             return <OrgComponent org={org} key={org.organization_name} mutate={mutate} />
-                        })}
+                        })} */}
+
+                        <div className="flex gap-3">
+                            {data.message.map((org: ProjectData) =>
+                                org.projects.map((project) => {
+                                    return (
+                                        <ProjectCard2
+                                            project={project}
+                                            key={project.name}
+                                            mutate={mutate}
+                                        />
+                                    );
+                                })
+                            )}
+                        </div>
                     </ul>
                 </div>
             </div>
-        )
+        );
     }
-}
+};
