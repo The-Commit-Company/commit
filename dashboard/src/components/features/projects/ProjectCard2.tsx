@@ -19,6 +19,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { RxDragHandleDots1 } from "react-icons/rx";
 import { AiOutlineMenu } from "react-icons/ai";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { set } from "react-hook-form";
 
 export interface ProjectCardProps {
   project: ProjectWithBranch
@@ -38,9 +39,7 @@ export function ProjectCard2({ project, mutate }: ProjectCardProps) {
 
   const [openManageModal, setOpenManageModal] = useState(false)
 
-  const handleMenu = () => {
-
-  }
+  const [openDeleteDialogModal, setOpenDeleteDialogModal] = useState(false)
 
   return (
     <Card className="w-[300px] h-[400px]">
@@ -64,32 +63,29 @@ export function ProjectCard2({ project, mutate }: ProjectCardProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline"><AiOutlineMenu /></Button>
             </DropdownMenuTrigger>
+            {isCreateAccess && 
             <DropdownMenuContent className="w-56">
-              {isCreateAccess &&
+              {project.branches.length > 0 &&
                 <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
-                  {project.branches.length > 0 &&
-                    <>
-                      <RxDragHandleDots1 className="h-4 w-4 mr-1" />
-                      <span> Manage Branches</span>
-                    </>
-                  }
+                  <>
+                    <RxDragHandleDots1 className="h-4 w-4 mr-1" />
+                    <span> Manage Branches</span>
+                  </>
                 </DropdownMenuItem>
               }
-              <DropdownMenuItem>
-                <AlertDialog>
-                  {isCreateAccess && <AlertDialogTrigger asChild>
-                    <Button size='icon' variant='outline' className="h-8 w-8">
-                      <AiOutlineDelete />
-                    </Button>
-                  </AlertDialogTrigger>}
-                  <DeleteProjectModal project={project} mutate={mutate} />
-                </AlertDialog>
+              <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
+                <AiOutlineDelete className="h-4 w-4 mr-1" />
+                <span>Delete Project</span>
               </DropdownMenuItem>
 
-            </DropdownMenuContent>
+            </DropdownMenuContent>}
           </DropdownMenu>
         </div>
       </CardHeader>
+
+      <AlertDialog open={openDeleteDialogModal} onOpenChange={setOpenDeleteDialogModal}>
+        <DeleteProjectModal project={project} mutate={mutate} />
+      </AlertDialog>
 
       <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
         <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
