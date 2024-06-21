@@ -9,7 +9,9 @@ import { isSystemManager } from "@/utils/roles";
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch";
 import { DropdownMenuDemo } from "./AddMenuButton";
 import { APIExplorer } from "./APIExplorer";
-import ProjectCard2 from "./ProjectCard2";
+import ProjectCard from "./Projects/ProjectCard";
+import { log } from "console";
+
 
 export interface ProjectWithBranch extends CommitProject {
     branches: CommitProjectBranch[];
@@ -45,8 +47,6 @@ export const Projects = () => {
         return <FullPageLoader />;
     }
 
-    console.log("data", data?.message);
-
     if (data && data.message) {
         return (
             <div className="mx-auto pl-2 pr-4 h-[calc(100vh-4rem)]">
@@ -63,25 +63,20 @@ export const Projects = () => {
                             <ViewERDDialogContent data={data.message} />
                         </Dialog>
                     </div>
-                    <ul role="list" className="space-y-2 py-2">
-                        {/* {data.message.map((org: ProjectData) => {
-                            return <OrgComponent org={org} key={org.organization_name} mutate={mutate} />
-                        })} */}
+                    <div className="flex gap-6 flex-wrap p-4">
+                        {data.message.map((org: ProjectData) => {
+                            const orgName = org.organization_name;
+                            return org.projects.map((project) => (
+                                <ProjectCard
+                                    orgName={orgName}
+                                    project={project}
+                                    key={project.name}
+                                    mutate={mutate}
+                                />
+                            ));
+                        })}
+                    </div>
 
-                        <div className="flex gap-3">
-                            {data.message.map((org: ProjectData) =>
-                                org.projects.map((project) => {
-                                    return (
-                                        <ProjectCard2
-                                            project={project}
-                                            key={project.name}
-                                            mutate={mutate}
-                                        />
-                                    );
-                                })
-                            )}
-                        </div>
-                    </ul>
                 </div>
             </div>
         );
