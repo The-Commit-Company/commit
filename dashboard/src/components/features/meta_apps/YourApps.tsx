@@ -1,14 +1,14 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { CardDescription } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
 import { BsDatabase } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
 import { YourAppAPIExplorer } from "./YourAppAPIExplorer"
+import { Badge } from "@/components/ui/badge"
 
 export interface AppsData {
     app_name: string
@@ -39,9 +39,8 @@ export const YourApps = () => {
     if (data && data.message) {
         return (
             <div className="mx-auto px-4 h-[calc(100vh-4rem)]">
-                <div className="flex flex-row items-center space-x-2 gap-2 justify-between">
-                    <h1 className="scroll-m-20 text-2xl font-semibold tracking-normal">
-                    </h1>
+                <div className="flex flex-row items-center space-x-2 gap-2 justify-end">
+
                     <div className="flex items-center space-x-2">
                         <YourAppAPIExplorer />
                         <Button size='sm' onClick={() => {
@@ -53,12 +52,10 @@ export const YourApps = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="h-full space-y-">
-                    <ul role="list" className="divide-y divide-gray-200">
-                        {data.message.map((app: AppsData) => {
-                            return <ProjectCard key={app.app_name} app={app} />
-                        })}
-                    </ul>
+                <div className="flex gap-6 flex-wrap p-4">
+                    {data.message.map((app: AppsData) => {
+                        return <AppsCard key={app.app_name} app={app} />
+                    })}
                 </div>
             </div>
         )
@@ -66,45 +63,27 @@ export const YourApps = () => {
 }
 
 
-export const ProjectCard = ({ app }: { app: AppsData }) => {
+const AppsCard = ({ app }: { app: AppsData }) => {
 
     const appNameInitials = useMemo(() => {
         return app.app_name.split('_').map((word) => word[0]).join('').toUpperCase()
     }, [app])
 
     return (
-        <li className="w-full h-auto hover:shadow-sm">
-            <div className="py-4 flex flex-col justify-between">
-                <div className="flex space-x-4 items-center justify-between">
-                    <div className="flex space-x-3 items-center">
-                        <Avatar className="h-11 w-11 rounded-md">
-                            <AvatarImage src={app.app_logo_url} />
-                            <AvatarFallback className="h-11 w-11 rounded-md">{appNameInitials}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                            <div className="flex space-x-2 items-center">
-                                <h1 className="text-lg font-medium tracking-normal">{app.app_name}</h1>
-                                <span className="text-sm text-gray-500">
-                                    by
-                                </span>
-                                <h1 className="text-md font-normal tracking-normal">{app.app_publisher}</h1>
-                            </div>
-                            <CardDescription className="text-sm text-gray-500">{app.app_description}</CardDescription>
-                        </div>
-                    </div>
-                    <Select
-                            disabled
-                            defaultValue={app.git_branch}
-                        >
-                            <SelectTrigger className="h-8 w-40 truncate">
-                                <SelectValue placeholder="Select Branch" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value={app.git_branch ?? ''} key={app.git_branch} >{app.git_branch}</SelectItem>
-                            </SelectContent>
-                    </Select>
-                </div>
-            </div >
-        </li >
+        <Card className="w-[220px] h-[300px] relative">
+            <CardContent className="flex flex-col gap-4 items-start p-4">
+                <Avatar className="h-32 w-full flex items-center rounded-md border border-gray-100 justify-center">
+                    <AvatarImage src={app.app_logo_url} />
+                    <AvatarFallback className="rounded-md text-4xl">{appNameInitials}</AvatarFallback>
+                </Avatar>
+                <CardTitle>{app.app_name}</CardTitle>
+                <CardDescription>
+                    {app.app_description}
+                </CardDescription>
+            </CardContent>
+            <CardFooter className="absolute mt-2 bottom-0 p-4">
+                <Badge variant="secondary">{app.app_publisher}</Badge>
+            </CardFooter>
+        </Card>
     )
 }
