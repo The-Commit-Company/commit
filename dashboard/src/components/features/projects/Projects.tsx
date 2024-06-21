@@ -10,7 +10,6 @@ import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch";
 import { DropdownMenuDemo } from "./AddMenuButton";
 import { APIExplorer } from "./APIExplorer";
 import ProjectCard from "./Projects/ProjectCard";
-import { log } from "console";
 
 
 export interface ProjectWithBranch extends CommitProject {
