@@ -54,7 +54,7 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                     disabled={deleteLoading || loading}
                 >
                     <IoMdSync className={loading ? 'animate-spin' : ''} />
-                    Sync
+                    Fetch latest code
                 </Button>
                 <Button
                     size={'sm'}

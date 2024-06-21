@@ -9,12 +9,12 @@ export const Overview = () => {
     const areAppsAvailable = isSystemAppAvailable()
 
     return (
-        <div className="h-screen flex flex-col gap-2 space-x-2">
+        <div className="h-screen flex flex-col gap-2 space-x-2 p-2 pt-0">
             <Header />
             {areAppsAvailable ? <Tabs defaultValue="projects" className="h-full">
                 <TabsList className="grid grid-cols-2 w-[400px]">
                     <TabsTrigger value="projects">Projects</TabsTrigger>
-                    <TabsTrigger value="your-apps">Your Apps</TabsTrigger>
+                    <TabsTrigger value="your-apps">Site Apps</TabsTrigger>
                 </TabsList>
                 <TabsContent value="projects">
                     <Projects />

@@ -59,18 +59,18 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size='icon' className="h-8 w-8"> <BsThreeDotsVertical /></Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
+                <DropdownMenuContent className="w-50">
                   {project.branches.length > 0 &&
                     <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
                       <>
-                        <RxDragHandleDots1 className="h-4 w-4 mr-1" />
-                        <span> Manage Branches</span>
+                        <RxDragHandleDots1 className="h-4 w-4 mr-2" />
+                        Manage Branches
                       </>
                     </DropdownMenuItem>
                   }
                   <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
-                    <AiOutlineDelete className="h-4 w-4 mr-1" />
-                    <span>Delete Project</span>
+                    <AiOutlineDelete className="h-4 w-4 mr-2" />
+                    Delete Project
                   </DropdownMenuItem>
 
                 </DropdownMenuContent>
