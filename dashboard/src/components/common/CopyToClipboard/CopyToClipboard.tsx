@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/use-toast"
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
 import { useEffect, useState } from "react"
 
@@ -13,8 +14,10 @@ export function CopyButton({
 }: CopyButtonProps) {
     const [hasCopied, setHasCopied] = useState(false)
 
+    const { toast } = useToast()
+
     const copyToClipboardWithMeta = async (value: string) => {
-        try { await navigator.clipboard.writeText(value) }
+        try { await navigator.clipboard.writeText(value).then(() => toast({ description: "Copied to clipboard", duration: 1500 })) }
         catch (err) { console.error("Failed to copy: ", err) }
     }
 

@@ -34,7 +34,6 @@ function App() {
           <Route path='/project-erd' element={<ERDViewer />} />
           <Route path="/project-viewer/:ID" element={<APIViewerContainer />} />
           <Route path="/meta-viewer/:ID" element={<AppAPIViewerContainer />} />
-          <Route path="/meta-viewer/:ID" element={<AppAPIViewerContainer />} />
           <Route path='/meta-erd/:ID' element={<ERDViewer />} />
           <Route path='/meta-erd/create' element={<CreateERD />} />
         </Routes>
