@@ -23,6 +23,7 @@ const DeleteProjectModal = ({ project, mutate }: DeleteProjectModalProps) => {
                 reset()
             }).then(() => toast({
                 description: `Project ${project.display_name} Deleted`,
+                duration: 1500
             }))
     }
     return (

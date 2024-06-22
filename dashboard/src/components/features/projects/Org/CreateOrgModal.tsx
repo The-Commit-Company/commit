@@ -36,6 +36,7 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
                 onClose()
             }).then(() => toast({
                 description: "Organization Added",
+                duration: 1500
             }))
     }
 

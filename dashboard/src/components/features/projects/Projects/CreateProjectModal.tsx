@@ -34,7 +34,8 @@ const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
                 mutate()
                 onClose()
                 return toast({
-                    description: "Project Added",
+                    description: "Project Added Successfully",
+                    duration: 1500
                 })
             })
     }

@@ -83,6 +83,7 @@ export const ImageUploader = ({ file, doctype, docname, onUpdate, fieldname = 'i
             }).then(() => {
                 onUpdate()
                 toast({
+                    description: "Image uploaded successfully.",
                     duration: 1500,
                 })
             }).catch(() => {

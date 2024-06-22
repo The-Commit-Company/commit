@@ -22,6 +22,7 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                 reset()
             }).then(() => toast({
                 description: "Branch Deleted Successfully",
+                duration: 1500
             }))
     }
 
@@ -34,6 +35,7 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
             callReset()
         }).then(() => toast({
             description: "Branch Synced!",
+            duration: 1500
         }))
     }
 

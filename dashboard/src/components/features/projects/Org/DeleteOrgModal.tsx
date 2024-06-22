@@ -23,6 +23,7 @@ const DeleteOrgModal = ({ org, mutate }: DeleteOrgModalProps) => {
                 reset()
             }).then(() => toast({
                 description: `Organization ${org.organization_name} Deleted`,
+                duration: 1500
             }))
     }
     return (

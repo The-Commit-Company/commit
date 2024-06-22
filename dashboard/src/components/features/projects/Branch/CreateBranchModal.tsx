@@ -78,7 +78,8 @@ const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
         setCreationError(null)
         methods.reset()
         toast({
-            description: `Branch ${branch_name} added.`
+            description: `Branch ${branch_name} added.`,
+            duration: 1500,
         })
         reset()
         setDesc("")
