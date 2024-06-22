@@ -153,6 +153,9 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
         block_start: apiData.block_start ?? 0,
         block_end: apiData.block_end ?? 0,
         viewer_type: viewerType
+    }, undefined, {
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
     })
     return (
         <div className="flex flex-col space-y-2">
@@ -160,7 +163,10 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
             {isLoading && <div className="flex items-center justify-center h-[calc(100vh-16rem)]">
                 <FullPageLoader />
             </div>}
-            <code className="bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
+            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
+                <div className="absolute top-0 right-0 p-2">
+                    <CopyButton value={data?.message?.file_content ?? ''} className="h-6 w-6" />
+                </div>
                 <pre className="counter-reset mb-2">
                     {isLoading && <FullPageLoader />}
                     {data?.message?.file_content}
