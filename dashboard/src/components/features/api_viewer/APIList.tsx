@@ -87,7 +87,7 @@ export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint }: { list
                 <li key={`${person.name}-${index}`} className={`flex justify-between gap-x-6 p-2 hover:bg-gray-100 cursor-pointer group ${selectedEndpoint === person.name ? 'bg-gray-100' : ''} `} onClick={() => setSelectedEndpoint(person.name)}>
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
-                            <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer group-hover:text-blue-600"><code>{person.name}</code></p>
+                            <p className={`text-sm font-semibold leading-6 cursor-pointer group-hover:text-blue-600 ${selectedEndpoint === person.name ? 'text-blue-600' : 'text-gray-900'}`}><code>{person.name}</code></p>
                             <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.api_path}</p>
                         </div>
                     </div>
