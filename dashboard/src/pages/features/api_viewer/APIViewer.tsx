@@ -36,6 +36,8 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
     const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.api_explorer.get_apis_for_project', {
         project_branch: projectBranch
     }, undefined, {
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
         onSuccess: (d: { message: GetAPIResponse }) => setSelectedEndpoint(d.message.apis[0].name)
     })
 
@@ -54,6 +56,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                         app_name={data?.message.app_name ?? ''}
                         branch_name={data?.message.branch_name ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
+                        selectedEndpoint={selectedendpoint}
                     />
 
                 </div>

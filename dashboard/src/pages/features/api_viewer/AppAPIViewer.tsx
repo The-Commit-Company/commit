@@ -29,6 +29,8 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
     const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.meta_data.get_apis_for_app', {
         app_name: appName
     }, undefined, {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
         onSuccess: (d: { message: GetAPIResponse }) => setSelectedEndpoint(d.message.apis?.[0]?.name)
     })
 
@@ -48,6 +50,7 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
                         app_name={data?.message.app_name ?? ''}
                         branch_name={data?.message.branch_name ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
+                        selectedEndpoint={selectedendpoint}
                     />
 
                 </div>
