@@ -2,11 +2,16 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/use-toast'
 import { convertFrappeTimestampToTimeAgo } from '@/components/utils/dateconversion'
 import { CommitProjectBranch } from '@/types/commit/CommitProjectBranch'
-import { useFrappeDeleteDoc, useFrappePostCall } from 'frappe-react-sdk'
+import { useFrappeDeleteDoc, useFrappePostCall, useFrappeUpdateDoc } from 'frappe-react-sdk'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { IoMdSync } from 'react-icons/io'
 import { ProjectData } from '../Projects'
 import { KeyedMutator } from 'swr'
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Controller, FormProvider, useForm } from 'react-hook-form'
+import { Label } from '@/components/ui/label'
+import { useState } from 'react'
 
 
 const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mutate: KeyedMutator<{ message: ProjectData[]; }> }) => {
@@ -39,6 +44,25 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
         }))
     }
 
+    const methods = useForm<CommitProjectBranch>({
+        defaultValues: {
+            frequency: branch.frequency
+        }
+    })
+
+    const { control } = methods
+
+    const { updateDoc } = useFrappeUpdateDoc()
+
+    const onSubmit = (data: CommitProjectBranch) => {
+        updateDoc("Commit Project Branch", branch.name, data)
+            .then(() => {
+
+            })
+    }
+
+    const [freqLabel, setFreqLabel] = useState("Select Frequency")
+
     return (
         <li className="pl-0 pt-2 hover:shadow-sm flex justify-between">
             <div className="flex flex-col items-start text-md tracking-normal">
@@ -58,6 +82,44 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                     <IoMdSync className={loading ? 'animate-spin' : ''} />
                     Fetch latest code
                 </Button>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            className="text-sm"
+                            variant="outline"
+                            size={'sm'}>{freqLabel}</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                        <FormProvider {...methods}>
+                            <form onSubmit={methods.handleSubmit(onSubmit)}>
+                                <div className="flex flex-col items-start p-1">
+                                    <Label>Select frequency for updating Branch</Label>
+                                    <Controller
+                                        control={control}
+                                        name='frequency'
+                                        render={({ field }) => (
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <SelectTrigger className="h-8 w-full mt-4 p-2">
+                                                    <SelectValue placeholder="Select Frequency" />
+                                                </SelectTrigger>
+                                                <SelectContent >
+                                                    <SelectItem value="Daily">Daily</SelectItem>
+                                                    <SelectItem value="Weekly">Weekly</SelectItem>
+                                                    <SelectItem value="Monthly">Monthly</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+                                <div className='flex justify-end items-end w-full'>
+                                        <Button type="submit" className='mt-4 px-4 py-[0px]'>
+                                            Set
+                                        </Button>
+                                    </div>
+                            </form>
+                        </FormProvider>
+                    </PopoverContent>
+                </Popover>
                 <Button
                     size={'sm'}
                     className="text-lg p-2" variant="destructive"
@@ -72,3 +134,5 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
 }
 
 export default ManageBranchItem
+
+
