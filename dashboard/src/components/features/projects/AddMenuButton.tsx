@@ -16,7 +16,7 @@ import { ProjectData } from "./Projects"
 import CreateProjectModal from "./Projects/CreateProjectModal"
 import CreateBranchModal from "./Branch/CreateBranchModal"
 
-export const DropdownMenuDemo = ({ mutate }: {
+export const AddMenuButton = ({ mutate }: {
     mutate: KeyedMutator<{
         message: ProjectData[];
     }>
