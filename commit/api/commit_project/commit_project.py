@@ -15,7 +15,7 @@ def get_project_list_with_branches():
         # organization["projects"] = projects
         for project in projects:
             branches = frappe.get_all("Commit Project Branch", filters={"project": project.get(
-                "name")}, fields=["branch_name", "last_fetched", "modules", "whitelisted_apis", "name"])
+                "name")}, fields=["branch_name", "last_fetched", "modules", "whitelisted_apis", "name", "frequency"])
             project["branches"] = branches
         organization["projects"] = projects
 

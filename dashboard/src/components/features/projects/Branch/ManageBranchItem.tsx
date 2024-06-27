@@ -46,28 +46,38 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
 
     const methods = useForm<CommitProjectBranch>({
         defaultValues: {
-            frequency: branch.frequency
+            frequency : branch.frequency
         }
     })
 
-    const { control } = methods
+    const { control, reset: formReset } = methods
 
     const { updateDoc } = useFrappeUpdateDoc()
 
     const onSubmit = (data: CommitProjectBranch) => {
         updateDoc("Commit Project Branch", branch.name, data)
             .then(() => {
+                mutate()
+                formReset({ frequency: data.frequency })
+            }).then(() => {
+                toast({
+                    description: `Branch ${branch.branch_name} will be updated ${data.frequency}`,
+                    duration: 2000
+                })
+                setOpen(false)
+            }
+            )
 
-            })
     }
 
-    const [freqLabel, setFreqLabel] = useState("Select Frequency")
+
+    const [open, setOpen] = useState(false);
 
     return (
         <li className="pl-0 pt-2 hover:shadow-sm flex justify-between">
             <div className="flex flex-col items-start text-md tracking-normal">
                 {branch.branch_name}
-                <div className='text-xs text-gray-500 pl-0'>
+                <div className='text-xs text-gray-500'>
                     Last synced {convertFrappeTimestampToTimeAgo(branch.last_fetched)}
                 </div>
             </div>
@@ -82,18 +92,19 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                     <IoMdSync className={loading ? 'animate-spin' : ''} />
                     Fetch latest code
                 </Button>
-                <Popover>
+                <Popover open={open}>
                     <PopoverTrigger asChild>
                         <Button
                             className="text-sm"
                             variant="outline"
-                            size={'sm'}>{freqLabel}</Button>
+                            onClick={() => setOpen(true)}
+                            size={'sm'}>{branch.frequency ?? "Select Frequency" }</Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-80">
                         <FormProvider {...methods}>
                             <form onSubmit={methods.handleSubmit(onSubmit)}>
                                 <div className="flex flex-col items-start p-1">
-                                    <Label>Select frequency for updating Branch</Label>
+                                    <Label className='text-normal text-gray-700'>Select frequency for updating Branch</Label>
                                     <Controller
                                         control={control}
                                         name='frequency'
@@ -112,10 +123,12 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                                     />
                                 </div>
                                 <div className='flex justify-end items-end w-full'>
-                                        <Button type="submit" className='mt-4 px-4 py-[0px]'>
-                                            Set
-                                        </Button>
-                                    </div>
+                                    <Button
+                                        type="submit"
+                                        className='mt-3'
+                                    >Set
+                                    </Button>
+                                </div>
                             </form>
                         </FormProvider>
                     </PopoverContent>
