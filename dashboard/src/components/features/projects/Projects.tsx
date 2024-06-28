@@ -7,7 +7,7 @@ import { BsDatabase } from "react-icons/bs";
 import { ViewERDDialogContent } from "./ViewERDAppDialog";
 import { isSystemManager } from "@/utils/roles";
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch";
-import { DropdownMenuDemo } from "./AddMenuButton";
+import { AddMenuButton } from "./AddMenuButton";
 import { APIExplorer } from "./APIExplorer";
 import ProjectCard from "./Projects/ProjectCard";
 
@@ -51,7 +51,7 @@ export const Projects = () => {
             <div className="mx-auto pl-2 pr-4 h-[calc(100vh-4rem)]">
                 <div className="h-full">
                     <div className="flex gap-2 flex-row items-center justify-end">
-                        {isCreateAccess && <DropdownMenuDemo mutate={mutate} />}
+                        {isCreateAccess && <AddMenuButton mutate={mutate} />}
                         <APIExplorer />
                         <Dialog>
                             <DialogTrigger asChild>
@@ -75,7 +75,6 @@ export const Projects = () => {
                             ));
                         })}
                     </div>
-
                 </div>
             </div>
         );
