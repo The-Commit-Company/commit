@@ -25,7 +25,8 @@
   "module_doctypes_map",
   "doctype_module_map",
   "apis_tab",
-  "whitelisted_apis"
+  "whitelisted_apis",
+  "documentation"
  ],
  "fields": [
   {
@@ -100,11 +101,16 @@
    "fieldname": "doctype_module_map",
    "fieldtype": "JSON",
    "label": "Doctype - Module Map"
+  },
+  {
+   "fieldname": "documentation",
+   "fieldtype": "JSON",
+   "label": "Documentation"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-07 18:12:30.540281",
+ "modified": "2024-06-26 09:34:15.314418",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Project Branch",
