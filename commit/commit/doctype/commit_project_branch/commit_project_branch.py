@@ -11,7 +11,8 @@ from commit.commit.code_analysis.apis import find_all_occurrences_of_whitelist
 from commit.commit.code_analysis.doctypes import get_doctypes_in_module, get_doctype_json
 from frappe.utils import now
 from frappe.app import handle_exception
-
+from commit.api.api_explorer import get_file_content_from_path
+from commit.api.generate_documentation import generate_docs_for_apis
 
 class CommitProjectBranch(Document):
 
@@ -28,6 +29,23 @@ class CommitProjectBranch(Document):
             at_front = True,
             project_branch = self.name
         )
+
+    def on_update(self):
+        old_doc = self.get_doc_before_save()
+        if type(self.whitelisted_apis) == str:
+            apis = json.loads(self.whitelisted_apis if self.whitelisted_apis else '').get("apis", [])
+        else:
+            apis = self.whitelisted_apis.get("apis", []) if self.whitelisted_apis else []
+        if old_doc and old_doc.whitelisted_apis != self.whitelisted_apis and len(apis) > 0:
+            frappe.enqueue(
+                method = generate_branch_documentation,
+                is_async = True,
+                job_name="Generate Branch Documentation",
+                enqueue_after_commit = True,
+                at_front = True,
+                queue="long",
+                project_branch = self.name
+            )            
 
     def create_branch_folder(self):
         if not os.path.exists(self.path_to_folder):
@@ -96,6 +114,36 @@ class CommitProjectBranch(Document):
         self.whitelisted_apis = {
             "apis": apis
         }
+        return apis
+
+    def get_whitelisted_apis_code(self):
+        apis = []
+        apis_code = []
+        
+        if self.whitelisted_apis:
+            if type(self.whitelisted_apis) == str:
+                apis = json.loads(self.whitelisted_apis if self.whitelisted_apis else '').get("apis", [])
+            else:
+                apis = self.whitelisted_apis.get("apis", []) if self.whitelisted_apis else []
+        
+        for api in apis:
+            # file_content =  get_file_content_from_path(self.name, api['file'], api['block_start'], api['block_end'], "project")
+            file_content = get_code_from_file(api['file'], api['block_start'], api['block_end'])
+
+            content = file_content.get("file_content", [])
+            content = "".join(content)
+            apis_code.append({
+                'file': api['file'],
+                'path': api['api_path'],
+                'function_name': api['name'],
+                'code': content
+            })
+
+        documentation = generate_docs_for_apis(apis_code)
+
+        self.documentation= {
+            "apis": documentation
+        }
 
     def get_doctype_json(self, doctype_name):
         if self.doctype_module_map:
@@ -115,6 +163,19 @@ class CommitProjectBranch(Document):
         # Delete the folder
         if self.path_to_folder and os.path.exists(self.path_to_folder):
             shutil.rmtree(self.path_to_folder)
+
+def get_code_from_file(file_path: str, block_start: int, block_end: int):
+
+    if os.path.isfile(file_path):
+        file_content = open(file_path, 'r')
+        file_content = file_content.readlines()
+        # fetch the block
+        file_content = file_content[block_start:block_end]
+        return {
+            "file_content": file_content
+        }
+    else:
+        frappe.throw("File not found")
 
 def background_fetch_process(project_branch):
     try:
@@ -148,6 +209,8 @@ def background_fetch_process(project_branch):
             }, user=frappe.session.user)
 
         doc.find_all_apis()
+            
+        # doc.get_whitelisted_apis_code()
         doc.save()
 
         frappe.publish_realtime("commit_project_branch_created", {
@@ -191,6 +254,27 @@ def fetch_repo(doc, name = None):
     project_branch.fetch_repo()
     project_branch.save()
     return "Hello"
+
+
+def generate_branch_documentation(project_branch):
+    frappe.publish_realtime('commit_branch_generate_documentation',
+        {
+            'branch_name': project_branch,
+            'text': "Generating documentation...",
+            'is_completed': False
+        }, user=frappe.session.user)
+
+    doc = frappe.get_doc("Commit Project Branch", project_branch)
+    doc.get_whitelisted_apis_code()
+    doc.save()
+
+    frappe.publish_realtime("commit_branch_generate_documentation", {
+            'branch_name': doc.branch_name,
+            'project': doc.project,
+            'text': "Documentation generated successfully.",
+            'is_completed': True
+        }, user=frappe.session.user)
+    return "Documentation generated successfully"
 
 @frappe.whitelist(allow_guest=True)
 def get_module_doctype_map_for_branches(branches: str):

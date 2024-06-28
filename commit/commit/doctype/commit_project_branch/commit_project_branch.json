@@ -26,7 +26,8 @@
   "module_doctypes_map",
   "doctype_module_map",
   "apis_tab",
-  "whitelisted_apis"
+  "whitelisted_apis",
+  "documentation"
  ],
  "fields": [
   {
@@ -107,6 +108,10 @@
    "fieldtype": "Select",
    "label": "Frequency",
    "options": "\nDaily\nWeekly\nMonthly"
+  },
+   "fieldname": "documentation",
+   "fieldtype": "JSON",
+   "label": "Documentation"
   }
  ],
  "index_web_pages_for_search": 1,
