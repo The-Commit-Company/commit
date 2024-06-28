@@ -7,6 +7,7 @@ import { APIData, Argument } from "@/types/APIData"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
+import Markdown from "react-markdown"
 
 export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string }) => {
 
@@ -17,6 +18,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
     const tabs = [
         { name: 'Parameters', content: <ParametersTable parameters={data?.arguments} /> },
         { name: 'Code', content: <CodeSnippet apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} viewerType={viewerType} /> },
+        { name: 'Documentation', content: <Documentation documentation={data?.documentation ?? ''} /> }
     ]
 
     const requestTypeBgColor = (requestType: string) => {
@@ -157,6 +159,11 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
         revalidateOnFocus: false,
         revalidateIfStale: false,
     })
+    const copyValue = () => {
+        const content = JSON.parse(JSON.stringify(data?.message?.file_content ?? []) ?? '[]')
+        return content.join('')
+
+    }
     return (
         <div className="flex flex-col space-y-2">
             {error && <ErrorBanner error={error} />}
@@ -165,7 +172,7 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
             </div>}
             <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
                 <div className="absolute top-0 right-0 p-2">
-                    <CopyButton value={data?.message?.file_content ?? ''} className="h-6 w-6" />
+                    <CopyButton value={copyValue()} className="h-6 w-6" />
                 </div>
                 <pre className="counter-reset mb-2">
                     {isLoading && <FullPageLoader />}
@@ -173,5 +180,12 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
                 </pre>
             </code>
         </div >
+    )
+}
+
+export const Documentation = ({ documentation }: { documentation: string }) => {
+
+    return (
+        <Markdown className={'p-2 flex flex-col gap-2'}>{documentation}</Markdown>
     )
 }
