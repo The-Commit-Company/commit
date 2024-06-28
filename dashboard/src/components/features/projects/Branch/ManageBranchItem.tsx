@@ -95,7 +95,7 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                 <Popover open={open}>
                     <PopoverTrigger asChild>
                         <Button
-                            className="text-sm"
+                            className="text-sm w-[16ch]"
                             variant="outline"
                             onClick={() => setOpen(true)}
                             size={'sm'}>{branch.frequency ?? "Select Frequency" }</Button>

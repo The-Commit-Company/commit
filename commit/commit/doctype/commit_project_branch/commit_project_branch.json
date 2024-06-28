@@ -109,9 +109,10 @@
    "label": "Frequency",
    "options": "\nDaily\nWeekly\nMonthly"
   },
-   "fieldname": "documentation",
-   "fieldtype": "JSON",
-   "label": "Documentation"
+  {
+    "fieldname": "documentation",
+    "fieldtype": "JSON",
+    "label": "Documentation"
   }
  ],
  "index_web_pages_for_search": 1,
