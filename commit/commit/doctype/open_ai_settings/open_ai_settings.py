@@ -26,10 +26,9 @@ def open_ai_call(message):
     response =  client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=message,
-			max_tokens=2500,  # Adjust max tokens as needed
-			n=1,
-			stop=None,
-			temperature=0.5,
+			max_tokens=3900,
+            temperature=0.3,  # Lower temperature for more deterministic output
+            stop=["Function Name:", "\n\n"]  # Stop sequence to separate functions
     )
 
     return response.choices[0].message.content

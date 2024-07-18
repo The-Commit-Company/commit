@@ -6,7 +6,7 @@ import frappe
 
 def generate_docs_for_apis(api_definitions):
 
-    max_tokens_per_request = 10000  # This is a safe limit to avoid hitting the max token limit
+    max_tokens_per_request = 1800  # This is a safe limit to avoid hitting the max token limit
     chunks = chunk_data(api_definitions, max_tokens_per_request)
     all_docs = []
 
@@ -84,7 +84,6 @@ def generate_docs_for_chunk(api_chunk):
     cleaned_response = clean_response(response_text)
 
     try:
-        print(f"Type of cleaned_response: {type(cleaned_response)}")
         # Check if cleaned_response is already a list (or the expected type)
         if isinstance(cleaned_response, list):
             return cleaned_response
