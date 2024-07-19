@@ -13,7 +13,7 @@ def get_apis_for_project(project_branch: str):
 
     apis = json.loads(branch_doc.whitelisted_apis).get("apis", []) if branch_doc.whitelisted_apis else []
     documentation = json.loads(branch_doc.documentation).get("apis", []) if branch_doc.documentation else []
-    # print('documentation', len(documentation))
+    print('documentation', len(documentation))
     for api in apis:
         # find the documentation for the api whose function_name equals to name and path same as path
         for doc in documentation:
