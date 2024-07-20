@@ -76,7 +76,7 @@ export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], set
         onClose()
     }
     return (
-        <DialogContent className="sm:max-w-[600px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>

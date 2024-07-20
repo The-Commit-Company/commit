@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button"
 import { DialogHeader, DialogFooter, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog"
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { ProjectData, ProjectWithBranch } from "./Projects"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
 
@@ -23,7 +22,7 @@ export const ViewERDDialogContent = ({ data }: { data: ProjectData[] }) => {
     }
 
     return (
-        <DialogContent className="sm:max-w-[600px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
@@ -57,9 +56,6 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
 
     const [branch, setBranch] = useState<string>(project.branches[0]?.name)
 
-    const appNameInitials = useMemo(() => {
-        return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
-    }, [project])
     return (
         <li className="w-full h-auto hover:shadow-sm">
             <div className="py-2">
@@ -76,10 +72,6 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
                                 }
                             }}
                         />
-                        <Avatar className="h-8 w-8 rounded-md">
-                            <AvatarImage src={project.image} />
-                            <AvatarFallback className="h-8 w-8 rounded-md">{appNameInitials}</AvatarFallback>
-                        </Avatar>
                         <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
                     </div>
                     <div className="flex items-center space-x-4">

@@ -4,9 +4,8 @@ import { useFrappeGetCall } from "frappe-react-sdk"
 import { ProjectData, ProjectWithBranch } from "./Projects"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { AiOutlineApi } from "react-icons/ai"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
@@ -56,7 +55,7 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
     }, [branch, navigate])
 
     return (
-        <DialogContent className="sm:max-w-[600px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
@@ -93,19 +92,12 @@ export const ViewAPIExplorerCard = ({ project }: ViewERDProjectCardProps) => {
 
     const [branch, setBranch] = useState<string>(project.branches[0]?.name)
 
-    const appNameInitials = useMemo(() => {
-        return project.display_name.split('_').map((word) => word[0]).join('').toUpperCase()
-    }, [project])
     return (
         <li className="w-full h-auto p-1">
             <div className="flex items-center justify-between">
                 <div className="flex space-x-3 items-center">
                     <RadioGroupItem value={branch} key={branch} id={`${project.name}-${branch}`} />
                     <Label htmlFor={`${project.name}-${branch}`} className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8 rounded-md">
-                            <AvatarImage src={project.image} />
-                            <AvatarFallback className="h-8 w-8 rounded-md">{appNameInitials}</AvatarFallback>
-                        </Avatar>
                         <h1 className="text-lg font-medium tracking-normal" >{project.display_name}</h1>
                     </Label>
                 </div>
