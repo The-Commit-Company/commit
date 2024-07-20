@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,7 +18,6 @@ import { Dialog } from "@radix-ui/react-dialog";
 import ManageBranchModal from "../Branch/ManageBranchModal";
 import { ProjectWithBranch, ProjectData } from "../Projects";
 import DeleteProjectModal from "./DeleteProjectModal";
-import { Badge } from "@/components/ui/badge";
 
 export interface ProjectCardProps {
   project: ProjectWithBranch
@@ -42,7 +40,7 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
   const [openDeleteDialogModal, setOpenDeleteDialogModal] = useState(false)
 
   return (
-    <Card className="w-[200px] h-[320px] relative">
+    <Card className="w-[220px]">
       <CardContent className="p-4">
         <div className="flex flex-col gap-4 items-start">
           <div className="w-full flex items-center justify-center">
@@ -54,9 +52,14 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
             </Avatar>
           </div>
 
-          <div className="flex flex-col gap-1 w-full">
+          <div className="flex flex-col gap-2 w-full">
             <div className="flex justify-between items-center">
-              <CardTitle>{project.display_name}</CardTitle>
+              <div className="flex flex-col items-start gap-0">
+                <CardTitle>{project.display_name}</CardTitle>
+                <div className="text-xs text-gray-500">
+                  by {orgName}
+                </div>
+              </div>
               {isCreateAccess && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size='icon' className="h-8 w-8"> <BsThreeDotsVertical /></Button>
@@ -95,10 +98,6 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
       <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
         <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
       </Dialog>
-
-      <CardFooter className="absolute p-4 bottom-0 mt-2">
-        <Badge variant="secondary">{orgName}</Badge>
-      </CardFooter>
     </Card>
   );
 }
