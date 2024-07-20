@@ -1,14 +1,13 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
 import { BsDatabase } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
 import { YourAppAPIExplorer } from "./YourAppAPIExplorer"
-import { Badge } from "@/components/ui/badge"
 
 export interface AppsData {
     app_name: string
@@ -38,7 +37,7 @@ export const YourApps = () => {
 
     if (data && data.message) {
         return (
-            <div className="mx-auto px-4 h-[calc(100vh-4rem)]">
+            <div className="mx-auto pl-2 pr-4 h-[calc(100vh-4rem)]">
                 <div className="flex flex-row items-center space-x-2 gap-2 justify-end">
 
                     <div className="flex items-center space-x-2">
@@ -52,7 +51,7 @@ export const YourApps = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="flex gap-6 flex-wrap p-4">
+                <div className="flex gap-4 flex-wrap py-4">
                     {data.message.map((app: AppsData) => {
                         return <AppsCard key={app.app_name} app={app} />
                     })}
@@ -70,20 +69,28 @@ const AppsCard = ({ app }: { app: AppsData }) => {
     }, [app])
 
     return (
-        <Card className="w-[220px] h-[300px] relative">
-            <CardContent className="flex flex-col gap-4 items-start p-4">
-                <Avatar className="h-32 w-full flex items-center rounded-md border border-gray-100 justify-center">
+        <Card className="w-[31.5vw]">
+            <CardContent className="p-4 flex flex-row items-start gap-4">
+                <Avatar className="h-24 w-24 flex items-center rounded-md border border-gray-100">
                     <AvatarImage src={app.app_logo_url} />
-                    <AvatarFallback className="rounded-md text-4xl">{appNameInitials}</AvatarFallback>
+                    <AvatarFallback className="rounded-md text-4xl">
+                        {appNameInitials}
+                    </AvatarFallback>
                 </Avatar>
-                <CardTitle>{app.app_name}</CardTitle>
-                <CardDescription>
-                    {app.app_description}
-                </CardDescription>
+                <div className="flex flex-col justify-between w-full gap-2">
+                    <div className="flex justify-between items-center w-full">
+                        <div className="flex flex-col">
+                            <CardTitle className="text-xl">{app.app_name}</CardTitle>
+                            <div className="text-xs">
+                                by {app.app_publisher}
+                            </div>
+                        </div>
+                    </div>
+                    <CardDescription>
+                        {app.app_description}
+                    </CardDescription>
+                </div>
             </CardContent>
-            <CardFooter className="absolute mt-2 bottom-0 p-4">
-                <Badge variant="secondary">{app.app_publisher}</Badge>
-            </CardFooter>
         </Card>
     )
 }
