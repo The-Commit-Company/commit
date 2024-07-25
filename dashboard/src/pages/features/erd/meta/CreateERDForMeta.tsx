@@ -19,6 +19,15 @@ export const CreateERD = () => {
 
     const [erdDoctypes, setERDDocTypes] = useState<string[]>([])
 
+    useEffect(() => {
+        const doctypes = JSON.parse(window.sessionStorage.getItem('ERDMetaDoctypes') ?? '[]')
+        if (doctypes.length) {
+            setERDDocTypes(doctypes)
+            setOpen(false)
+        }
+
+    }, [])
+
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
@@ -32,9 +41,8 @@ export const CreateERD = () => {
                 <ModuleDoctypeListDrawer open={open} setOpen={setOpen} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />
 
                 {/* fixed height container */}
-                <div className="flex h-[95vh] pb-4">
+                <div className="flex h-[93vh]">
                     {erdDoctypes && <ERDForMetaDoctypes doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
-                    {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
                 </div>
             </div>
         </div>
@@ -55,6 +63,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
 
     const onGenerateERD = () => {
         setERDDocTypes(doctype)
+        window.sessionStorage.setItem('ERDMetaDoctypes', JSON.stringify(doctype))
         setOpen(false)
     }
 

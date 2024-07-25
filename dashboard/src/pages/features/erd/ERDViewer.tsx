@@ -26,6 +26,17 @@ export const ERDViewer = () => {
     const [selectedApps, setSelectedApps] = useState<string[]>(apps)
 
     const [erdDoctypes, setERDDocTypes] = useState<{ doctype: string, project_branch: string }[]>([])
+
+    useEffect(() => {
+        const doctypes = JSON.parse(window.sessionStorage.getItem('ERDDoctypes') ?? '[]')
+        const filteredDoctypes = doctypes.filter((d: { doctype: string, project_branch: string }) => selectedApps.includes(d.project_branch)) ?? []
+        setERDDocTypes(filteredDoctypes)
+        if (filteredDoctypes.length) {
+            setOpen(false)
+        }
+
+    }, [])
+
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
@@ -39,7 +50,7 @@ export const ERDViewer = () => {
                 {selectedApps && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} apps={selectedApps} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} setSelectedApps={setSelectedApps} />}
 
                 {/* fixed height container */}
-                <div className="flex h-[95vh] pb-4">
+                <div className="flex h-[93vh] overflow-hidden">
                     {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
                     {selectedApps && erdDoctypes && <ERDForDoctypes project_branch={selectedApps} doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
                 </div>
@@ -66,6 +77,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
 
     const onGenerateERD = () => {
         setERDDocTypes(doctype)
+        window.sessionStorage.setItem('ERDDoctypes', JSON.stringify(doctype))
         setOpen(false)
     }
 

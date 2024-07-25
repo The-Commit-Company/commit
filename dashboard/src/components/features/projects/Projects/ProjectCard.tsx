@@ -45,7 +45,7 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
         <div className="flex flex-col gap-4 items-start">
           <div className="w-full flex items-center justify-center">
             <Avatar className="h-32 w-32 flex items-center rounded-xl  border border-gray-100">
-              <AvatarImage src={project.image} className="object-contain" />
+              <AvatarImage src={project.image} className="object-contain h-full w-full" />
               <AvatarFallback className="rounded-xl  text-4xl">
                 {appNameInitials}
               </AvatarFallback>

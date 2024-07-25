@@ -14,6 +14,7 @@ export const ViewERDDialogContent = ({ data }: { data: ProjectData[] }) => {
     const navigate = useNavigate()
 
     const onViewERD = () => {
+        window.sessionStorage.removeItem('ERDDoctypes')
         navigate('/project-erd', {
             state: {
                 apps: apps

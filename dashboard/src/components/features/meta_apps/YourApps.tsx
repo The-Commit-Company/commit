@@ -43,6 +43,7 @@ export const YourApps = () => {
                     <div className="flex items-center space-x-2">
                         <YourAppAPIExplorer />
                         <Button size='sm' onClick={() => {
+                            window.sessionStorage.removeItem('ERDMetaDoctypes')
                             navigate({
                                 pathname: `/meta-erd/create`,
                             })
