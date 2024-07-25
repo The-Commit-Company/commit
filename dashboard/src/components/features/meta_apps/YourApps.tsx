@@ -51,7 +51,7 @@ export const YourApps = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="flex gap-4 flex-wrap py-4">
+                <div className="flex gap-6 flex-wrap py-4">
                     {data.message.map((app: AppsData) => {
                         return <AppsCard key={app.app_name} app={app} />
                     })}
@@ -69,27 +69,21 @@ const AppsCard = ({ app }: { app: AppsData }) => {
     }, [app])
 
     return (
-        <Card className="w-[31.5vw]">
-            <CardContent className="p-4 flex flex-row items-start gap-4">
-                <Avatar className="h-24 w-24 flex items-center rounded-md border border-gray-100">
+        <Card className="w-[220px] h-[300px] relative">
+            <CardContent className="flex flex-col gap-4 items-start p-4">
+                <Avatar className="h-32 w-full flex items-center rounded-md border border-gray-100 justify-center">
                     <AvatarImage src={app.app_logo_url} />
-                    <AvatarFallback className="rounded-md text-4xl">
-                        {appNameInitials}
-                    </AvatarFallback>
+                    <AvatarFallback className="rounded-md text-4xl">{appNameInitials}</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col justify-between w-full gap-2">
-                    <div className="flex justify-between items-center w-full">
-                        <div className="flex flex-col">
-                            <CardTitle className="text-xl">{app.app_name}</CardTitle>
-                            <div className="text-xs">
-                                by {app.app_publisher}
-                            </div>
-                        </div>
+                <div className=" flex flex-col gap-1">
+                    <CardTitle>{app.app_name}</CardTitle>
+                    <div className="text-xs text-gray-500">
+                        by {app.app_publisher}
                     </div>
-                    <CardDescription>
-                        {app.app_description}
-                    </CardDescription>
                 </div>
+                <CardDescription>
+                    {app.app_description}
+                </CardDescription>
             </CardContent>
         </Card>
     )
