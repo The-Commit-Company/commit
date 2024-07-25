@@ -11,13 +11,13 @@ import { AlertDialog } from "@/components/ui/alert-dialog";
 import { KeyedMutator } from "swr";
 import { useMemo, useState } from "react";
 import { isSystemManager } from "@/utils/roles";
+import { RxDragHandleDots1 } from "react-icons/rx";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Dialog } from "@radix-ui/react-dialog";
 import ManageBranchModal from "../Branch/ManageBranchModal";
 import { ProjectWithBranch, ProjectData } from "../Projects";
 import DeleteProjectModal from "./DeleteProjectModal";
-import { IoIosGitBranch } from "react-icons/io";
 
 export interface ProjectCardProps {
   project: ProjectWithBranch
@@ -40,46 +40,52 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
   const [openDeleteDialogModal, setOpenDeleteDialogModal] = useState(false)
 
   return (
-    <Card className="w-[31.5vw]">
-      <CardContent className="p-4 flex flex-row items-start gap-4">
-        <Avatar className="h-24 w-24 flex items-center rounded-md border border-gray-100">
-          <AvatarImage src={project.image} />
-          <AvatarFallback className="rounded-md text-4xl">
-            {appNameInitials}
-          </AvatarFallback>
-        </Avatar>
-
-        <div className="flex flex-col justify-between w-full gap-2">
-          <div className="flex justify-between items-center w-full">
-            <div className="flex flex-col">
-              <CardTitle className="text-xl">{project.display_name}</CardTitle>
-              <div className="text-xs">
-                by {orgName}
-              </div>
-            </div>
-            {isCreateAccess && <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size='icon' className="h-8 w-8"> <BsThreeDotsVertical /></Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-50">
-                {project.branches.length > 0 &&
-                  <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
-                    <>
-                      <IoIosGitBranch className="mr-2 h-4 w-4" />
-                      Manage Branches
-                    </>
-                  </DropdownMenuItem>
-                }
-                <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
-                  <AiOutlineDelete className="h-4 w-4 mr-2" />
-                  Delete Project
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>}
+    <Card className="w-[200px]">
+      <CardContent className="p-4">
+        <div className="flex flex-col gap-4 items-start">
+          <div className="w-full flex items-center justify-center">
+            <Avatar className="h-32 w-32 flex items-center rounded-md border border-gray-100">
+              <AvatarImage src={project.image} />
+              <AvatarFallback className="rounded-md text-4xl">
+                {appNameInitials}
+              </AvatarFallback>
+            </Avatar>
           </div>
-          <CardDescription>
-            {project.description}
-          </CardDescription>
+
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex justify-between items-center">
+              <div className=" flex flex-col gap-1">
+                <CardTitle>{project.display_name}</CardTitle>
+                <div className="text-xs text-gray-500">
+                  by {orgName}
+                </div>
+              </div>
+              {isCreateAccess && <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size='icon' className="h-8 w-8"> <BsThreeDotsVertical /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-50">
+                  {project.branches.length > 0 &&
+                    <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
+                      <>
+                        <RxDragHandleDots1 className="h-4 w-4 mr-2" />
+                        Manage Branches
+                      </>
+                    </DropdownMenuItem>
+                  }
+                  <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
+                    <AiOutlineDelete className="h-4 w-4 mr-2" />
+                    Delete Project
+                  </DropdownMenuItem>
+
+                </DropdownMenuContent>
+              </DropdownMenu>}
+            </div>
+
+            <CardDescription>
+              {project.description}
+            </CardDescription>
+          </div>
         </div>
       </CardContent>
 
