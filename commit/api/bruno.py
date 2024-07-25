@@ -1,7 +1,7 @@
 import frappe
 
 @frappe.whitelist()
-def generate_bruno_file(data):
+def generate_bruno_file(data, return_type='download'):
     request_data = frappe.parse_json(data)
     """
     Generates .bru file content for a single request based on the provided request data.
@@ -35,32 +35,35 @@ def generate_bruno_file(data):
     
     bru_files = {}
 
-    for request_type in request_types:
-        seq = 1
-        request_type_upper = request_type.upper()
-        request_type_lower = request_type.lower()
-        url = f"{base_url_template}/{api_path}"
-        
-        query_string = '&'.join([f'{k}={v}' for k, v in params.items() if v])
-        full_url = f'{url}?{query_string}' if query_string else url
+    request_type = request_types[0]
+    seq = 1
+    request_type_upper = request_type.upper()
+    request_type_lower = request_type.lower()
+    url = f"{base_url_template}/{api_path}"
+    
+    query_string = '&'.join([f'{k}={v}' for k, v in params.items() if v])
+    full_url = f'{url}?{query_string}' if query_string else url
 
-        bru_content = []
+    bru_content = []
 
-        # Meta section
-        bru_content.append(f'meta {{\n  name: {name}\n  type: http\n  seq: {seq}\n}}\n')
+    # Meta section
+    bru_content.append(f'meta {{\n  name: {name}\n  type: http\n  seq: {seq}\n}}\n')
 
-        # Request section
-        bru_content.append(f'{request_type_lower} {{\n  url: {full_url}\n  body: none\n  auth: none\n}}\n')
+    # Request section
+    bru_content.append(f'{request_type_lower} {{\n  url: {full_url}\n  body: none\n  auth: none\n}}\n')
 
-        # Params section
-        if params:
-            bru_content.append(f'params:query {{\n')
-            for k, v in params.items():
-                if v:
-                    bru_content.append(f'  {k}: {v}\n')
-            bru_content.append('}\n')
-
-        bru_files[request_type_upper] = '\n'.join(bru_content)
+    # Params section
+    if params:
+        bru_content.append(f'params:query {{\n')
+        for k, v in params.items():
+            if v:
+                bru_content.append(f'  {k}: {v}\n')
+        bru_content.append('}\n')
+    
+    bru_files[request_type_upper] = '\n'.join(bru_content)
+    if return_type == 'download':
         frappe.local.response.filename =  f'{name} {request_type}.bru'  if len(request_types) > 1 else f'{name}.bru'
         frappe.local.response.filecontent = bru_files[request_type_upper]
         frappe.local.response.type = 'download'  
+    else:
+        return bru_files[request_type_upper]

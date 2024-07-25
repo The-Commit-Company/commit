@@ -92,7 +92,7 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
                     <IoMdSync className={loading ? 'animate-spin' : ''} />
                     Fetch latest code
                 </Button>
-                <Popover open={open}>
+                <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button
                             className="text-sm w-[16ch]"
