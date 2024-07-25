@@ -44,9 +44,9 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
       <CardContent className="p-4">
         <div className="flex flex-col gap-4 items-start">
           <div className="w-full flex items-center justify-center">
-            <Avatar className="h-32 w-32 flex items-center rounded-md border border-gray-100">
-              <AvatarImage src={project.image} />
-              <AvatarFallback className="rounded-md text-4xl">
+            <Avatar className="h-32 w-32 flex items-center rounded-xl  border border-gray-100">
+              <AvatarImage src={project.image} className="object-contain" />
+              <AvatarFallback className="rounded-xl  text-4xl">
                 {appNameInitials}
               </AvatarFallback>
             </Avatar>
@@ -57,7 +57,7 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
               <div className=" flex flex-col gap-1">
                 <CardTitle>{project.display_name}</CardTitle>
                 <div className="text-xs text-gray-500">
-                  by {orgName}
+                  {orgName}
                 </div>
               </div>
               {isCreateAccess && <DropdownMenu>

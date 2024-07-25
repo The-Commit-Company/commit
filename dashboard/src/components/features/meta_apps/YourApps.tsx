@@ -69,21 +69,25 @@ const AppsCard = ({ app }: { app: AppsData }) => {
     }, [app])
 
     return (
-        <Card className="w-[220px] h-[300px] relative">
+        <Card className="w-[200px]">
             <CardContent className="flex flex-col gap-4 items-start p-4">
-                <Avatar className="h-32 w-full flex items-center rounded-md border border-gray-100 justify-center">
-                    <AvatarImage src={app.app_logo_url} />
-                    <AvatarFallback className="rounded-md text-4xl">{appNameInitials}</AvatarFallback>
+                <div className="w-full flex items-center justify-center">
+                    <Avatar className="h-32 w-32 flex items-center rounded-xl border border-gray-100">
+                        <AvatarImage src={app.app_logo_url} className="object-contain h-full w-full" />
+                        <AvatarFallback className="rounded-xl  text-4xl">{appNameInitials}</AvatarFallback>
                 </Avatar>
+                </div>
+                <div className="flex flex-col gap-2 w-full">
                 <div className=" flex flex-col gap-1">
                     <CardTitle>{app.app_name}</CardTitle>
                     <div className="text-xs text-gray-500">
-                        by {app.app_publisher}
+                            {app.app_publisher}
                     </div>
                 </div>
                 <CardDescription>
                     {app.app_description}
                 </CardDescription>
+                </div>
             </CardContent>
         </Card>
     )
