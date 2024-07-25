@@ -1,5 +1,5 @@
 import dagre from '@dagrejs/dagre'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import '../../../styles/flow.css'
 import ReactFlow, {
     Background,
@@ -23,6 +23,8 @@ import { CgMaximizeAlt } from 'react-icons/cg'
 import { TbArrowsMinimize } from 'react-icons/tb'
 import { TableNode } from './TableNode'
 import { TableDrawer } from '../TableDrawer/TableDrawer'
+import { toPng } from 'html-to-image'
+import { BsDownload } from 'react-icons/bs'
 // import { set } from 'lodash'
 
 // ReactFlow is scaling everything by the factor of 2
@@ -312,7 +314,7 @@ const TablesGraph: FC<{
     }, [tables, relationships, setNodes, setEdges, reactFlowInstance])
 
 
-
+    const flowRef = useRef(null)
     return (
         <>
             <div className='Flow' style={{ width: '100vw', height: 'auto', padding: 2 }}>
@@ -321,6 +323,7 @@ const TablesGraph: FC<{
                     style={{
                         backgroundColor: '#F7FAFC',
                     }}
+                    ref={flowRef}
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
@@ -354,6 +357,22 @@ const TablesGraph: FC<{
                         <ControlButton onClick={toggleFullScreen}>
                             {!fullscreenOn && <CgMaximizeAlt />}
                             {fullscreenOn && <TbArrowsMinimize />}
+                        </ControlButton>
+                        <ControlButton onClick={() => {
+                            if (flowRef.current === null) return
+                            toPng(flowRef.current, {
+                                filter: node => !(
+                                    node?.classList?.contains('react-flow__minimap') ||
+                                    node?.classList?.contains('react-flow__controls')
+                                ),
+                            }).then(dataUrl => {
+                                const a = document.createElement('a');
+                                a.setAttribute('download', 'reactflow.png');
+                                a.setAttribute('href', dataUrl);
+                                a.click();
+                            });
+                        }}>
+                            <BsDownload />
                         </ControlButton>
                     </Controls>
                     {/* <Background /> */}
