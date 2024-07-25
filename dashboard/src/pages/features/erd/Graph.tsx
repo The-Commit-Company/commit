@@ -25,7 +25,6 @@ import { TableNode } from './TableNode'
 import { TableDrawer } from '../TableDrawer/TableDrawer'
 import { toPng } from 'html-to-image'
 import { BsDownload } from 'react-icons/bs'
-// import { set } from 'lodash'
 
 // ReactFlow is scaling everything by the factor of 2
 export const NODE_WIDTH = 320
