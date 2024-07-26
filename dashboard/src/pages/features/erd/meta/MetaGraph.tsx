@@ -1,7 +1,6 @@
 import dagre from '@dagrejs/dagre'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import '../../../../styles/flow.css'
-
 import ReactFlow, {
     Background,
     Controls,
@@ -17,7 +16,6 @@ import ReactFlow, {
     useEdgesState,
     useNodesState
 } from 'reactflow'
-// import { uniqBy } from 'lodash'
 import 'reactflow/dist/style.css'
 import { PostgresTable, PostgresRelationship, TableNodeData } from '@/types/Table'
 import { CgMaximizeAlt } from 'react-icons/cg'
@@ -58,6 +56,7 @@ function getGraphDataFromTables(tables: PostgresTable[], relationships: Postgres
                 id: column.id,
                 name: column.name,
                 format: column.format,
+                is_custom_field: column.is_custom_field,
             }
         })
 
@@ -67,6 +66,7 @@ function getGraphDataFromTables(tables: PostgresTable[], relationships: Postgres
             data: {
                 name: table.name,
                 isForeign: false,
+                istable: table.istable,
                 columns,
             },
             position: { x: 0, y: 0 },
@@ -227,7 +227,6 @@ const TablesGraph: FC<{
                             ...ed.style,
                             stroke: '#042f2e',
                         }
-                        // setHighlightEdgeClassName(ed);
                     }
 
                     return ed;
@@ -296,8 +295,6 @@ const TablesGraph: FC<{
         const { nodes, edges } = getGraphDataFromTables(tables, relationships)
         setNodes(nodes)
         setEdges(edges)
-        // reactFlowInstance.setNodes(nodes)
-        // reactFlowInstance.setEdges(edges)
         setTimeout(() => reactFlowInstance.fitView({})) // it needs to happen during next event tick
 
     }, [tables, relationships, setNodes, setEdges, reactFlowInstance])
@@ -307,7 +304,6 @@ const TablesGraph: FC<{
     return (
         <>
             <div className='Flow' style={{ width: '100vw', height: 'auto', padding: 2 }}>
-                {/* <Markers /> */}
                 <ReactFlow
                     style={{
                         backgroundColor: '#F7FAFC',
@@ -332,8 +328,6 @@ const TablesGraph: FC<{
                         deletable: false,
                         style: {
                             stroke: '#0ea5e9',
-                            strokeWidth: 2,
-                            // color: '#082f49'
                         },
                     }}
                     nodeTypes={nodeTypes}
@@ -364,15 +358,20 @@ const TablesGraph: FC<{
                             <BsDownload />
                         </ControlButton>
                     </Controls>
-                    {/* <Background /> */}
-                    {/* <Background id="1" gap={10} color="#aaaaaa" variant={BackgroundVariant.Dots} />
-                    <Background
-                        id="2"
-                        gap={100}
-                        offset={1}
-                        color="#dddddd"
-                        variant={BackgroundVariant.Lines}
-                    /> */}
+                    <div className="absolute top-0 right-0 p-2 pr-4 m-1 bg-gray-100 z-10 flex flex-col gap-2 rounded-lg shadow-lg">
+                        <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 bg-blue-500 rounded-full border border-blue-600" />
+                            <div className="text-xs font-semibold">Table</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 bg-teal-500 rounded-full border border-teal-600" />
+                            <div className="text-xs font-semibold">Child Table</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 bg-yellow-50 rounded-full border border-yellow-600" />
+                            <div className="text-xs font-semibold">Custom Field</div>
+                        </div>
+                    </div>
                     <Background color="#171923" gap={16} />
                 </ReactFlow>
                 <MetaTableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} key={selectedDoctype} />
