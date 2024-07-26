@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button"
+import { Button, ButtonProps } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
 import { useEffect, useState } from "react"
 
-interface CopyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface CopyButtonProps extends ButtonProps {
     value: string
 }
 

@@ -62,7 +62,7 @@ export const Projects = () => {
                             <ViewERDDialogContent data={data.message} />
                         </Dialog>
                     </div>
-                    <div className="flex gap-6 flex-wrap p-4">
+                    <div className="flex gap-6 flex-wrap py-4">
                         {data.message.map((org: ProjectData) => {
                             const orgName = org.organization_name;
                             return org.projects.map((project) => (

@@ -5,10 +5,9 @@ import { AppsData } from "./YourApps"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { AiOutlineApi } from "react-icons/ai"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useState } from "react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export const YourAppAPIExplorer = () => {
@@ -55,11 +54,11 @@ export const ViewAPIExplorerContent = ({ data }: { data: AppsData[] }) => {
     }, [branch, navigate])
 
     return (
-        <DialogContent className="sm:max-w-[600px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
-                    Select the apps to view ERD
+                    Select the apps to view API's
                 </DialogDescription>
             </DialogHeader>
             <ul role="list" className="divide-y divide-gray-200">
@@ -85,9 +84,6 @@ export interface ViewAPIExplorerProps {
 }
 
 export const ViewAPIExplorerCard = ({ app }: ViewAPIExplorerProps) => {
-    const appNameInitials = useMemo(() => {
-        return app.app_name.split('_').map((word) => word[0]).join('').toUpperCase()
-    }, [app])
 
     return (
         <li className="w-full h-auto p-1">
@@ -95,10 +91,6 @@ export const ViewAPIExplorerCard = ({ app }: ViewAPIExplorerProps) => {
                 <div className="flex space-x-3 items-center">
                     <RadioGroupItem value={app.app_name} key={app.app_name} id={`${app.app_name}`} />
                     <Label htmlFor={`${app.app_name}`} className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8 rounded-md">
-                            <AvatarImage src={app.app_logo_url} />
-                            <AvatarFallback className="h-8 w-8 rounded-md">{appNameInitials}</AvatarFallback>
-                        </Avatar>
                         <h1 className="text-lg font-medium tracking-normal" >{app.app_name}</h1>
                     </Label>
                 </div>

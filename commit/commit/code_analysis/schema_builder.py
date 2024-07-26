@@ -33,6 +33,7 @@ def get_schema_from_doctypes_json(doctypes_json: dict):
                         'name': field.get('label', fieldname),
                         'id': fieldname,
                         'format': fieldtype,
+                        'is_custom_field': field.get('is_custom_field') or False,
                     }
                     columns.append(column)
                 
@@ -50,6 +51,7 @@ def get_schema_from_doctypes_json(doctypes_json: dict):
                 'name': doctype_name,
                 'id': doctype_name,
                 'module': doctype_json.get('module'),
+                'istable': doctype_json.get('istable'),
                 'columns': columns,
             }
             tables.append(table)
