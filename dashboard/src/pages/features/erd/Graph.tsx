@@ -1,5 +1,5 @@
 import dagre from '@dagrejs/dagre'
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import '../../../styles/flow.css'
 import ReactFlow, {
     Background,
@@ -22,14 +22,12 @@ import { CgMaximizeAlt } from 'react-icons/cg'
 import { TbArrowsMinimize } from 'react-icons/tb'
 import { TableNode } from './TableNode'
 import { TableDrawer } from '../TableDrawer/TableDrawer'
-import { toPng } from 'html-to-image'
-import { BsDownload } from 'react-icons/bs'
 
 // ReactFlow is scaling everything by the factor of 2
 export const NODE_WIDTH = 320
 export const NODE_ROW_HEIGHT = 40
 
-export const Graph = ({ tables, relationships, project_branch, setDoctypes, doctypes }: {
+export const Graph = ({ tables, relationships, project_branch, setDoctypes, doctypes, flowRef }: {
     tables: PostgresTable[]
     relationships: PostgresRelationship[]
     project_branch: string[]
@@ -41,10 +39,11 @@ export const Graph = ({ tables, relationships, project_branch, setDoctypes, doct
         doctype: string;
         project_branch: string;
     }[]
+    flowRef: React.MutableRefObject<null>
 }) => {
     return (
         <ReactFlowProvider>
-            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} doctypes={doctypes} />
+            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} doctypes={doctypes} flowRef={flowRef} />
         </ReactFlowProvider>
     )
 }
@@ -185,7 +184,8 @@ const TablesGraph: FC<{
         doctype: string;
         project_branch: string;
     }[]
-}> = ({ tables, relationships, setDoctypes, doctypes }) => {
+    flowRef: React.MutableRefObject<null>
+}> = ({ tables, relationships, setDoctypes, doctypes, flowRef }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [fullscreenOn, setFullScreen] = useState(false);
@@ -313,8 +313,6 @@ const TablesGraph: FC<{
 
     }, [tables, relationships, setNodes, setEdges, reactFlowInstance])
 
-
-    const flowRef = useRef(null)
     return (
         <>
             <div className='Flow' style={{ width: '100vw', height: 'auto', padding: 2 }}>
@@ -356,35 +354,19 @@ const TablesGraph: FC<{
                             {!fullscreenOn && <CgMaximizeAlt />}
                             {fullscreenOn && <TbArrowsMinimize />}
                         </ControlButton>
-                        <ControlButton onClick={() => {
-                            if (flowRef.current === null) return
-                            toPng(flowRef.current, {
-                                filter: node => !(
-                                    node?.classList?.contains('react-flow__minimap') ||
-                                    node?.classList?.contains('react-flow__controls')
-                                ),
-                            }).then(dataUrl => {
-                                const a = document.createElement('a');
-                                a.setAttribute('download', 'reactflow.png');
-                                a.setAttribute('href', dataUrl);
-                                a.click();
-                            });
-                        }}>
-                            <BsDownload />
-                        </ControlButton>
                     </Controls>
-                    <div className="absolute top-0 right-0 p-2 pr-4 m-1 bg-gray-100 z-10 flex flex-col gap-2 rounded-lg shadow-lg">
+                    <div className="absolute top-0 right-0 p-2 pr-16 m-1 bg-white z-10 flex flex-col gap-2 rounded-lg shadow-lg">
                         <div className="flex items-center gap-2">
                             <div className="h-4 w-4 bg-blue-500 rounded-full border border-blue-600" />
-                            <div className="text-xs font-semibold">Table</div>
+                            <div className="text-xs">Table</div>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="h-4 w-4 bg-teal-500 rounded-full border border-teal-600" />
-                            <div className="text-xs font-semibold">Child Table</div>
+                            <div className="text-xs">Child Table</div>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="h-4 w-4 bg-yellow-50 rounded-full border border-yellow-600" />
-                            <div className="text-xs font-semibold">Custom Field</div>
+                            <div className="text-xs">Custom Field</div>
                         </div>
                     </div>
                     <Background color="#171923" gap={16} />

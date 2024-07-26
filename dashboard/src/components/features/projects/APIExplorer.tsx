@@ -59,7 +59,7 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
-                    Select the apps to view ERD
+                    Select the apps to view API's
                 </DialogDescription>
             </DialogHeader>
             <ul role="list" className="divide-y divide-gray-200">

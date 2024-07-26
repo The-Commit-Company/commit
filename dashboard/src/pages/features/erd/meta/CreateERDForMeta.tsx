@@ -1,7 +1,7 @@
 import { Header } from "@/components/common/Header"
 import { Button } from "@/components/ui/button"
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
@@ -13,6 +13,8 @@ import { useDebounce } from "@/hooks/useDebounce"
 import { ERDForMetaDoctypes } from "./ERDForMetaDoctype"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { DoctypeListPopoverForMeta } from "./ERDDoctypeAndAppModal"
+import { BsDownload } from "react-icons/bs"
+import { toPng } from 'html-to-image'
 
 export const CreateERD = () => {
     const [open, setOpen] = useState(true)
@@ -28,13 +30,33 @@ export const CreateERD = () => {
 
     }, [])
 
+    const flowRef = useRef(null)
+
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
             <div className="border-r border-gray-200">
-                <div className="fixed bottom-4 left-[50%] -translate-x-[50%] z-50" hidden={open}>
+                <div className="fixed bottom-4 flex flex-row gap-1 left-[50%] -translate-x-[50%] z-50" hidden={open}>
                     <Button onClick={() => setOpen(!open)}>
                         Select DocTypes ({erdDoctypes.length})
+                    </Button>
+                    <Button variant={'outline'} onClick={() => {
+                        if (flowRef.current === null) return
+                        toPng(flowRef.current, {
+                            filter: node => !(
+                                node?.classList?.contains('react-flow__minimap') ||
+                                node?.classList?.contains('react-flow__controls')
+                            ),
+                        }).then(dataUrl => {
+                            const a = document.createElement('a');
+                            a.setAttribute('download', 'reactflow.png');
+                            a.setAttribute('href', dataUrl);
+                            a.click();
+                        });
+                    }}>
+                        <div className="flex items-center gap-2">
+                            <BsDownload /> Download
+                        </div>
                     </Button>
                 </div>
 
@@ -42,7 +64,7 @@ export const CreateERD = () => {
 
                 {/* fixed height container */}
                 <div className="flex h-[93vh]">
-                    {erdDoctypes && <ERDForMetaDoctypes doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
+                    {erdDoctypes && <ERDForMetaDoctypes doctypes={erdDoctypes} setDocTypes={setERDDocTypes} flowRef={flowRef} />}
                 </div>
             </div>
         </div>
