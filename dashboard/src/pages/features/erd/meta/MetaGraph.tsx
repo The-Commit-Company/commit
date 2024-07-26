@@ -282,9 +282,11 @@ const TablesGraph: FC<{
             );
 
             setDoctypes((doctypes) => {
-                return doctypes.filter((doctype) => {
+                const doc = doctypes.filter((doctype) => {
                     return !nodes.includes(doctype);
-                });
+                })
+                window.sessionStorage.setItem('ERDMetaDoctypes', JSON.stringify(doc))
+                return doc
             })
         },
         [setNodes, setEdges, setDoctypes]
