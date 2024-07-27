@@ -23,14 +23,14 @@ export const ViewERDDialogContent = ({ data }: { data: ProjectData[] }) => {
     }
 
     return (
-        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="p-4 px-6">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
                     Select the apps to view ERD
                 </DialogDescription>
             </DialogHeader>
-            <ul role="list" className="divide-y divide-gray-200">
+            <ul role="list" className="divide-y divide-gray-200 max-h-[60vh] overflow-y-scroll">
                 {data?.map((org: ProjectData) => {
                     return org.projects?.filter((project) => project.branches?.length > 0)?.map((project => {
                         return (
@@ -58,11 +58,10 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
     const [branch, setBranch] = useState<string>(project.branches[0]?.name)
 
     return (
-        <li className="w-full h-auto hover:shadow-sm">
-            <div className="py-2">
-                <div className="flex space-x-4 items-center justify-between">
-                    <div className="flex space-x-3 items-center">
-                        <Checkbox
+        <li className="w-full h-auto hover:shadow-sm px-2">
+            <div className="flex items-center justify-between py-2 w-full">
+                <div className="flex space-x-3 items-center">
+                    <Checkbox
                             checked={apps.includes(branch)}
                             className="border-gray-300 text-gray-600 shadow-sm"
                             onCheckedChange={(checked) => {
@@ -73,27 +72,24 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
                                 }
                             }}
                         />
-                        <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <Select
-                            onValueChange={(value) => setBranch(value)}
-                            defaultValue={project.branches[0]?.name}
-                        >
-                            <SelectTrigger className="h-8 w-40">
-                                <SelectValue placeholder="Select Branch" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {project.branches.map((branch: CommitProjectBranch) => {
-                                    return (
-                                        <SelectItem value={branch.name} key={branch.name}>{branch.branch_name}</SelectItem>
-                                    )
-                                })}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
                 </div>
-            </div >
+                <Select
+                    onValueChange={(value) => setBranch(value)}
+                    defaultValue={project.branches[0]?.name}
+                >
+                    <SelectTrigger className="h-8 w-40">
+                        <SelectValue placeholder="Select Branch" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {project.branches.map((branch: CommitProjectBranch) => {
+                            return (
+                                <SelectItem value={branch.name} key={branch.name}>{branch.branch_name}</SelectItem>
+                            )
+                        })}
+                    </SelectContent>
+                </Select>
+            </div>
         </li >)
 }
 

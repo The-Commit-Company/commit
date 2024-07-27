@@ -76,7 +76,7 @@ export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], set
         onClose()
     }
     return (
-        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="p-4 px-6">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
@@ -85,7 +85,7 @@ export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], set
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
             {isLoading && <FullPageLoader />}
-            {data && data?.message && <ul role="list" className="divide-y divide-gray-200">
+            {data && data?.message && <ul role="list" className="divide-y divide-gray-200 max-h-[60vh] overflow-y-scroll">
                 {data?.message?.map((org: ProjectData) => {
                     return org.projects.map((project => {
                         return (

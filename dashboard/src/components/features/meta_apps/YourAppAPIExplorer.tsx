@@ -54,22 +54,22 @@ export const ViewAPIExplorerContent = ({ data }: { data: AppsData[] }) => {
     }, [branch, navigate])
 
     return (
-        <DialogContent className="sm:max-w-[500px] sm:max-h-[800px] overflow-y-scroll">
+        <DialogContent className="p-4 px-6">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
                     Select the apps to view API's
                 </DialogDescription>
             </DialogHeader>
-            <ul role="list" className="divide-y divide-gray-200">
-                <RadioGroup defaultValue={branch} onValueChange={(value) => setBranch(value)} className="flex flex-col space-y-1" >
+            <RadioGroup defaultValue={branch} onValueChange={(value) => setBranch(value)} className="flex flex-col space-y-1" >
+                <ul role="list" className="divide-y divide-gray-200 max-h-[60vh] overflow-y-scroll">
                     {data?.map((app: AppsData) => {
                         return (
                             <ViewAPIExplorerCard app={app} key={app.app_name} />
                         )
                     })}
-                </RadioGroup>
-            </ul>
+                </ul>
+            </RadioGroup>
             <DialogFooter>
                 <Button onClick={onNavigate} disabled={branch.length === 0}>
                     API Explorer
@@ -86,8 +86,8 @@ export interface ViewAPIExplorerProps {
 export const ViewAPIExplorerCard = ({ app }: ViewAPIExplorerProps) => {
 
     return (
-        <li className="w-full h-auto p-1">
-            <div className="flex items-center justify-between">
+        <li className="w-full px-2">
+            <div className="flex items-center justify-between py-2 w-full">
                 <div className="flex space-x-3 items-center">
                     <RadioGroupItem value={app.app_name} key={app.app_name} id={`${app.app_name}`} />
                     <Label htmlFor={`${app.app_name}`} className="flex items-center space-x-3">
