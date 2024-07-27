@@ -49,7 +49,7 @@ export const CreateERD = () => {
                             ),
                         }).then(dataUrl => {
                             const a = document.createElement('a');
-                            a.setAttribute('download', 'reactflow.png');
+                            a.setAttribute('download', 'erd.png');
                             a.setAttribute('href', dataUrl);
                             a.click();
                         });
