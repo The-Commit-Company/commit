@@ -52,7 +52,7 @@ export const YourApps = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="flex gap-6 flex-wrap py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-4 py-4">
                     {data.message.map((app: AppsData) => {
                         return <AppsCard key={app.app_name} app={app} />
                     })}
@@ -70,7 +70,7 @@ const AppsCard = ({ app }: { app: AppsData }) => {
     }, [app])
 
     return (
-        <Card className="w-[200px]">
+        <Card>
             <CardContent className="flex flex-col gap-4 items-start p-4">
                 <div className="w-full flex items-center justify-center">
                     <Avatar className="h-32 w-32 flex items-center rounded-xl border border-gray-100">

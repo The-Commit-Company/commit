@@ -40,20 +40,19 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
   const [openDeleteDialogModal, setOpenDeleteDialogModal] = useState(false)
 
   return (
-    <Card className="w-[200px]">
+    <Card>
       <CardContent className="p-4">
         <div className="flex flex-col gap-4 items-start">
           <div className="w-full flex items-center justify-center">
             <Avatar className="h-32 w-32 flex items-center rounded-xl  border border-gray-100">
               <AvatarImage src={project.image} className="object-contain h-full w-full" />
-              <AvatarFallback className="rounded-xl  text-4xl">
+              <AvatarFallback className="rounded-xl text-4xl">
                 {appNameInitials}
               </AvatarFallback>
             </Avatar>
           </div>
-
           <div className="flex flex-col gap-2 w-full">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-start">
               <div className=" flex flex-col gap-1">
                 <CardTitle>{project.display_name}</CardTitle>
                 <div className="text-xs text-gray-500">
@@ -62,7 +61,7 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
               </div>
               {isCreateAccess && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size='icon' className="h-8 w-8"> <BsThreeDotsVertical /></Button>
+                  <Button variant="outline" size='icon' className="h-7 w-7"> <BsThreeDotsVertical /></Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-50">
                   {project.branches.length > 0 &&
