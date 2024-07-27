@@ -64,7 +64,17 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
     return (
         <div className="flex flex-col space-y-3 p-3">
             <div className="border-b border-gray-200 pb-3 sm:flex sm:items-center sm:justify-between">
+                <div className="flex items-center space-x-2">
                 <h1 className="text-lg font-semibold leading-6 text-gray-900">API Details</h1>
+                    {data?.allow_guest || data?.xss_safe ? <div className="border-b border-gray-100  space-x-2">
+                        {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
+                            Allow Guest
+                        </span>}
+                        {data?.xss_safe && <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                            XSS Safe
+                        </span>}
+                    </div> : null}
+                </div>
                 <div className="mt-3 flex sm:ml-4 sm:mt-0 space-x-2">
                     <button
                         type="button"
@@ -78,14 +88,6 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 </div>
             </div>
             <div>
-                {data?.allow_guest || data?.xss_safe ? <div className="border-b border-gray-100 pb-2 space-x-2">
-                    {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
-                        Allow Guest
-                    </span>}
-                    {data?.xss_safe && <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-                        XSS Safe
-                    </span>}
-                </div> : null}
                 <div className="mt-0 border-b border-gray-100">
                     <dl className="divide-y divide-gray-100">
                         <div className="px-4 py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
@@ -189,7 +191,9 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
 export const Documentation = ({ documentation }: { documentation: string }) => {
 
     return (
-        <Markdown className={'p-2 flex flex-col gap-2'}>{documentation}</Markdown>
+        <div className="flex flex-col space-y-2 overflow-auto border-2 border-gray-200 h-[calc(100vh-20rem)]">
+            <Markdown className={'p-2 flex flex-col gap-2'}>{documentation}</Markdown>
+        </div>
     )
 }
 
