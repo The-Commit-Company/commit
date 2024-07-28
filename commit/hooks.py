@@ -199,5 +199,6 @@ app_license = "MIT"
 # auth_hooks = [
 #	"commit.auth.validate"
 # ]
+fixtures = [{"doctype": "Server Script", "filters": [["module" , "in" , ("commit" )]]}]
 
-website_route_rules = [{'from_route': '/dashboard/<path:app_path>', 'to_route': 'dashboard'}]
+website_route_rules = [{'from_route': '/commit/<path:app_path>', 'to_route': 'commit'}]

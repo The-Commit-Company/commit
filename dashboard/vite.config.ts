@@ -16,7 +16,7 @@ export default defineConfig({
 		},
 	},
 	build: {
-		outDir: '../commit/public/dashboard',
+		outDir: '../commit/public/commit',
 		emptyOutDir: true,
 		target: 'es2015',
 	},

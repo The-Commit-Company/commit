@@ -1,4 +1,4 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { PostgresRelationship, PostgresTable } from "@/types/Table"
 import { useFrappePostCall } from "frappe-react-sdk"
 import { Graph } from "./Graph"
@@ -14,9 +14,10 @@ export interface Props {
     project_branch: string[]
     doctypes: { doctype: string, project_branch: string }[]
     setDocTypes: React.Dispatch<React.SetStateAction<{ doctype: string, project_branch: string }[]>>
+    flowRef: React.MutableRefObject<null>
 }
 
-export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes }: Props) => {
+export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes, flowRef }: Props) => {
 
     const [data, setData] = useState<SchemaData | null>(null)
     const { call, error, loading } = useFrappePostCall<{ message: SchemaData }>('commit.api.erd_viewer.get_erd_schema_for_doctypes')
@@ -40,7 +41,7 @@ export const ERDForDoctypes = ({ project_branch, doctypes, setDocTypes }: Props)
     }
 
     if (data) {
-        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} setDoctypes={setDocTypes} doctypes={doctypes} />
+        return <Graph tables={data.tables} relationships={data.relationships} project_branch={project_branch} setDoctypes={setDocTypes} doctypes={doctypes} flowRef={flowRef} />
     }
 
     return null

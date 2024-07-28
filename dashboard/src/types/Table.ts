@@ -32,6 +32,7 @@ export type PostgresColumn = {
     read_only?: number,
     hidden?: number,
     default?: string,
+    is_custom_field: number,
     // default_value: string,
     // is_unique: boolean,
     // is_nullable: boolean,

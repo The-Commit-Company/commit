@@ -1,39 +1,70 @@
 import { Header } from "@/components/common/Header"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Input } from "@/components/ui/input"
 import { useFrappeGetDocList } from "frappe-react-sdk"
 import { DocType } from "@/types/Core/DocType"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useDebounce } from "@/hooks/useDebounce"
 import { ERDForMetaDoctypes } from "./ERDForMetaDoctype"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { DoctypeListPopoverForMeta } from "./ERDDoctypeAndAppModal"
+import { BsDownload } from "react-icons/bs"
+import { toPng } from 'html-to-image'
 
 export const CreateERD = () => {
     const [open, setOpen] = useState(true)
 
     const [erdDoctypes, setERDDocTypes] = useState<string[]>([])
 
+    useEffect(() => {
+        const doctypes = JSON.parse(window.sessionStorage.getItem('ERDMetaDoctypes') ?? '[]')
+        if (doctypes.length) {
+            setERDDocTypes(doctypes)
+            setOpen(false)
+        }
+
+    }, [])
+
+    const flowRef = useRef(null)
+
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
             <div className="border-r border-gray-200">
-                <div className="fixed bottom-4 left-[50%] -translate-x-[50%] z-50" hidden={open}>
+                <div className="fixed bottom-4 flex flex-row gap-1 left-[50%] -translate-x-[50%] z-50" hidden={open}>
                     <Button onClick={() => setOpen(!open)}>
                         Select DocTypes ({erdDoctypes.length})
+                    </Button>
+                    <Button variant={'outline'} onClick={() => {
+                        if (flowRef.current === null) return
+                        toPng(flowRef.current, {
+                            filter: node => !(
+                                node?.classList?.contains('react-flow__minimap') ||
+                                node?.classList?.contains('react-flow__controls')
+                            ),
+                        }).then(dataUrl => {
+                            const a = document.createElement('a');
+                            a.setAttribute('download', 'erd.png');
+                            a.setAttribute('href', dataUrl);
+                            a.click();
+                        });
+                    }}>
+                        <div className="flex items-center gap-2">
+                            <BsDownload /> Download
+                        </div>
                     </Button>
                 </div>
 
                 <ModuleDoctypeListDrawer open={open} setOpen={setOpen} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />
 
                 {/* fixed height container */}
-                <div className="flex h-[95vh] pb-4">
-                    {erdDoctypes && <ERDForMetaDoctypes doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
-                    {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
+                <div className="flex h-[93vh]">
+                    {erdDoctypes && <ERDForMetaDoctypes doctypes={erdDoctypes} setDocTypes={setERDDocTypes} flowRef={flowRef} />}
                 </div>
             </div>
         </div>
@@ -54,6 +85,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
 
     const onGenerateERD = () => {
         setERDDocTypes(doctype)
+        window.sessionStorage.setItem('ERDMetaDoctypes', JSON.stringify(doctype))
         setOpen(false)
     }
 
@@ -86,7 +118,12 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
                                                     <div className="text-base font-semibold leading-6 text-gray-900">
                                                         Select DocTypes
                                                     </div>
-                                                    {doctype.length ? <Badge variant="secondary" className="h-6">{doctype.length} DocTypes</Badge> : null}
+                                                    <Popover>
+                                                        {doctype.length ? <PopoverTrigger asChild>
+                                                            <Button variant={'outline'} className="h-6 px-2">{doctype.length} DocTypes</Button>
+                                                        </PopoverTrigger> : null}
+                                                        <DoctypeListPopoverForMeta doctypes={doctype} setDoctypes={setDocType} />
+                                                    </Popover>
 
                                                 </Dialog.Title>
                                                 <div className="ml-3 flex h-7 items-center">

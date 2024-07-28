@@ -41,7 +41,11 @@ def get_app_name_from_pyproject_toml(organization, repo):
     Get app name from pyproject.toml
     '''
     pyproject_toml = get_file_in_repo(access_token, organization, repo, "pyproject.toml")
-    app_name = pyproject_toml.split("name = ")[1].split("\n")[0].strip().replace("'", "").replace('"', '')
+    split_result = pyproject_toml.split("name = ")
+    if len(split_result) > 1:
+        app_name = pyproject_toml.split("name = ")[1].split("\n")[0].strip().replace("'", "").replace('"', '')
+    else:
+        app_name = get_app_name_from_setup_py(organization, repo)
     return app_name
 
 # TODO: Function to get app version

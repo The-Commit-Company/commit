@@ -7,7 +7,7 @@ import './utils/namespace'
 
 
 if (import.meta.env.DEV) {
-  fetch('/api/method/commit.www.dashboard.get_context_for_dev', {
+  fetch('/api/method/commit.www.commit.get_context_for_dev', {
     method: 'POST',
   })
     .then(response => response.json())

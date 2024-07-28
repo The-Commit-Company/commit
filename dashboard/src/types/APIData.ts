@@ -12,6 +12,7 @@ export interface APIData {
     api_path: string
     block_start: number
     block_end: number
+    documentation?: string
 }
 
 export interface Argument {

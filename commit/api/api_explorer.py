@@ -11,8 +11,16 @@ def get_apis_for_project(project_branch: str):
     '''
     branch_doc = frappe.get_doc("Commit Project Branch", project_branch)
 
-    apis = json.loads(branch_doc.whitelisted_apis).get("apis", [])
-
+    apis = json.loads(branch_doc.whitelisted_apis).get("apis", []) if branch_doc.whitelisted_apis else []
+    documentation = json.loads(branch_doc.documentation).get("apis", []) if branch_doc.documentation else []
+    print('documentation', len(documentation))
+    for api in apis:
+        # find the documentation for the api whose function_name equals to name and path same as path
+        for doc in documentation:
+            if doc.get("function_name") == api.get("name") and doc.get("path") == api.get("api_path"):
+                api["documentation"] = doc.get("documentation")
+                break
+            
     app_name, organization, app_logo = frappe.db.get_value("Commit Project", branch_doc.project, ["app_name", "org", "image"])
     organization_name, org_logo, organization_id = frappe.db.get_value("Commit Organization", organization, ["organization_name", "image", "name"])
 

@@ -9,5 +9,5 @@ commit/docs/current
 node_modules/
 
 commit/public/node_modules/
-commit/www/dashboard.html
-commit/public/dashboard
+commit/www/commit.html
+commit/public/commit

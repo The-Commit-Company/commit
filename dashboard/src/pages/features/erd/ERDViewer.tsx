@@ -1,17 +1,21 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
-import { Badge } from "@/components/ui/badge"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AppModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { Header } from "@/components/common/Header"
 import { Input } from "@/components/ui/input"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 import { ERDForDoctypes } from "./ERDForDoctypes"
+import { Dialog as Dialog2 } from "@/components/ui/dialog"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { DoctypeListPopover, ViewERDAppList } from "./meta/ERDDoctypeAndAppModal"
+import { BsDownload } from "react-icons/bs"
+import { toPng } from 'html-to-image'
 
 export const ERDViewer = () => {
 
@@ -21,23 +25,56 @@ export const ERDViewer = () => {
 
     const { apps } = location.state as { apps: string[] }
 
+    const [selectedApps, setSelectedApps] = useState<string[]>(apps)
+
     const [erdDoctypes, setERDDocTypes] = useState<{ doctype: string, project_branch: string }[]>([])
+
+    useEffect(() => {
+        const doctypes = JSON.parse(window.sessionStorage.getItem('ERDDoctypes') ?? '[]')
+        const filteredDoctypes = doctypes.filter((d: { doctype: string, project_branch: string }) => selectedApps.includes(d.project_branch)) ?? []
+        setERDDocTypes(filteredDoctypes)
+        if (filteredDoctypes.length) {
+            setOpen(false)
+        }
+
+    }, [])
+
+    const flowRef = useRef(null)
+
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
             <div className="border-r border-gray-200">
-                <div className="fixed bottom-4 left-[50%] -translate-x-[50%] z-50" hidden={open}>
+                <div className="fixed bottom-4 flex flex-row gap-1 left-[50%] -translate-x-[50%] z-50" hidden={open}>
                     <Button onClick={() => setOpen(!open)}>
                         Select DocTypes ({erdDoctypes.length})
                     </Button>
+                    <Button variant={'outline'} onClick={() => {
+                        if (flowRef.current === null) return
+                        toPng(flowRef.current, {
+                            filter: node => !(
+                                node?.classList?.contains('react-flow__minimap') ||
+                                node?.classList?.contains('react-flow__controls')
+                            ),
+                        }).then(dataUrl => {
+                            const a = document.createElement('a');
+                            a.setAttribute('download', 'erd.png');
+                            a.setAttribute('href', dataUrl);
+                            a.click();
+                        });
+                    }}>
+                        <div className="flex items-center gap-2">
+                            <BsDownload /> Download
+                        </div>
+                    </Button>
                 </div>
 
-                {apps && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} apps={apps} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} />}
+                {selectedApps && <ModuleDoctypeListDrawer open={open} setOpen={setOpen} apps={selectedApps} erdDoctypes={erdDoctypes} setERDDocTypes={setERDDocTypes} setSelectedApps={setSelectedApps} />}
 
                 {/* fixed height container */}
-                <div className="flex h-[95vh] pb-4">
+                <div className="flex h-[93vh] overflow-hidden">
                     {/* <ListView list={apiList} setSelectedEndpoint={setSelectedEndpoint} /> */}
-                    {apps && erdDoctypes && <ERDForDoctypes project_branch={apps} doctypes={erdDoctypes} setDocTypes={setERDDocTypes} />}
+                    {selectedApps && erdDoctypes && <ERDForDoctypes project_branch={selectedApps} doctypes={erdDoctypes} setDocTypes={setERDDocTypes} flowRef={flowRef} />}
                 </div>
             </div>
         </div>
@@ -48,11 +85,12 @@ export interface ModuleDoctypeListDrawerProps {
     open: boolean
     setOpen: (open: boolean) => void
     apps: string[]
+    setSelectedApps: React.Dispatch<React.SetStateAction<string[]>>
     erdDoctypes: { doctype: string, project_branch: string }[]
     setERDDocTypes: React.Dispatch<React.SetStateAction<{ doctype: string; project_branch: string; }[]>>
 }
 
-export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, erdDoctypes, setERDDocTypes }: ModuleDoctypeListDrawerProps) => {
+export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, erdDoctypes, setERDDocTypes }: ModuleDoctypeListDrawerProps) => {
 
     const [doctype, setDocType] = useState<{
         doctype: string
@@ -61,6 +99,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, erdDoctypes, setE
 
     const onGenerateERD = () => {
         setERDDocTypes(doctype)
+        window.sessionStorage.setItem('ERDDoctypes', JSON.stringify(doctype))
         setOpen(false)
     }
 
@@ -68,8 +107,15 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, erdDoctypes, setE
         setDocType(erdDoctypes)
     }, [erdDoctypes])
 
+    const [openDialog, setOpenDialog] = useState(false)
+
+    const dialogOnClose = () => {
+        setOpenDialog(false)
+    }
+
 
     return (
+        <>
         <Transition.Root show={open} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={setOpen}>
                 <div className="fixed inset-0" />
@@ -93,7 +139,13 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, erdDoctypes, setE
                                                     <div className="text-base font-semibold leading-6 text-gray-900">
                                                         Select DocTypes
                                                     </div>
-                                                    {doctype.length ? <Badge variant="secondary" className="h-6">{doctype.length} DocTypes</Badge> : null}
+                                                        <Popover>
+                                                            {doctype.length ? <PopoverTrigger asChild>
+                                                                <Button variant={'outline'} className="h-6 px-2">{doctype.length} DocTypes</Button>
+                                                            </PopoverTrigger> : null}
+                                                            <DoctypeListPopover doctypes={doctype} setDoctypes={setDocType} />
+                                                        </Popover>
+                                                        {apps.length ? <Button variant={'outline'} onClick={() => setOpenDialog(true)} className="h-6 px-2">{apps.length} Apps</Button> : null}
 
                                                 </Dialog.Title>
                                                 <div className="ml-3 flex h-7 items-center">
@@ -124,6 +176,10 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, erdDoctypes, setE
                 </div>
             </Dialog>
         </Transition.Root>
+            <Dialog2 open={openDialog} onOpenChange={setOpenDialog}>
+                <ViewERDAppList apps={apps} setApps={setSelectedApps} onClose={dialogOnClose} />
+            </Dialog2>
+        </>
     )
 }
 

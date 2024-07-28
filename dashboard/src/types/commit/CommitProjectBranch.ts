@@ -30,4 +30,5 @@ export interface CommitProjectBranch{
 	doctype_module_map?: any
 	/**	Whitelisted APIs : JSON	*/
 	whitelisted_apis?: any
+	frequency?: "Daily" | "Weekly" | "Monthly" 
 }

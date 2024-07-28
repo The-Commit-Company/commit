@@ -1,4 +1,4 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader.tsx/FullPageLoader"
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { PostgresRelationship, PostgresTable } from "@/types/Table"
 import { useFrappePostCall } from "frappe-react-sdk"
 import { useEffect, useState } from "react"
@@ -13,9 +13,10 @@ export interface SchemaData {
 export interface Props {
     doctypes: string[]
     setDocTypes: React.Dispatch<React.SetStateAction<string[]>>
+    flowRef: React.MutableRefObject<null>
 }
 
-export const ERDForMetaDoctypes = ({ doctypes, setDocTypes }: Props) => {
+export const ERDForMetaDoctypes = ({ doctypes, setDocTypes, flowRef }: Props) => {
 
     const [data, setData] = useState<SchemaData | null>(null)
     const { call, error, loading } = useFrappePostCall<{ message: SchemaData }>('commit.api.erd_viewer.get_meta_erd_schema_for_doctypes')
@@ -38,7 +39,7 @@ export const ERDForMetaDoctypes = ({ doctypes, setDocTypes }: Props) => {
     }
 
     if (data) {
-        return <MetaGraph tables={data.tables} relationships={data.relationships} setDoctypes={setDocTypes} doctypes={doctypes} />
+        return <MetaGraph tables={data.tables} relationships={data.relationships} setDoctypes={setDocTypes} doctypes={doctypes} flowRef={flowRef} />
     }
 
     return null

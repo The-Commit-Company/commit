@@ -16,20 +16,18 @@ import ReactFlow, {
     useEdgesState,
     useNodesState
 } from 'reactflow'
-// import { uniqBy } from 'lodash'
 import 'reactflow/dist/style.css'
 import { PostgresTable, PostgresRelationship, TableNodeData } from '@/types/Table'
 import { CgMaximizeAlt } from 'react-icons/cg'
 import { TbArrowsMinimize } from 'react-icons/tb'
 import { TableNode } from './TableNode'
 import { TableDrawer } from '../TableDrawer/TableDrawer'
-// import { set } from 'lodash'
 
 // ReactFlow is scaling everything by the factor of 2
 export const NODE_WIDTH = 320
 export const NODE_ROW_HEIGHT = 40
 
-export const Graph = ({ tables, relationships, project_branch, setDoctypes, doctypes }: {
+export const Graph = ({ tables, relationships, project_branch, setDoctypes, doctypes, flowRef }: {
     tables: PostgresTable[]
     relationships: PostgresRelationship[]
     project_branch: string[]
@@ -41,10 +39,11 @@ export const Graph = ({ tables, relationships, project_branch, setDoctypes, doct
         doctype: string;
         project_branch: string;
     }[]
+    flowRef: React.MutableRefObject<null>
 }) => {
     return (
         <ReactFlowProvider>
-            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} doctypes={doctypes} />
+            <TablesGraph tables={tables} relationships={relationships} project_branch={project_branch} setDoctypes={setDoctypes} doctypes={doctypes} flowRef={flowRef} />
         </ReactFlowProvider>
     )
 }
@@ -63,6 +62,7 @@ function getGraphDataFromTables(tables: PostgresTable[], relationships: Postgres
                 id: column.id,
                 name: column.name,
                 format: column.format,
+                is_custom_field: column.is_custom_field,
             }
         })
 
@@ -72,6 +72,7 @@ function getGraphDataFromTables(tables: PostgresTable[], relationships: Postgres
             data: {
                 name: table.name,
                 isForeign: false,
+                istable: table.istable,
                 columns,
             },
             position: { x: 0, y: 0 },
@@ -183,7 +184,8 @@ const TablesGraph: FC<{
         doctype: string;
         project_branch: string;
     }[]
-}> = ({ tables, relationships, setDoctypes, doctypes }) => {
+    flowRef: React.MutableRefObject<null>
+}> = ({ tables, relationships, setDoctypes, doctypes, flowRef }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [fullscreenOn, setFullScreen] = useState(false);
@@ -293,9 +295,11 @@ const TablesGraph: FC<{
             );
 
             setDoctypes((doctypes) => {
-                return doctypes.filter((doctype) => {
+                const doc = doctypes.filter((doctype) => {
                     return !nodes.includes(doctype.doctype);
-                });
+                })
+                window.sessionStorage.setItem('ERDDoctypes', JSON.stringify(doc))
+                return doc
             })
         },
         [setNodes, setEdges, setDoctypes]
@@ -305,13 +309,9 @@ const TablesGraph: FC<{
         const { nodes, edges } = getGraphDataFromTables(tables, relationships)
         setNodes(nodes)
         setEdges(edges)
-        // reactFlowInstance.setNodes(nodes)
-        // reactFlowInstance.setEdges(edges)
         setTimeout(() => reactFlowInstance.fitView({})) // it needs to happen during next event tick
 
     }, [tables, relationships, setNodes, setEdges, reactFlowInstance])
-
-
 
     return (
         <>
@@ -321,6 +321,7 @@ const TablesGraph: FC<{
                     style={{
                         backgroundColor: '#F7FAFC',
                     }}
+                    ref={flowRef}
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
@@ -340,8 +341,6 @@ const TablesGraph: FC<{
                         deletable: false,
                         style: {
                             stroke: '#0ea5e9',
-                            strokeWidth: 2,
-                            // color: '#082f49'
                         },
                     }}
                     nodeTypes={nodeTypes}
@@ -356,15 +355,20 @@ const TablesGraph: FC<{
                             {fullscreenOn && <TbArrowsMinimize />}
                         </ControlButton>
                     </Controls>
-                    {/* <Background /> */}
-                    {/* <Background id="1" gap={10} color="#aaaaaa" variant={BackgroundVariant.Dots} />
-                    <Background
-                        id="2"
-                        gap={100}
-                        offset={1}
-                        color="#dddddd"
-                        variant={BackgroundVariant.Lines}
-                    /> */}
+                    <div className="absolute top-0 right-0 p-2 pr-16 m-1 bg-white z-10 flex flex-col gap-2 rounded-lg shadow-lg">
+                        <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 bg-blue-500 rounded-full border border-blue-600" />
+                            <div className="text-xs">Table</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 bg-teal-500 rounded-full border border-teal-600" />
+                            <div className="text-xs">Child Table</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="h-4 w-4 bg-yellow-50 rounded-full border border-yellow-600" />
+                            <div className="text-xs">Custom Field</div>
+                        </div>
+                    </div>
                     <Background color="#171923" gap={16} />
                 </ReactFlow>
                 <TableDrawer isOpen={!!selectedDoctype} onClose={() => setSelectedDoctype(null)} doctype={selectedDoctype ?? ''} project_branch={doctypes.find(d => d.doctype === selectedDoctype)?.project_branch} key={selectedDoctype} />

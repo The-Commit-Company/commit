@@ -10,9 +10,10 @@ export interface APIListProps {
     app_name: string
     branch_name: string
     setSelectedEndpoint: (endpoint: string) => void
+    selectedEndpoint?: string
 }
 
-export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
@@ -65,14 +66,14 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint }:
                 </div>
             </div>
             {/* fixed height container */}
-            <div className="flex flex-col space-y-4 overflow-y-auto h-[calc(100vh-10rem)]">
-                <ListView list={filterList} setSelectedEndpoint={setSelectedEndpoint} />
+            <div className="flex flex-col space-y-4  overflow-y-auto h-[calc(100vh-12rem)]">
+                <ListView list={filterList} setSelectedEndpoint={setSelectedEndpoint} selectedEndpoint={selectedEndpoint} />
             </div>
         </div>
     )
 }
 
-export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void }) => {
+export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void, selectedEndpoint?: string }) => {
     return (
         <div>
         <ul role="list" className="divide-y divide-gray-100 px-1">
@@ -83,10 +84,10 @@ export const ListView = ({ list, setSelectedEndpoint }: { list: APIData[], setSe
                 </div>
             )}
             {list.map((person: APIData, index: number) => (
-                <li key={`${person.name}-${index}`} className="flex justify-between gap-x-6 p-2 hover:bg-gray-50 cursor-pointer group" onClick={() => setSelectedEndpoint(person.name)}>
+                <li key={`${person.name}-${index}`} className={`flex justify-between gap-x-6 p-2 hover:bg-gray-100 cursor-pointer group ${selectedEndpoint === person.name ? 'bg-gray-100' : ''} `} onClick={() => setSelectedEndpoint(person.name)}>
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
-                            <p className="text-sm font-semibold leading-6 text-gray-900 cursor-pointer group-hover:text-blue-600"><code>{person.name}</code></p>
+                            <p className={`text-sm font-semibold leading-6 cursor-pointer group-hover:text-blue-600 ${selectedEndpoint === person.name ? 'text-blue-600' : 'text-gray-900'}`}><code>{person.name}</code></p>
                             <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.api_path}</p>
                         </div>
                     </div>
