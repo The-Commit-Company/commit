@@ -189,10 +189,21 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
 }
 
 export const Documentation = ({ documentation }: { documentation: string }) => {
+    console.log('documentation', documentation)
+
+    const renderContent = () => {
+        if (typeof documentation === 'string') {
+            return <Markdown className={'p-2 flex flex-col gap-2'}>{documentation}</Markdown>;
+        } else if (typeof documentation === 'object' && documentation !== null && !Array.isArray(documentation)) {
+            return <pre className="p-2 flex flex-col gap-2">{JSON.stringify(documentation, null, 2)}</pre>;
+        } else {
+            return <div className="p-2 flex flex-col gap-2">Invalid documentation format</div>;
+        }
+    };
 
     return (
         <div className="flex flex-col space-y-2 overflow-auto border-2 border-gray-200 h-[calc(100vh-20rem)]">
-            <Markdown className={'p-2 flex flex-col gap-2'}>{documentation}</Markdown>
+            {renderContent()}
         </div>
     )
 }

@@ -12,7 +12,6 @@ def generate_docs_for_apis(api_definitions):
 
     for chunk in chunks:
         chunk_docs = generate_docs_for_chunk(chunk)
-        # print("Chunk Docs:", chunk_docs)
         if chunk_docs:
             all_docs.extend(chunk_docs)
         else:
@@ -68,7 +67,7 @@ def generate_docs_for_chunk(api_chunk):
                 "- **Examples**: Code examples demonstrating how to use the function (enclosed in triple backticks ``````).\n\n"
                 "The response should be a valid JSON list of objects formatted as follows: "
                 "{function_name: <function_name>, path: <path>, documentation: <documentation in Markdown>}.\n"
-                "Ensure the response is in JSON format only, enclosed in triple backticks, and does not include `---`."
+                "Ensure the response is in valid JSON format only, enclosed in triple backticks, and does not include `---`."
             )
         }
     ]
@@ -89,7 +88,7 @@ def generate_docs_for_chunk(api_chunk):
             return cleaned_response
         # If cleaned_response is a string, attempt to decode it as JSON
         elif isinstance(cleaned_response, str):
-            return json.loads(cleaned_response)
+            return json.loads(cleaned_response, strict=False)
         else:
             # Handle other unexpected types if necessary
             print("Unexpected type of cleaned_response:", type(cleaned_response))
@@ -97,6 +96,12 @@ def generate_docs_for_chunk(api_chunk):
     except json.JSONDecodeError as e:
         print("JSON Decode Error:", e)
         print("Cleaned Response:\n", cleaned_response)
-        return []
+        try:
+            # Attempt to fix common issues like single quotes or trailing commas
+            cleaned_response = cleaned_response.replace("'", '"')
+            return json.loads(cleaned_response, strict=False)
+        except json.JSONDecodeError as e:
+            print("Second JSON Decode Error:", e)
+            return []
 
     # return cleaned_response
