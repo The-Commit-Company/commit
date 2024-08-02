@@ -1,6 +1,6 @@
 import frappe
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def generate_bruno_file(data, return_type='download'):
     request_data = frappe.parse_json(data)
     """
