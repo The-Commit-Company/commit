@@ -55,11 +55,11 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
     }, [branch, navigate])
 
     return (
-        <DialogContent className="p-4 px-6">
+        <DialogContent className="p-6">
             <DialogHeader>
-                <DialogTitle>Select Apps</DialogTitle>
+                <DialogTitle>Select App</DialogTitle>
                 <DialogDescription>
-                    Select the apps to view API's
+                    Select the app to view API's
                 </DialogDescription>
             </DialogHeader>
             <RadioGroup defaultValue={branch} onValueChange={(value) => setBranch(value)} className="flex flex-col space-y-1" >
@@ -95,9 +95,9 @@ export const ViewAPIExplorerCard = ({ project }: ViewERDProjectCardProps) => {
         <li className="w-full px-2">
             <div className="flex items-center justify-between py-2 w-full">
                 <div className="flex space-x-3 items-center">
-                    <RadioGroupItem value={branch} key={branch} id={`${project.name}-${branch}`} />
                     <Label htmlFor={`${project.name}-${branch}`} className="flex items-center space-x-3">
-                        <h1 className="text-lg font-medium tracking-normal" >{project.display_name}</h1>
+                        <RadioGroupItem value={branch} key={branch} id={`${project.name}-${branch}`} />
+                        <h1 className="text-[16px] font-medium tracking-normal cursor-pointer" >{project.display_name}</h1>
                     </Label>
                 </div>
                 <Select

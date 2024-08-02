@@ -76,7 +76,7 @@ export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], set
         onClose()
     }
     return (
-        <DialogContent className="p-4 px-6">
+        <DialogContent className="p-6">
             <DialogHeader>
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
