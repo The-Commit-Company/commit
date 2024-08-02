@@ -1,4 +1,4 @@
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -25,7 +25,7 @@ export interface BranchProps {
 
 const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
 
-    const [desc, setDesc] = useState<string>("Please enter the branch name.")
+    const [desc, setDesc] = useState<string>()
     const [eventLoading, setEventLoading] = useState<boolean>(false)
 
     const { toast } = useToast()
@@ -101,9 +101,6 @@ const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
             <DialogHeader>
                 <DialogTitle>Add Branch.
                 </DialogTitle>
-                <DialogDescription>
-                    {desc}
-                </DialogDescription>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
             {creationError && <ErrorBanner error={creationError} />}
@@ -120,6 +117,8 @@ const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
+                        <div className="flex flex-row items-center w-full justify-between">
+                            <div className="text-sm text-gray-500">{desc}</div>
                         <Button type="submit" disabled={loading || eventLoading}>
                             {(loading || eventLoading) &&
                                 <div
@@ -128,6 +127,7 @@ const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
                             </div>}
                             Submit
                       </Button>
+                        </div>
                     </DialogFooter>
                 </form>
             </FormProvider>

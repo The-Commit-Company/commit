@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { DialogDescription, DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import { DialogHeader, DialogTitle, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -44,9 +44,6 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Add Organization</DialogTitle>
-                <DialogDescription>
-                    Please enter the Name and the Github Repo Name of the Organization.
-                </DialogDescription>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
             <FormProvider {...methods}>
@@ -75,7 +72,7 @@ const CreateOrgModal = ({ mutate, onClose }: CreateOrgModalProps) => {
                         {...methods.register("about")}
                         id='about'
                         type="text"
-                        placeholder="Frappe Framework is a full-stack web application."
+                        placeholder="eg: Frappe Framework is a full-stack web application."
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>

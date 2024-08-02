@@ -1,4 +1,4 @@
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useFrappeCreateDoc } from "frappe-react-sdk"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
@@ -45,9 +45,6 @@ const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Add Project</DialogTitle>
-                <DialogDescription>
-                    Please enter details of the project.
-                </DialogDescription>
             </DialogHeader>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -74,7 +71,7 @@ const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
                         {...methods.register("description")}
                         id='about'
                         type="text"
-                        placeholder="Leave Management System is a full-stack web application."
+                        placeholder="eg: Leave Management System is a full-stack web application."
                         className="mb-3 p-3 w-full"
                     />
                     <DialogFooter>
