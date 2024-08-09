@@ -1,10 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AiOutlineDelete } from "react-icons/ai";
 import { AlertDialog } from "@/components/ui/alert-dialog";
@@ -25,9 +19,10 @@ export interface ProjectCardProps {
     message: ProjectData[];
   }>
   orgName: string
+  githubOrg: string
 }
 
-const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
+const ProjectCard = ({ project, mutate, orgName, githubOrg }: ProjectCardProps) => {
 
   const appNameInitials = useMemo(() => {
     return project.display_name[0].toUpperCase()
@@ -39,54 +34,52 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
 
   const [openDeleteDialogModal, setOpenDeleteDialogModal] = useState(false)
 
+  const openGithubRepo = () => {
+    window.open(`https://github.com/${githubOrg}/${project.repo_name}`, '_blank')
+  }
+
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex flex-col gap-4 items-start">
-          <div className="w-full flex items-center justify-center">
-            <Avatar className="h-32 w-32 flex items-center rounded-xl  border border-gray-100">
-              <AvatarImage src={project.image} className="object-contain h-full w-full" />
-              <AvatarFallback className="rounded-xl text-4xl">
-                {appNameInitials}
-              </AvatarFallback>
-            </Avatar>
+    <div className="flex items-start border-b relative hover:bg-gray-100 p-4">
+      <div className="flex items-start gap-4">
+        <Avatar className="h-10 w-10 flex items-center rounded-lg">
+          <AvatarImage src={project.image} className="object-contain h-full w-full" />
+          <AvatarFallback className="rounded-lg text-xl">
+            {appNameInitials}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col gap-1 cursor-default">
+          <div className="text-base font-semibold cursor-pointer hover:underline hover:text-blue-500" onClick={openGithubRepo}>{project.display_name}</div>
+          <div className="text-sm text-gray-500 pb-4">
+            {project.description}
           </div>
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex justify-between items-start">
-              <div className=" flex flex-col gap-1">
-                <CardTitle>{project.display_name}</CardTitle>
-                <div className="text-xs text-gray-500">
-                  {orgName}
-                </div>
-              </div>
-              {isCreateAccess && <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size='icon' className="h-7 w-7"> <BsThreeDotsVertical /></Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-50">
-                  {project.branches.length > 0 &&
-                    <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
-                      <>
-                        <RxDragHandleDots1 className="h-4 w-4 mr-2" />
-                        Manage Branches
-                      </>
-                    </DropdownMenuItem>
-                  }
-                  <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
-                    <AiOutlineDelete className="h-4 w-4 mr-2" />
-                    Delete Project
-                  </DropdownMenuItem>
-
-                </DropdownMenuContent>
-              </DropdownMenu>}
-            </div>
-
-            <CardDescription>
-              {project.description}
-            </CardDescription>
-          </div>
+          <div className="text-xs absolute bottom-2 text-gray-400">{orgName}</div>
         </div>
-      </CardContent>
+      </div>
+      <div className="ml-auto flex items-center gap-2">
+        {isCreateAccess && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size='icon' className="h-7 w-7">
+                <BsThreeDotsVertical />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-50">
+              {project.branches.length > 0 && (
+                <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
+                  <>
+                    <RxDragHandleDots1 className="h-4 w-4 mr-2" />
+                    Manage Branches
+                  </>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
+                <AiOutlineDelete className="h-4 w-4 mr-2" />
+                Delete Project
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
 
       <AlertDialog open={openDeleteDialogModal} onOpenChange={setOpenDeleteDialogModal}>
         <DeleteProjectModal project={project} mutate={mutate} />
@@ -95,7 +88,7 @@ const ProjectCard = ({ project, mutate, orgName }: ProjectCardProps) => {
       <Dialog open={openManageModal} onOpenChange={setOpenManageModal}>
         <ManageBranchModal branches={project.branches} mutate={mutate} setOpenManageModal={setOpenManageModal} />
       </Dialog>
-    </Card>
+    </div>
   );
 }
 
