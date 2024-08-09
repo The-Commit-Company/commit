@@ -1,15 +1,15 @@
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button'
 import { ProjectData } from "../Projects"
 import { useToast } from "@/components/ui/use-toast"
 import { useFrappeCreateDoc, useFrappeEventListener } from "frappe-react-sdk"
 import { KeyedMutator } from "swr"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 import { AsyncDropdown } from "@/components/common/AsyncDropdown/AsyncDropdown"
+import { FormElement } from "@/components/common/Forms/FormControl"
 
 type FormFields = {
     project: string,
@@ -21,9 +21,10 @@ export interface BranchProps {
         message: ProjectData[];
     }>
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    open: boolean
 }
 
-const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
+const CreateBranchModal = ({ mutate, setOpen, open }: BranchProps) => {
 
     const [desc, setDesc] = useState<string>()
     const [eventLoading, setEventLoading] = useState<boolean>(false)
@@ -96,39 +97,50 @@ const CreateBranchModal = ({ mutate, setOpen }: BranchProps) => {
             })
     }
 
+    useEffect(() => {
+        methods.reset()
+    }, [open])
+
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Add Branch.
+                <DialogTitle>Add Branch
                 </DialogTitle>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
             {creationError && <ErrorBanner error={creationError} />}
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Label htmlFor="project">Project</Label>
-                    <AsyncDropdown name="project" doctype="Commit Project" placeholder="Select Project" className="mb-3 p-3 w-full" />
-                    <Label htmlFor="branchname">Branch Name</Label>
-                    <Input
-                        {...register("branch_name")}
-                        id='branchname'
-                        type="text"
-                        placeholder="eg. main"
-                        className="mb-3 p-3 w-full"
-                    />
-                    <DialogFooter>
-                        <div className="flex flex-row items-center w-full justify-between">
-                            <div className="text-sm text-gray-500">{desc}</div>
-                        <Button type="submit" disabled={loading || eventLoading}>
-                            {(loading || eventLoading) &&
-                                <div
-                                className="inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current text-gray-200 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-                                role="status">
-                            </div>}
-                            Submit
-                      </Button>
-                        </div>
-                    </DialogFooter>
+                    <div className="flex flex-col gap-3">
+                        <FormElement name="project" label="Project" aria-required>
+                            <AsyncDropdown id="project" name="project" doctype="Commit Project" placeholder="Select Project" className="w-full" rules={{
+                                required: "Project is required"
+                            }} />
+                        </FormElement>
+                        <FormElement name="branch_name" label="Branch Name" aria-required>
+                            <Input
+                                {...register("branch_name", {
+                                    required: "Branch Name is required"
+                                })}
+                                id="branch_name"
+                                type="text"
+                                placeholder="eg. main"
+                            />
+                        </FormElement>
+                        <DialogFooter>
+                            <div className="flex flex-row items-center w-full justify-between">
+                                <div className="text-sm text-gray-500">{desc}</div>
+                                <Button type="submit" disabled={loading || eventLoading}>
+                                    {(loading || eventLoading) &&
+                                        <div
+                                            className="inline-block h-4 w-4 mr-2 animate-spin rounded-full border-2 border-solid border-current text-gray-200 border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                                            role="status">
+                                        </div>}
+                                    Submit
+                                </Button>
+                            </div>
+                        </DialogFooter>
+                    </div>
                 </form>
             </FormProvider>
         </DialogContent>

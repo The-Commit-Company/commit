@@ -2,12 +2,13 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { useFrappeCreateDoc } from "frappe-react-sdk"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Button } from '@/components/ui/button'
 import { useToast } from "@/components/ui/use-toast"
 import { ProjectData } from "../Projects"
 import { KeyedMutator } from "swr"
 import { AsyncDropdown } from "@/components/common/AsyncDropdown/AsyncDropdown"
+import { FormElement } from "@/components/common/Forms/FormControl"
+import { useEffect } from "react"
 
 export type FormFields = {
     org: string,
@@ -18,9 +19,10 @@ export type FormFields = {
 interface CreateProjectModalProps {
     mutate: KeyedMutator<{ message: ProjectData[]; }>,
     onClose: VoidFunction
+    open: boolean
 }
 
-const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
+const CreateProjectModal = ({ mutate, onClose, open }: CreateProjectModalProps) => {
     const { toast } = useToast()
     const methods = useForm<FormFields>()
 
@@ -40,6 +42,9 @@ const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
             })
     }
 
+    useEffect(() => {
+        methods.reset()
+    }, [open])
 
     return (
         <DialogContent>
@@ -48,37 +53,46 @@ const CreateProjectModal = ({ mutate, onClose }: CreateProjectModalProps) => {
             </DialogHeader>
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
-                    <Label htmlFor="org">Organization</Label>
-                    <AsyncDropdown name="org" doctype="Commit Organization" placeholder="Select Organization" className="mb-3 p-3 w-full" />
-                    <Label htmlFor="projectdisplayname">Project Display Name</Label>
-                    <Input
-                        {...methods.register("display_name")}
-                        id='projectdisplayname'
-                        type="text"
-                        placeholder="eg. Leave Management System"
-                        className="mb-3 p-3 w-full"
-                    />
-                    <Label htmlFor="reponame">Project Repo Name</Label>
-                    <Input
-                        {...methods.register("repo_name")}
-                        id='reponame'
-                        type="text"
-                        placeholder="eg. lms"
-                        className="mb-3 p-3 w-full"
-                    />
-                    <Label htmlFor="description">Description</Label>
-                    <Input
-                        {...methods.register("description")}
-                        id='about'
-                        type="text"
-                        placeholder="eg: Leave Management System is a full-stack web application."
-                        className="mb-3 p-3 w-full"
-                    />
-                    <DialogFooter>
-                        <Button type="submit">
-                            Submit
-                        </Button>
-                    </DialogFooter>
+                    <div className="flex flex-col gap-3">
+                        <FormElement name='org' label='Organization' aria-required>
+                            <AsyncDropdown name="org" doctype="Commit Organization" placeholder="Select Organization" id="org" rules={{
+                                required: 'Organization is required'
+                            }} />
+                        </FormElement>
+                        <FormElement name='display_name' label='Project Display Name' aria-required>
+                            <Input
+                                {...methods.register("display_name", {
+                                    required: "Project Display Name is required"
+                                })}
+                                id="display_name"
+                                type="text"
+                                placeholder="eg. Leave Management System"
+                            />
+                        </FormElement>
+                        <FormElement name='repo_name' label='Project Repo Name' aria-required>
+                            <Input
+                                {...methods.register("repo_name", {
+                                    required: "Project Repo Name is required"
+                                })}
+                                id="repo_name"
+                                type="text"
+                                placeholder="eg. lms"
+                            />
+                        </FormElement>
+                        <FormElement name='description' label='Description'>
+                            <Input
+                                {...methods.register("description")}
+                                id='description'
+                                type="text"
+                                placeholder="eg: Leave Management System is a full-stack web application."
+                            />
+                        </FormElement>
+                        <DialogFooter>
+                            <Button type="submit">
+                                Submit
+                            </Button>
+                        </DialogFooter>
+                    </div>
                 </form>
             </FormProvider>
         </DialogContent>
