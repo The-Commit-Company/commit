@@ -491,7 +491,7 @@ const DropdownContainer = ({ children, getMenuProps, isOpen, items, isFieldDisab
     return (
         <ul
             className={`absolute w-full shadow-lg border border-gray-200 rounded-md bg-white ${heightAdjust ? 'max-h-[140px]' : 'max-h-80'
-                } overflow-y-auto p-1.5 mt-1  flex flex-col gap-1 z-10 ${!(isOpen && items?.length) ? 'hidden' : ''}`}
+                } overflow-y-auto p-1.5 mt-2  flex flex-col gap-1 z-10 ${!(isOpen && items?.length) ? 'hidden' : ''}`}
             style={{
                 boxShadow: '0px 8px 14px rgba(25, 39, 52, 0.08), 0px 2px 6px rgba(25, 39, 52, 0.04)',
             }}
