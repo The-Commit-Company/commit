@@ -59,13 +59,13 @@ export const AddMenuButton = ({ mutate }: {
                 </DropdownMenuItem>
             </DropdownMenuContent>
             <Dialog open={createOrg} onOpenChange={setCreateOrg}>
-                <CreateOrgModal mutate={mutate} onClose={handleOrgClose} />
+                <CreateOrgModal mutate={mutate} onClose={handleOrgClose} open={createOrg} />
             </Dialog>
             <Dialog open={createProject} onOpenChange={setCreateProject}>
-                <CreateProjectModal onClose={handleProjectClose} mutate={mutate} />
+                <CreateProjectModal onClose={handleProjectClose} mutate={mutate} open={createProject} />
             </Dialog>
             <Dialog open={open} onOpenChange={setOpen}>
-                <CreateBranchModal mutate={mutate} setOpen={setOpen} />
+                <CreateBranchModal mutate={mutate} setOpen={setOpen} open={open} />
             </Dialog>
         </DropdownMenu>
     )
