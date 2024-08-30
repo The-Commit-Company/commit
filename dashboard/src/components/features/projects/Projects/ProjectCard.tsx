@@ -63,7 +63,7 @@ const ProjectCard = ({ project, mutate, orgName, githubOrg }: ProjectCardProps) 
                 <BsThreeDotsVertical />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-50">
+            <DropdownMenuContent className="w-50 mr-4">
               {project.branches.length > 0 && (
                 <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
                   <>
