@@ -44,7 +44,7 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
             <Header text="API Explorer" />
             {error && <ErrorBanner error={error} />}
             {data && <div className="flex w-full h-[calc(100vh-4rem)]">
-                <div className={selectedendpoint ? "w-[55%]" : "w-full"}>
+                <div className={selectedendpoint ? "w-full sm:w-[55%]" : "w-full"}>
                     <APIList
                         apiList={data?.message.apis ?? []}
                         app_name={data?.message.app_name ?? ''}
@@ -56,7 +56,10 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
                 </div>
 
                 {selectedendpoint && (
-                    <div className="w-[45%]">
+                    <div
+                        className={`fixed z-10  right-0 w-[80vw] h-full bg-white shadow-lg transition-transform transform ${selectedendpoint ? 'translate-x-0' : 'translate-x-full'
+                            } md:relative md:translate-x-0 sm:w-[45%]`}
+                    >
                         <APIDetails project_branch={appName} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="app" />
                     </div>
                 )}

@@ -78,8 +78,8 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
     }, [branch, navigate])
 
     return (
-        <DialogContent className="p-6">
-            <DialogHeader>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
                 <DialogTitle>Select App</DialogTitle>
                 <DialogDescription>
                     Select the app to view API's
