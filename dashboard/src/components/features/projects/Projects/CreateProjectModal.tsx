@@ -47,8 +47,8 @@ const CreateProjectModal = ({ mutate, onClose, open }: CreateProjectModalProps) 
     }, [open])
 
     return (
-        <DialogContent>
-            <DialogHeader>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
                 <DialogTitle>Add Project</DialogTitle>
             </DialogHeader>
             <FormProvider {...methods}>

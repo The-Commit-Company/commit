@@ -27,8 +27,8 @@ const DeleteProjectModal = ({ project, mutate }: DeleteProjectModalProps) => {
             }))
     }
     return (
-        <AlertDialogContent>
-            <AlertDialogHeader>
+        <AlertDialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <AlertDialogHeader className="text-left">
                 <AlertDialogTitle>Delete Project{' '}{project.display_name}?
                 </AlertDialogTitle>
                 <AlertDialogDescription>

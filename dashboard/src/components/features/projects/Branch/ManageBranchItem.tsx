@@ -11,19 +11,35 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mutate: KeyedMutator<{ message: ProjectData[]; }> }) => {
     const { call, loading: syncLoading, reset: callReset } = useFrappePostCall<{ message: any }>('commit.commit.doctype.commit_project_branch.commit_project_branch.fetch_repo');
     const { deleteDoc, loading: deleteLoading, reset } = useFrappeDeleteDoc();
     const { updateDoc } = useFrappeUpdateDoc();
     const [open, setOpen] = useState(false);
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
 
     const methods = useForm<CommitProjectBranch>({
         defaultValues: {
             frequency: branch.frequency,
         },
     });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 840); // Tailwind's 'sm' breakpoint
+        };
+
+        handleResize(); // Initial check
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const handleDelete = () => {
         deleteDoc("Commit Project Branch", branch.name)
@@ -66,16 +82,37 @@ const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mut
         <li className="p-2 hover:shadow-sm flex justify-between items-center">
             <BranchInfo branch={branch} />
             <div className="flex gap-2 items-center">
-                <SyncButton loading={syncLoading} onSync={handleSync} />
-                <FrequencyPopover
-                    open={open}
-                    setOpen={setOpen}
-                    methods={methods}
-                    onSubmit={methods.handleSubmit(onSubmit)}
-                    control={methods.control}
-                    frequency={branch.frequency}
-                />
-                <DeleteButton loading={deleteLoading} onDelete={handleDelete} />
+                {isSmallScreen ? (
+                    <div className='flex gap-2'>
+                        <FrequencyPopover
+                            open={open}
+                            setOpen={setOpen}
+                            methods={methods}
+                            onSubmit={methods.handleSubmit(onSubmit)}
+                            control={methods.control}
+                            frequency={branch.frequency}
+                        />
+                        <ActionDropdown
+                            syncLoading={syncLoading}
+                            onSync={handleSync}
+                            deleteLoading={deleteLoading}
+                            onDelete={handleDelete}
+                        />
+                    </div>
+                ) : (
+                    <>
+                            <SyncButton loading={syncLoading} onSync={handleSync} />
+                            <FrequencyPopover
+                                open={open}
+                                setOpen={setOpen}
+                                methods={methods}
+                                onSubmit={methods.handleSubmit(onSubmit)}
+                                control={methods.control}
+                                frequency={branch.frequency}
+                            />
+                            <DeleteButton loading={deleteLoading} onDelete={handleDelete} />
+                    </>
+                )}
             </div>
         </li>
     );
@@ -91,7 +128,7 @@ const BranchInfo = ({ branch }: { branch: CommitProjectBranch }) => (
 const SyncButton = ({ loading, onSync }: { loading: boolean, onSync: () => void }) => (
     <Button
         className="flex gap-2 text-sm"
-        variant="secondary"
+        variant="outline"
         size="sm"
         onClick={onSync}
         disabled={loading}
@@ -113,13 +150,13 @@ const FrequencyPopover = ({ open, setOpen, methods, onSubmit, control, frequency
     <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
             <Button
-                className="text-sm w-[16ch]"
+                className="text-sm w-[14ch]"
                 variant="outline"
                 onClick={() => setOpen(true)}
                 size="sm"
                 aria-label="Set update frequency"
             >
-                {frequency ?? "Select Frequency"}
+                {frequency ? frequency : "Set Frequency"}
             </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80">
@@ -133,7 +170,9 @@ const FrequencyPopover = ({ open, setOpen, methods, onSubmit, control, frequency
                             render={({ field }) => (
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <SelectTrigger className="h-8 w-full mt-4">
-                                        <SelectValue placeholder="Select Frequency" />
+                                        <SelectValue>
+                                            Set Frequency
+                                        </SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="Daily">Daily</SelectItem>
@@ -164,6 +203,41 @@ const DeleteButton = ({ loading, onDelete }: { loading: boolean, onDelete: () =>
     >
         <AiOutlineDelete />
     </Button>
+);
+
+const ActionDropdown = ({
+    syncLoading,
+    onSync,
+    deleteLoading,
+    onDelete,
+}: {
+    syncLoading: boolean,
+    onSync: () => void,
+    deleteLoading: boolean,
+    onDelete: () => void,
+}) => (
+    <DropdownMenu>
+        <DropdownMenuTrigger>
+            <Button
+                className="text-lg p-2"
+                variant="outline"
+                size="sm"
+                aria-label="Actions"
+            >
+                <HiOutlineDotsVertical />
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className='mr-8'>
+            <DropdownMenuItem onClick={onSync} disabled={syncLoading}>
+                <IoMdSync className={syncLoading ? 'animate-spin mr-2' : 'mr-2'} />
+                Fetch latest code
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDelete} disabled={deleteLoading}>
+                <AiOutlineDelete className="mr-2" />
+                Delete branch
+            </DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
 );
 
 export default ManageBranchItem;

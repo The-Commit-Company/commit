@@ -47,8 +47,8 @@ const CreateOrgModal = ({ mutate, onClose, open }: CreateOrgModalProps) => {
     }, [open])
 
     return (
-        <DialogContent>
-            <DialogHeader>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
                 <DialogTitle>Add Organization</DialogTitle>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}

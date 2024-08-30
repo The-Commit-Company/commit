@@ -102,10 +102,9 @@ const CreateBranchModal = ({ mutate, setOpen, open }: BranchProps) => {
     }, [open])
 
     return (
-        <DialogContent>
-            <DialogHeader>
-                <DialogTitle>Add Branch
-                </DialogTitle>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
+                <DialogTitle>Add Branch</DialogTitle>
             </DialogHeader>
             {error && <ErrorBanner error={error} />}
             {creationError && <ErrorBanner error={creationError} />}
