@@ -76,8 +76,8 @@ export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], set
         onClose()
     }
     return (
-        <DialogContent className="p-6">
-            <DialogHeader>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
                     Select the apps to view ERD

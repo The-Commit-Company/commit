@@ -36,8 +36,8 @@ export const CreateERD = () => {
         <div className="h-screen">
             <Header text="ERD Viewer" />
             <div className="border-r border-gray-200">
-                <div className="fixed bottom-4 flex flex-row gap-1 left-[50%] -translate-x-[50%] z-50" hidden={open}>
-                    <Button onClick={() => setOpen(!open)}>
+                <div className="fixed bottom-4 flex flex-row gap-2 left-[50%] -translate-x-[50%] z-40" hidden={open}>
+                    <Button onClick={() => setOpen(!open)} className="w-max sm:w-max">
                         Select DocTypes ({erdDoctypes.length})
                     </Button>
                     <Button variant={'outline'} onClick={() => {
@@ -96,7 +96,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={setOpen}>
+            <Dialog as="div" className="relative z-50" onClose={setOpen}>
                 <div className="fixed inset-0" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
