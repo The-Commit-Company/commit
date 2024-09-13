@@ -9,20 +9,23 @@ def get_name_of_app(organization, repo):
     '''
     Get name of app from repo
     '''
-    type = None
+    file_type = None
     app_name = None
     root_files = get_all_files_in_repo(access_token, organization, repo)
+    if type(root_files) == dict and root_files.get("message", "") == "Not Found":
+        return frappe.throw(f'Repository {repo} not found in organization {organization}')
+         
     for file in root_files:
         if file["name"] == "pyproject.toml":
-            type = "pyproject.toml"
+            file_type = "pyproject.toml"
             break
         elif file["name"] == "setup.py":
-            type = "setup.py"
+            file_type = "setup.py"
             break
     
-    if type == "pyproject.toml":
+    if file_type == "pyproject.toml":
         app_name = get_app_name_from_pyproject_toml(organization, repo)
-    elif type == "setup.py":
+    elif file_type == "setup.py":
         app_name = get_app_name_from_setup_py(organization, repo)   
 
     return app_name
