@@ -185,10 +185,10 @@ def get_api_name(file_content: str, index: int):
     def_index = file_content.find('def ', index)
 
     # Find occurrence of ":" after the def_index
-    colon_index = file_content.find(':', def_index)
+    colon_index = file_content.find('):', def_index)
 
     # Get the string between def_index and colon_index
-    api_def = file_content[def_index:colon_index].replace('\n', '').replace('\t', '')
+    api_def = file_content[def_index:colon_index+1].replace('\n', '').replace('\t', '')
 
     # api_def is of the form "def api_name(self, arg1, arg2, ...)"
     # We need to get the api_name. To do this, we can remove the "def " first
