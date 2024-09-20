@@ -39,33 +39,51 @@ export const CommandContent = ({ app, app_path }: CommandContentProps) => {
             <DialogHeader className="text-left">
                 <DialogTitle>Commands</DialogTitle>
                 <DialogDescription>
-                    View commands for {app}
+                    View bench commands for {app} app
                 </DialogDescription>
             </DialogHeader>
             <ErrorBanner error={error} />
             {isLoading && <FullPageLoader />}
             <div className="max-h-[60vh] overflow-y-scroll">
-                <div className="flex flex-col space-x-4 gap-1">
-                    <div className="flex flex-row space-x-4 px-4 py-1">
+                <div className="flex flex-col gap-1">
+                    <div className="flex flex-row pl-1 pr-4 py-1">
                         <Input placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)} className="h-8" value={searchQuery} />
                     </div>
-                    {filteredData && filteredData?.length > 0 ? filteredData?.map((command: CommandResponse) => <CommandComponent key={command.name} name={command.name} help={command.help} />)
-                        : <div className="text-gray-500">No commands found</div>}
+
+                    {filteredData && filteredData?.length > 0 ? <div className="divide-y divide-gray-200">
+                        {filteredData?.map((command: CommandResponse) => <CommandComponent key={command.name} name={command.name} help={command.help} />)}
+                    </div> : <div className="text-gray-500">No commands found</div>}
                 </div>
             </div>
             <DialogFooter>
-                <DialogClose asChild>
-                    <Button variant="outline">Close</Button>
-                </DialogClose>
+                <div className="flex flex-col items-end gap-1">
+                    <div className="text-xs text-gray-500">Total {filteredData?.length} Command(s)</div>
+                    <DialogClose asChild>
+                        <Button variant="outline">Close</Button>
+                    </DialogClose>
+                </div>
             </DialogFooter>
         </DialogContent>
     )
 }
 
 const CommandComponent = ({ name, help }: CommandResponse) => {
+    // Regular expression to detect URLs
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    // Function to wrap links in anchor tags
+    const renderHelpText = (text: string) => {
+        const parts = text.split(urlRegex);
+        return parts.map((part, index) => {
+            if (urlRegex.test(part)) {
+                return <a key={index} href={part} className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">{part}</a>;
+            }
+            return part;
+        });
+    };
 
     return (
-        <div className="flex flex-col text-sm py-2 pr-4">
+        <div className="flex flex-col text-sm py-2 pr-4 pl-1">
             <code className="flex justify-between items-start bg-gray-100 px-1 border-2 border-gray-200 rounded-md text-sm">
                 <div>
                     {`bench ${name}`}
@@ -74,8 +92,8 @@ const CommandComponent = ({ name, help }: CommandResponse) => {
                     `bench ${name}`
                 } className="h-6 w-6 hover:bg-gray-300" />
             </code>
-            <div className="text-gray-500 text-xs">
-                {help}
+            <div className="text-gray-500 text-xs px-1 pt-1">
+                {renderHelpText(help)}
             </div>
         </div>
     )
