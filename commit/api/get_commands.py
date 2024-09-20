@@ -16,7 +16,7 @@ def get_project_app_commands(app: str, app_path: str = None) -> dict:
             return frappe.throw('You do not have permission to access this resource', frappe.PermissionError)
         return get_site_app_commands(app)
     else:
-        ret = {}
+        ret = []
         try:
             if app_path:
                 # Add the app's directory to the Python path
