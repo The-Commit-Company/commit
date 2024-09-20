@@ -3,11 +3,11 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
-import { EyeIcon } from "@heroicons/react/24/outline"
 import { useEffect, useMemo, useState } from "react"
 import { AiOutlineBranches } from "react-icons/ai"
 import { GoPackage } from "react-icons/go"
 import { CommandContent } from "../commands/CommandsContent"
+import { HiOutlineCommandLine } from "react-icons/hi2";
 
 export interface APIListProps {
     apiList: APIData[]
@@ -53,7 +53,7 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
-                            <EyeIcon className="h-4 w-4 mr-2" />
+                            <HiOutlineCommandLine className="h-4 w-4 mr-2" />
                             Commands
                         </Button>
                     </DialogTrigger>
