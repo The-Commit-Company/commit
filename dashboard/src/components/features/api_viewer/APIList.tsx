@@ -1,9 +1,13 @@
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
 import { useEffect, useMemo, useState } from "react"
 import { AiOutlineBranches } from "react-icons/ai"
 import { GoPackage } from "react-icons/go"
+import { CommandContent } from "../commands/CommandsContent"
+import { HiOutlineCommandLine } from "react-icons/hi2";
 
 export interface APIListProps {
     apiList: APIData[]
@@ -11,9 +15,10 @@ export interface APIListProps {
     branch_name: string
     setSelectedEndpoint: (endpoint: string) => void
     selectedEndpoint?: string
+    path_to_folder: string
 }
 
-export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
@@ -33,16 +38,27 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
 
     return (
         <div className="flex flex-col space-y-4 p-3 border-r border-gray-200">
-            <div className="flex space-x-2 items-center">
-                <div className="flex flex-wrap items-center space-x-1">
-                    <GoPackage />
-                    <p className="truncate text-md text-gray-700">{app_name}</p>
+            <div className="flex flex-row space-x-4 justify-between">
+                <div className="flex space-x-2 items-center">
+                    <div className="flex flex-wrap items-center space-x-1">
+                        <GoPackage />
+                        <p className="truncate text-md text-gray-700">{app_name}</p>
+                    </div>
+                    <div className="w-px h-4 bg-gray-200" />
+                    <div className="flex flex-wrap items-center space-x-1">
+                        <AiOutlineBranches />
+                        <p>{branch_name}</p>
+                    </div>
                 </div>
-                <div className="w-px h-4 bg-gray-200" />
-                <div className="flex flex-wrap items-center space-x-1">
-                    <AiOutlineBranches />
-                    <p>{branch_name}</p>
-                </div>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
+                            <HiOutlineCommandLine className="h-4 w-4 mr-2" />
+                            Commands
+                        </Button>
+                    </DialogTrigger>
+                    <CommandContent app={app_name} app_path={path_to_folder} />
+                </Dialog>
             </div>
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">

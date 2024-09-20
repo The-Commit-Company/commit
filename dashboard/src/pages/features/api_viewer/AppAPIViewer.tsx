@@ -51,6 +51,7 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
                         branch_name={data?.message.branch_name ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
                         selectedEndpoint={selectedendpoint}
+                        path_to_folder=""
                     />
 
                 </div>

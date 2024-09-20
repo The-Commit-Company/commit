@@ -33,12 +33,11 @@ export const YourAppAPIExplorer = () => {
             <Card className="flex flex-col sm:flex-row items-start p-2 border rounded-lg w-full h-full shadow-sm bg-white relative">
                 <div className="flex-grow h-full">
                     <CardHeader className="pb-4">
-                        <CardTitle>Explore your API's</CardTitle>
+                        <CardTitle>Explore your API's and Bench Commands</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-sm text-gray-500 sm:mb-8">
-                            Explore and interact with your site installed apps whitelisted API's effortlessly
-                            using our API Explorer.
+                            Effortlessly explore and interact with the whitelisted API's and Bench commands of your site's installed apps using our API Explorer.
                         </div>
                     </CardContent>
 

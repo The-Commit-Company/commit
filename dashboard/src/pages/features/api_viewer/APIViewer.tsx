@@ -19,6 +19,7 @@ interface GetAPIResponse {
     org_logo?: string,
     last_updated: string,
     project_branch: string,
+    path_to_folder: string
 }
 export const APIViewerContainer = () => {
     const { ID } = useParams()
@@ -57,6 +58,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                         branch_name={data?.message.branch_name ?? ''}
                         setSelectedEndpoint={setSelectedEndpoint}
                         selectedEndpoint={selectedendpoint}
+                        path_to_folder={data?.message.path_to_folder}
                     />
                 </div>
 
