@@ -158,13 +158,16 @@ export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => 
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {parameters?.map((parameter) => (
+                {parameters?.map((parameter) => {
+                    const isMandatory = parameter.argument !== '' && parameter.argument && !parameter.default
+                    return (
                     <TableRow key={parameter.argument} className="font-light text-sm">
-                        <TableCell>{parameter.argument}{parameter.argument && parameter.default ? '' : <span className="text-red-500 ml-1">*</span>}</TableCell>
+                        <TableCell>{parameter.argument}{isMandatory ? <span className="text-red-500 ml-1">*</span> : ''}</TableCell>
                         <TableCell>{parameter.type ? parameter.type : '-'}</TableCell>
                         <TableCell>{parameter.default ? parameter.default : '-'}</TableCell>
                     </TableRow>
-                ))}
+                    )
+                })}
             </TableBody>
         </Table>
     )
