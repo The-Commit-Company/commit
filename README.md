@@ -12,5 +12,3 @@ Go ahead and create a fresh new bench
 - `bench get-app https://github.com/The-commit-company/commit`
 - `bench new-site <preferred-site-url>`
 - `bench --site <site-url> install-app commit`
-
-Commit will now be accessible on https://<site-url>:8000/commit. 
