@@ -160,7 +160,7 @@ export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => 
             <TableBody>
                 {parameters?.map((parameter) => (
                     <TableRow key={parameter.argument} className="font-light text-sm">
-                        <TableCell>{parameter.argument}</TableCell>
+                        <TableCell>{parameter.argument}{parameter.argument && parameter.default ? '' : <span className="text-red-500 ml-1">*</span>}</TableCell>
                         <TableCell>{parameter.type ? parameter.type : '-'}</TableCell>
                         <TableCell>{parameter.default ? parameter.default : '-'}</TableCell>
                     </TableRow>
