@@ -59,6 +59,10 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
         }
     }, [parameters])
 
+    useEffect(() => {
+        reset({})
+    },[])
+
     const { call } = useContext(FrappeContext) as FrappeConfig
 
     const returnString = (value: any) => {
