@@ -11,6 +11,10 @@ import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
 import { MdOutlineFileDownload } from "react-icons/md"
 import Markdown from "react-markdown"
+import { AiOutlineThunderbolt } from "react-icons/ai"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { APIClientContent } from "../APIClient/APIClientContent"
 
 export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string }) => {
 
@@ -98,7 +102,30 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
                             <div className="flex items-start space-x-2 sm:col-span-4">
                                 <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[58ch]">{data?.api_path}</dd>
-                                <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
+                                <div className="flex items-center space-x-2">
+                                    <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
+                                    {viewerType === 'app' && <TooltipProvider>
+                                        <Tooltip>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            size="icon"
+                                                            className="h-6 w-6"
+                                                        >
+                                                            <span className="sr-only">API Call</span>
+                                                            <AiOutlineThunderbolt />
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                </DialogTrigger>
+                                                <APIClientContent endpoint={data?.api_path ?? ''} parameters={data?.arguments} />
+                                            </Dialog>
+                                            <TooltipContent side="bottom">
+                                                Click to make an API call to this endpoint
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>}
+                                </div>
                             </div>
                         </div>
                         <div className="py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
