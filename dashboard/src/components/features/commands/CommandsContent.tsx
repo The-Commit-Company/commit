@@ -85,7 +85,7 @@ const CommandComponent = ({ name, help }: CommandResponse) => {
     return (
         <div className="flex flex-col text-sm py-2 pr-4 pl-1">
             <code className="flex justify-between items-start bg-gray-100 px-1 border-2 border-gray-200 rounded-md text-sm">
-                <div>
+                <div className="pt-0.5">
                     {`bench ${name}`}
                 </div>
                 <CopyButton value={
