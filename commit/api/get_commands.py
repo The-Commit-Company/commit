@@ -56,8 +56,8 @@ def get_site_app_commands(app: str) -> dict:
      # Call get_commands if it is a callable
 
     command_list = []
-    if hasattr(app_command_module, 'get_commands') and callable(getattr(app_command_module, 'get_commands')):
-        commands_from_function = app_command_module.get_commands()
+    if hasattr(app_command_module, 'commands'):
+        commands_from_function = app_command_module.commands
         if commands_from_function:
             for command_instance in commands_from_function:
                 help_text = getattr(command_instance, 'help', 'No help text available')
