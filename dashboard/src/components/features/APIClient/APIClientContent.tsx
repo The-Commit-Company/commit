@@ -1,15 +1,13 @@
 import CopyButton from "@/components/common/CopyToClipboard/CopyToClipboard"
 import { Button } from "@/components/ui/button"
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Argument } from "@/types/APIData"
-import { DialogClose } from "@radix-ui/react-dialog"
 import { FrappeConfig, FrappeContext } from "frappe-react-sdk"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { BsArrowRight } from "react-icons/bs"
 import { FaCaretDown } from "react-icons/fa"
 import { IoAdd } from "react-icons/io5";
 
@@ -17,9 +15,10 @@ import { IoAdd } from "react-icons/io5";
 export interface APIClientContentProps {
     endpoint: string
     parameters?: Argument[]
+    open: boolean
 }
 
-export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps) => {
+export const APIClientContent = ({ endpoint, open, parameters }: APIClientContentProps) => {
 
     const [requestType, setRequestType] = useState<"GET" | "POST">('GET')
 
@@ -61,7 +60,10 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
 
     useEffect(() => {
         reset({})
-    },[])
+        setRequestType('GET')
+        setParamsType('params')
+        setResponse({})
+    }, [open])
 
     const { call } = useContext(FrappeContext) as FrappeConfig
 
@@ -108,6 +110,7 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
         }, {} as Record<string, string>)
 
         const paramsData = handleFormData(filteredParameterValues)
+        console.log('paramsData', paramsData, filteredParameterValues)
 
         if (requestType === 'GET') {
             // call get api with endpoint and parameterValues
@@ -128,13 +131,12 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
 
     const handleFormData = (data: any) => {
         if (paramsType === 'form-data') {
-            const formData = new FormData()
-            Object.keys(data).forEach((key) => {
-                if (key.startsWith('key-')) {
-                    formData.append(data[key], data[key.replace('key', 'value')])
-                }
+            const obj = {}
+            Object.keys(data)?.filter((key) => key.includes('key')).forEach((key) => {
+                // @ts-ignore
+                obj[data[key]] = data[key.replace('key', 'value')]
             })
-            return formData
+            return obj
         }
         else {
             return Object.keys(data)?.filter((key) => !(key.includes('key') || key.includes('value'))).reduce((acc, key) => {
@@ -152,7 +154,8 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
                     <DialogDescription>
                         Easily test and interact with your API endpoints.
                     </DialogDescription>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-row gap-2">
                         <div className="flex w-full items-center">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -173,13 +176,13 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
                                         <span>POST</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
-                            </DropdownMenu>
-                            <div className="relative flex items-center w-full">
+                                </DropdownMenu>
                                 <Input placeholder="Endpoint" value={endpoint} readOnly className="rounded-l-none border-l-0 w-full" />
-                                <Button variant={'link'} size={'icon'} className="absolute right-0 top-1/2 transform -translate-y-1/2" onClick={handleSubmit(onSubmit)}>
-                                    <BsArrowRight />
-                                </Button>
+
                             </div>
+                            <Button onClick={handleSubmit(onSubmit)}>
+                                Send
+                            </Button>
                         </div>
                         <div className="grid grid-cols-2 gap-4 divide-x divide-gray-200" style={{
                             gridTemplateColumns: '40% 60%'
@@ -276,11 +279,6 @@ export const APIClientContent = ({ endpoint, parameters }: APIClientContentProps
                         </div>
                     </div>
                 </DialogHeader>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button variant="outline">Close</Button>
-                    </DialogClose>
-                </DialogFooter>
             </DialogContent>
         </FormProvider>
     )
