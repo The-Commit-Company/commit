@@ -61,11 +61,11 @@ def generate_docs_for_chunk(api_chunk):
             "content": (
                 "You are an expert documentation generator. Create detailed and comprehensive documentation "
                 "for the code provided below in Markdown format. Each function should have the following sections:\n\n"
-                "- **(api[Function Name])**\n"
-                "- **Description**: Detailed description of what the function does and what it is used for \n"
-                "- **Parameters**: List of parameters with their types, descriptions, and indicate which are mandatory or optional\n"
-                "- **Return Type**: Type and description of the return value\n"
-                "- **Examples**: Code examples demonstrating how to use the function (enclosed in triple backticks ``````).\n\n"
+                "- # [Function Name] (as heading 1)\n"
+                "- ## Description: Detailed description of what the function does and what it is used for \n"
+                "- ## Parameters: List of parameters with their types, descriptions, and indicate which are mandatory or optional\n"
+                "- ## Return Type: Type and description of the return value\n"
+                "- ## Examples: Code examples demonstrating how to use the function (enclosed using <pre> and <code> Tags`).\n\n"
                 "The response should be a valid JSON list of objects formatted as follows: "
                 "{function_name: <function_name>, path: <path>, documentation: <documentation in Markdown>}.\n"
                 "Ensure the response is in valid JSON format only, enclosed in triple backticks, and does not include `---`."
@@ -76,8 +76,6 @@ def generate_docs_for_chunk(api_chunk):
     for api in api_chunk:
         user_message = f"function name: {api['function_name']}, path: {api['path']}, code:\n{api['code']}"
         messages.append({"role": "user", "content": user_message})
-
-    # print("Raw Response:\n", response_text)  # Log raw response for debugging
 
     response_text = open_ai_call(messages)
 
@@ -103,7 +101,7 @@ def generate_docs_for_chunk(api_chunk):
             return json.loads(cleaned_response, strict=False)
         except json.JSONDecodeError as e:
             print("Second JSON Decode Error:", e)
-            return []
+            return generate_docs_for_chunk(api_chunk)
 
     # return cleaned_response
 

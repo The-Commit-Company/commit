@@ -8,21 +8,14 @@ import { web_url } from "@/config/socket"
 import { APIData, Argument } from "@/types/APIData"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { MdOutlineFileDownload } from "react-icons/md"
-import Markdown from "react-markdown"
-import { AiOutlineThunderbolt } from "react-icons/ai"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Dialog } from "@/components/ui/dialog"
-import { APIClientContent } from "../APIClient/APIClientContent"
-import { APIDocumentationOfSiteApp, Documentation } from "../documentation/APIDocumentation"
+import { APIDocumentationOfSiteApp } from "../documentation/APIDocumentation"
 
 export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string }) => {
-
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
     }, [endpointData, selectedEndpoint])
-
     const requestTypeBgColor = (requestType: string) => {
         switch (requestType) {
             case 'GET':
@@ -37,7 +30,6 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 return 'bg-gray-100'
         }
     }
-
     const requestTypeBorderColor = (requestType: string) => {
         switch (requestType) {
             case 'GET':
@@ -52,14 +44,11 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 return 'ring-gray-600/20'
         }
     }
-
-    const [apiOpen, setApiOpen] = useState(false)
-
     return (
         <div className="flex flex-col space-y-3 p-3">
             <div className="border-b border-gray-200 pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-semibold leading-6 text-gray-900">{data?.name}</h1>
+                    <h1 className="text-lg font-semibold leading-6 text-gray-900">API Details</h1>
                     {data?.allow_guest || data?.xss_safe ? <div className="border-b border-gray-100  space-x-2">
                         {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
                             Allow Guest
@@ -84,32 +73,15 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
             <div>
                 <div className="mt-0 border-b border-gray-100">
                     <dl className="divide-y divide-gray-100">
-                        <div className="sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
+                        <div className="py-2 grid grid-cols-5 gap-4 px-0">
+                            <dt className="text-sm font-medium leading-6 text-gray-900">Name :</dt>
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>{data?.name}</code></dd>
+                        </div>
+                        <div className="py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
-                            <div className="pb-1 flex items-start space-x-2 sm:col-span-4 justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <dd className="text-sm text-blue-500 cursor-pointer">
-                                        {data?.api_path}
-                                    </dd>
-                                    <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    {viewerType === 'app' && <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() => setApiOpen(true)}
-                                                >
-                                                    Call API <AiOutlineThunderbolt className="h-4 w-4 ml-2" />
-                                                </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent side="bottom" className="mr-4">
-                                                Click to make an API call to this endpoint
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>}
-                                </div>
+                            <div className="flex items-start space-x-2 sm:col-span-4">
+                                <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[58ch]">{data?.api_path}</dd>
+                                <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
                             </div>
                         </div>
                         <div className="py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
@@ -130,14 +102,12 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                     </dl>
                 </div>
             </div>
-
             <Tabs defaultValue="Parameters" className="w-full">
                 <TabsList className="w-full justify-start overflow-scroll">
                     <TabsTrigger value="Parameters">Parameters</TabsTrigger>
                     <TabsTrigger value="Code">Code</TabsTrigger>
                     <TabsTrigger value="Bruno">Bruno</TabsTrigger>
-                    {data?.documentation && <TabsTrigger value="Documentation">Documentation</TabsTrigger>}
-                    {viewerType === 'app' && <TabsTrigger value="Meta Documentation">Documentation</TabsTrigger>}
+                    <TabsTrigger value="Documentation">Documentation</TabsTrigger>
                 </TabsList>
                 <TabsContent value="Parameters">
                     <ParametersTable parameters={data?.arguments} />
@@ -148,23 +118,14 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 <TabsContent value="Bruno">
                     <Bruno doc={data!} />
                 </TabsContent>
-                {data?.documentation && <TabsContent value="Documentation">
-                    <Documentation documentation={data?.documentation ?? ''} />
-                </TabsContent>}
-                {viewerType === 'app' && <TabsContent value="Meta Documentation">
-                    <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} />
-                </TabsContent>}
+                <TabsContent value="Documentation">
+                    <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} viewerType={viewerType} key={data?.api_path} />
+                </TabsContent>
             </Tabs>
-            <Dialog open={apiOpen} onOpenChange={setApiOpen}>
-                <APIClientContent endpoint={data?.api_path ?? ''} parameters={data?.arguments} open={apiOpen} />
-            </Dialog>
         </div >
     )
 }
-
-
 export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => {
-
     return (
         <Table>
             <TableCaption>A list of parameters that can be used in the API</TableCaption>
@@ -190,10 +151,7 @@ export const ParametersTable = ({ parameters }: { parameters?: Argument[] }) => 
         </Table>
     )
 }
-
-
 export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: { apiData: APIData, project_branch: string, file_path: string, viewerType: string }) => {
-
     const { data, error, isLoading } = useFrappeGetCall<{ message: { file_content: string } }>('commit.api.api_explorer.get_file_content_from_path', {
         project_branch: project_branch,
         file_path: file_path,
@@ -207,7 +165,6 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
     const copyValue = () => {
         const content = JSON.parse(JSON.stringify(data?.message?.file_content ?? []) ?? '[]')
         return content?.join('')
-
     }
     return (
         <div className="flex flex-col space-y-2">
@@ -215,7 +172,7 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
             {isLoading && <div className="flex items-center justify-center h-[calc(100vh-16rem)]">
                 <FullPageLoader />
             </div>}
-            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-17rem)]">
+            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
                 <div className="absolute top-0 right-0 p-2">
                     <CopyButton value={copyValue()} className="h-6 w-6" variant={'outline'} />
                 </div>
@@ -227,17 +184,13 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
         </div >
     )
 }
-
-
 export const Bruno = ({ doc }: { doc: APIData }) => {
-
     const rest = useMemo(() => {
         if (doc) {
             const { allow_guest, xss_safe, documentation, block_end, block_start, index, ...rest } = doc
             return rest
         }
     }, [doc])
-
     const { data, error, isLoading } = useFrappeGetCall('commit.api.bruno.generate_bruno_file', {
         data: JSON.stringify(rest),
         type: 'copy'
@@ -245,20 +198,17 @@ export const Bruno = ({ doc }: { doc: APIData }) => {
         revalidateOnFocus: false,
         revalidateIfStale: false,
     })
-
     const copyValue = () => {
         const content = JSON.parse(JSON.stringify(data ?? '') ?? '[]')
         return content
-
     }
-
     return (
         <div className="flex flex-col space-y-2 h-full overflow-y-hidden">
             {error && <ErrorBanner error={error} />}
             {isLoading && <div className="flex items-center justify-center h-[calc(100vh-16rem)]">
                 <FullPageLoader />
             </div>}
-            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-19rem)]">
+            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
                 <div className="absolute top-0 right-0 p-2">
                     <div className="flex items-center space-x-1">
                         <Button variant={'outline'} size={'icon'} className="h-8 w-8">
