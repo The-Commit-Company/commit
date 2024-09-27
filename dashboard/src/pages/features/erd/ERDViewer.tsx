@@ -178,7 +178,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                         </div>
 
                                     </div>
-                                    <div className="sticky bottom-0 items-center justify-end p-4 flex w-full bg-white border-t">
+                                        <div className="fixed bottom-0 items-center w-[480px] justify-end p-4 flex bg-white border-t">
                                         <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
                                     </div>
                                 </Dialog.Panel>
