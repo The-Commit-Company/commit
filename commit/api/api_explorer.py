@@ -18,6 +18,7 @@ def get_apis_for_project(project_branch: str):
         for doc in documentation:
             if doc.get("function_name") == api.get("name") and doc.get("path") == api.get("api_path"):
                 api["documentation"] = doc.get("documentation")
+                api["last_updated"] = doc.get("last_updated")
                 break
             
     app_name, organization, app_logo = frappe.db.get_value("Commit Project", branch_doc.project, ["app_name", "org", "image"])

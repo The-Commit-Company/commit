@@ -10,6 +10,8 @@ import Markdown from "react-markdown";
 import MDEditor from '@uiw/react-md-editor';
 import { FiEdit, FiSave } from "react-icons/fi";
 import { isSystemManager } from "@/utils/roles";
+import { IoMdClose } from "react-icons/io";
+import { convertFrappeTimestampToTimeAgo } from "@/components/utils/dateconversion";
 
 
 export const Documentation = ({ documentation }: { documentation: string }) => {
@@ -92,8 +94,10 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
         <div className="flex flex-col space-y-2 h-full overflow-y-hidden">
             {error && <ErrorBanner error={error} />}
             <div className="flex flex-col space-y-2 overflow-auto h-[calc(100vh-20rem)]">
-                {isCreateAccess && <div className="flex justify-end p-2 space-x-2">
-                    <TooltipProvider>
+                <div className="flex justify-between p-2 items-center">
+                    <div className="text-sm text-gray-500">Last Docs Updated - {convertFrappeTimestampToTimeAgo(apiData?.last_updated)}</div>
+                    {isCreateAccess && <div className="flex space-x-2">
+                        {!edit && <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={generateDocumentation} disabled={loading}>
@@ -105,7 +109,10 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
                                 Generate Documentation for this API
                             </TooltipContent>
                         </Tooltip>
-                    </TooltipProvider>
+                        </TooltipProvider>}
+                        {edit && <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => setEdit(false)}>
+                            <IoMdClose className="h-4 w-4" />
+                        </Button>}
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -113,17 +120,23 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
                                     {edit ? <FiSave className="h-4 w-4" /> : <FiEdit className="h-4 w-4" />}
                                 </Button>
                             </TooltipTrigger>
-                            <TooltipContent side="bottom">
+                                <TooltipContent side="bottom" className="mr-4">
                                 {edit ? 'Save Documentation' : 'Edit Documentation'}
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                 </div>}
+                </div>
                 <MDEditor
                     value={documentation}
                     preview={previewMode ?? 'preview'}
+                    hideToolbar={!edit || !isCreateAccess}
+                    data-color-mode="light"
                     onChange={(value) => onDocumentationChange(value ?? '')}
-                    style={{ minHeight: 'calc(100vh - 24rem)', overflowY: 'auto', margin: 8, padding: 4 }}
+                    style={{
+                        minHeight: (apiData?.last_updated || isCreateAccess) ? 'calc(100vh - 24rem)' : 'calc(100vh - 21rem)',
+                        overflowY: 'auto', margin: 8, padding: 4
+                    }}
                 />
             </div>
         </div>

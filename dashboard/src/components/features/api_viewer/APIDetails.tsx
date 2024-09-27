@@ -79,7 +79,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                         </div>
                         <div className="py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
-                            <div className="flex items-start space-x-2 sm:col-span-4">
+                            <div className="flex items-start justify-between space-x-2 sm:col-span-4">
                                 <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[58ch]">{data?.api_path}</dd>
                                 <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
                             </div>

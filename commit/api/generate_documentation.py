@@ -67,14 +67,14 @@ def generate_docs_for_chunk(api_chunk):
                 "- ## Return Type: Type and description of the return value\n"
                 "- ## Examples: Code examples demonstrating how to use the function (enclosed using <pre> and <code> Tags`).\n\n"
                 "The response should be a valid JSON list of objects formatted as follows: "
-                "{function_name: <function_name>, path: <path>, documentation: <documentation in Markdown>}.\n"
+                "{function_name: <function_name>, path: <path>, last_updated:<last_updated>, documentation: <documentation in Markdown>}.\n"
                 "Ensure the response is in valid JSON format only, enclosed in triple backticks, and does not include `---`."
             )
         }
     ]
-
+    last_updated = frappe.utils.now()
     for api in api_chunk:
-        user_message = f"function name: {api['function_name']}, path: {api['path']}, code:\n{api['code']}"
+        user_message = f"function name: {api['function_name']}, path: {api['path']}, last_updated:{last_updated} ,code:\n{api['code']}"
         messages.append({"role": "user", "content": user_message})
 
     response_text = open_ai_call(messages)
@@ -118,13 +118,13 @@ def generate_documentation_for_api_snippet(api_path:str,code_snippet:str):
                 "- ## Return Type\n Specify the type and description of the return value.\n"
                 "- ## Examples\n Provide code examples demonstrating how to use the function, enclosed in triple backticks (``````).\n\n"
                 "The response should be a valid JSON formatted as follows: "
-                "{function_name: <function_name>, path: <path>, documentation: <documentation in Markdown>}.\n"
+                "{function_name: <function_name>, path: <path>, last_updated:<last_updated>, documentation: <documentation in Markdown>}.\n"
                 "Ensure the response is in valid JSON format only, and does not include `---`."
             )
         }
     ]
     
-    user_message = f"api path: {api_path}, code:\n{code_snippet}"
+    user_message = f"api path: {api_path}, last_updated:{frappe.utils.now()}, code:\n{code_snippet}"
     if not code_snippet:
         return []
     messages.append({"role": "user", "content": user_message})
