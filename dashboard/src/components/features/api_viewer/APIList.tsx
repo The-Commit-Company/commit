@@ -8,6 +8,7 @@ import { AiOutlineBranches } from "react-icons/ai"
 import { GoPackage } from "react-icons/go"
 import { CommandContent } from "../commands/CommandsContent"
 import { HiOutlineCommandLine } from "react-icons/hi2";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export interface APIListProps {
     apiList: APIData[]
@@ -50,15 +51,24 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
                         <p>{branch_name}</p>
                     </div>
                 </div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
-                            <HiOutlineCommandLine className="h-4 w-4 mr-2" />
-                            Commands
-                        </Button>
-                    </DialogTrigger>
-                    <CommandContent app={app_name} app_path={path_to_folder} />
-                </Dialog>
+                <TooltipProvider>
+                    <Tooltip>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <TooltipTrigger asChild>
+                                    <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
+                                        <HiOutlineCommandLine className="h-4 w-4 mr-2" />
+                                        Commands
+                                    </Button>
+                                </TooltipTrigger>
+                            </DialogTrigger>
+                            <CommandContent app={app_name} app_path={path_to_folder} />
+                        </Dialog>
+                        <TooltipContent side="bottom">
+                            Click to view available bench commands in this app
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">
