@@ -23,9 +23,9 @@ export const ERDViewer = () => {
 
     const location = useLocation()
 
-    const { apps } = location.state as { apps: string[] }
+    const { apps } = location.state as { apps: string[] } || {}
 
-    const [selectedApps, setSelectedApps] = useState<string[]>(apps)
+    const [selectedApps, setSelectedApps] = useState<string[]>(apps ?? [])
 
     const [erdDoctypes, setERDDocTypes] = useState<{ doctype: string, project_branch: string }[]>([])
 
@@ -38,6 +38,12 @@ export const ERDViewer = () => {
         }
 
     }, [])
+
+    useEffect(() => {
+        if (!apps) {
+            setOpen(true)
+        }
+    }, [apps])
 
     const flowRef = useRef(null)
 
@@ -113,6 +119,12 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
         setOpenDialog(false)
     }
 
+    useEffect(() => {
+        if (apps.length === 0) {
+            setOpenDialog(true)
+        }
+    }, [])
+
 
     return (
         <>
@@ -145,7 +157,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                                             </PopoverTrigger> : null}
                                                             <DoctypeListPopover doctypes={doctype} setDoctypes={setDocType} />
                                                         </Popover>
-                                                        {apps.length ? <Button variant={'outline'} onClick={() => setOpenDialog(true)} className="h-6 px-2">{apps.length} Apps</Button> : null}
+                                                        <Button variant={'outline'} onClick={() => setOpenDialog(true)} className="h-6 px-2">{apps.length} Apps</Button>
 
                                                 </Dialog.Title>
                                                 <div className="ml-3 flex h-7 items-center">
