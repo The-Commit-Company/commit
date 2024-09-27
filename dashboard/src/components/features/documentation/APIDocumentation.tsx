@@ -94,39 +94,12 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
         <div className="flex flex-col space-y-2 h-full overflow-y-hidden">
             {error && <ErrorBanner error={error} />}
             <div className="flex flex-col space-y-2 overflow-auto h-[calc(100vh-20rem)]">
-                <div className="flex justify-between p-2 items-center">
-                    <div className="text-sm text-gray-500">Last Docs Updated - {convertFrappeTimestampToTimeAgo(apiData?.last_updated)}</div>
-                    {isCreateAccess && <div className="flex space-x-2">
-                        {!edit && <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={generateDocumentation} disabled={loading}>
-                                    {loading ? <SpinnerLoader className="-mr-0" /> :
-                                        <MdOutlineRocketLaunch className="h-4 w-4" />}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom">
-                                Generate Documentation for this API
-                            </TooltipContent>
-                        </Tooltip>
-                        </TooltipProvider>}
-                        {edit && <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => setEdit(false)}>
-                            <IoMdClose className="h-4 w-4" />
-                        </Button>}
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button size={'icon'} className="h-8 w-8" onClick={SaveEditButton}>
-                                    {edit ? <FiSave className="h-4 w-4" /> : <FiEdit className="h-4 w-4" />}
-                                </Button>
-                            </TooltipTrigger>
-                                <TooltipContent side="bottom" className="mr-4">
-                                {edit ? 'Save Documentation' : 'Edit Documentation'}
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>}
-                </div>
+                {apiData?.last_updated ? <div className="flex justify-between p-2 items-center">
+                    <div className="text-sm text-gray-500">
+                        Last Docs Updated - {convertFrappeTimestampToTimeAgo(apiData?.last_updated)}
+                    </div>
+                    {isCreateAccess && <AllButton generateDocumentation={generateDocumentation} loading={loading} edit={edit} setEdit={setEdit} SaveEditButton={SaveEditButton} />}
+                </div> : (isCreateAccess && <AllButton generateDocumentation={generateDocumentation} loading={loading} edit={edit} setEdit={setEdit} SaveEditButton={SaveEditButton} />)}
                 <MDEditor
                     value={documentation}
                     preview={previewMode ?? 'preview'}
@@ -138,6 +111,44 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
                         overflowY: 'auto', margin: 8, padding: 4
                     }}
                 />
+            </div>
+        </div>
+    )
+}
+
+export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveEditButton }: { generateDocumentation: () => void, loading: boolean, edit: boolean, setEdit: (value: boolean) => void, SaveEditButton: () => void }) => {
+
+    return (
+        <div className="flex justify-end p-2 items-center">
+            <div className="flex space-x-2">
+                {!edit && <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={generateDocumentation} disabled={loading}>
+                                {loading ? <SpinnerLoader className="-mr-0" /> :
+                                    <MdOutlineRocketLaunch className="h-4 w-4" />}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            Generate Documentation for this API
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>}
+                {edit && <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => setEdit(false)}>
+                    <IoMdClose className="h-4 w-4" />
+                </Button>}
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button size={'icon'} className="h-8 w-8" onClick={SaveEditButton}>
+                                {edit ? <FiSave className="h-4 w-4" /> : <FiEdit className="h-4 w-4" />}
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="mr-4">
+                            {edit ? 'Save Documentation' : 'Edit Documentation'}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
         </div>
     )
