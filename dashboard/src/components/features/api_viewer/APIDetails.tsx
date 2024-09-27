@@ -15,25 +15,13 @@ import { AiOutlineThunderbolt } from "react-icons/ai"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Dialog } from "@/components/ui/dialog"
 import { APIClientContent } from "../APIClient/APIClientContent"
+import { APIDocumentationOfSiteApp, Documentation } from "../documentation/APIDocumentation"
 
 export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string }) => {
 
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
     }, [endpointData, selectedEndpoint])
-
-    const tabs = [
-        {
-            name: 'Parameters', content: <ParametersTable parameters={data?.arguments} />
-        },
-        {
-            name: 'Code', content: <CodeSnippet apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} viewerType={viewerType} />
-        },
-        {
-            name: 'Bruno', content: <Bruno doc={data!} />
-        },
-    ]
-    data?.documentation && tabs.push({ name: 'Documentation', content: <Documentation documentation={data?.documentation ?? ''} /> })
 
     const requestTypeBgColor = (requestType: string) => {
         switch (requestType) {
@@ -143,12 +131,13 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 </div>
             </div>
 
-            <Tabs defaultValue="Parameters" className="w-full shadow-sm">
+            <Tabs defaultValue="Parameters" className="w-full">
                 <TabsList className="w-full justify-start overflow-scroll">
                     <TabsTrigger value="Parameters">Parameters</TabsTrigger>
                     <TabsTrigger value="Code">Code</TabsTrigger>
                     <TabsTrigger value="Bruno">Bruno</TabsTrigger>
                     {data?.documentation && <TabsTrigger value="Documentation">Documentation</TabsTrigger>}
+                    {viewerType === 'app' && <TabsTrigger value="Meta Documentation">Documentation</TabsTrigger>}
                 </TabsList>
                 <TabsContent value="Parameters">
                     <ParametersTable parameters={data?.arguments} />
@@ -161,6 +150,9 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 </TabsContent>
                 {data?.documentation && <TabsContent value="Documentation">
                     <Documentation documentation={data?.documentation ?? ''} />
+                </TabsContent>}
+                {viewerType === 'app' && <TabsContent value="Meta Documentation">
+                    <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} />
                 </TabsContent>}
             </Tabs>
             <Dialog open={apiOpen} onOpenChange={setApiOpen}>
@@ -236,25 +228,6 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
     )
 }
 
-export const Documentation = ({ documentation }: { documentation: string }) => {
-    console.log('documentation', documentation)
-
-    const renderContent = () => {
-        if (typeof documentation === 'string') {
-            return <Markdown className={'p-2 flex flex-col gap-2'}>{documentation}</Markdown>;
-        } else if (typeof documentation === 'object' && documentation !== null && !Array.isArray(documentation)) {
-            return <pre className="p-2 flex flex-col gap-2">{JSON.stringify(documentation, null, 2)}</pre>;
-        } else {
-            return <div className="p-2 flex flex-col gap-2">Invalid documentation format</div>;
-        }
-    };
-
-    return (
-        <div className="flex flex-col space-y-2 rounded-md overflow-auto border-2 border-gray-200 h-[calc(100vh-20rem)]">
-            {renderContent()}
-        </div>
-    )
-}
 
 export const Bruno = ({ doc }: { doc: APIData }) => {
 
