@@ -101,8 +101,7 @@ def generate_docs_for_chunk(api_chunk):
             return json.loads(cleaned_response, strict=False)
         except json.JSONDecodeError as e:
             print("Second JSON Decode Error:", e)
-            return generate_docs_for_chunk(api_chunk)
-
+            return []
     # return cleaned_response
 
 def generate_documentation_for_api_snippet(api_path:str,code_snippet:str):
