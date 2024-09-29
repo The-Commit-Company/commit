@@ -1,5 +1,7 @@
 import os
 import ast
+import frappe
+import json
 
 other_decorators = [
     '@cache_source',
@@ -33,7 +35,7 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
             # if file.endswith('party.py'):
             indexes,line_nos,no_of_occurrences = find_indexes_of_whitelist(file_content, no_of_occurrences)
             api_count += no_of_occurrences
-            apis = get_api_details(file, file_content, indexes,line_nos, path)
+            apis = get_api_details(app_name, file, file_content, indexes,line_nos, path)
             api_details.extend(apis)
     
     return api_details
@@ -109,7 +111,7 @@ def find_indexes_of_whitelist(file_content: str, count: int):
     
     return indexes, line_nos, actual_count
 
-def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: str):
+def get_api_details(app_name, file, file_content: str, indexes: list,line_nos:list, path: str):
     '''
     Get details of the API
     '''
@@ -118,7 +120,7 @@ def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: 
         whitelist_details = get_whitelist_details(file_content, index)
         api_details = get_api_name(file_content, index)
         other_decorators = get_other_decorators(file_content, index, api_details.get('def_index'))
-        apis.append({
+        obj = {
             **api_details,
             **whitelist_details,
             'other_decorators': other_decorators,
@@ -127,7 +129,11 @@ def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: 
             'block_end': find_function_end_lines(file_content,api_details.get('name','')),
             'file': file,
             'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
-        })
+        }
+        documentation, last_updated = get_documentation_from_branch_documentation(app_name, obj.get('name'), obj.get('api_path'))
+        obj['documentation'] = documentation
+        obj['last_updated'] = last_updated
+        apis.append(obj)
     
     return apis
 
@@ -287,3 +293,23 @@ def get_decorators(node):
         if decorator_name is not None:
             decorators.append(decorator_name)
     return decorators
+
+def get_documentation_from_branch_documentation(app_name:str, name: str, api_path: str):
+    '''
+    Get documentation from the Commit Branch Documentation
+    '''
+    if frappe.db.exists('Commit Branch Documentation',app_name):
+        branch_documentation = frappe.get_doc('Commit Branch Documentation', app_name)
+        docs = json.loads(branch_documentation.documentation) if branch_documentation.documentation else {}
+        apis = docs.get("apis", [])
+        documentation = ''
+        last_updated = ''
+        for api in apis:
+            if api.get("function_name") == name and api.get("path") == api_path:
+                documentation = api.get("documentation")
+                last_updated = api.get("last_updated")
+                break
+        return documentation, last_updated
+    else:
+        return '', ''
+   
