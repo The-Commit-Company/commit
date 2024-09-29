@@ -160,3 +160,83 @@ def get_documentation_for_api(project_branch: str, file_path: str,block_start: i
     code_snippet = get_file_content_from_path(project_branch, file_path,block_start, block_end,viewer_type)
     api_path = endpoint
     return generate_documentation_for_api_snippet(api_path, code_snippet)
+
+@frappe.whitelist()
+def save_documentation(project_branch:str,endpoint:str,documentation:str,viewer_type:str = 'app'):
+    # Save the documentation to the project branch
+    # 1. Check for viewer_type app or project
+    # 2. If viewer_type is app, then check the document is already present in Commit Branch Documentation doctype
+    # 3. If document present then loop over documentation check if the function_name and path matches then update the documentation else create a new dict and append to the documentation
+    # 4. If document not present then create a new document and append the documentation
+    # 5. If viewer_type is project then check the document is already present in Commit Project Branch doctype
+    # 6. If document present then loop over documentation check if the function_name and path matches then update the documentation else create a new dict and append to the documentation
+    # 7. If document not present then create a new document and append the documentation
+
+    if viewer_type == "app":
+        # Check if the document is already present in Commit Branch Documentation doctype
+        save_documentation_for_site_app(project_branch, endpoint, documentation)
+    else:
+        save_documentation_for_project_branch(project_branch, endpoint, documentation)
+
+def save_documentation_for_project_branch(project_branch:str,endpoint:str,documentation:str):
+
+    doc = frappe.get_doc("Commit Project Branch", project_branch)
+    docs = json.loads(doc.documentation) if doc.documentation else {}
+    apis = docs.get("apis", [])
+
+    # apis is list of dict with keys function_name, path, last_updated, documentation
+    # loop over apis and check if function_name and path matches then update the documentation else create a new dict and append to the documentation
+    found = False
+    for api in apis:
+        if api.get("function_name") == endpoint.split(".")[-1] and api.get("path") == endpoint:
+            api["documentation"] = documentation
+            api["last_updated"] = frappe.utils.now()
+            found = True
+            break
+    if not found:
+        apis.append({
+            "function_name": endpoint.split(".")[-1],
+            "path": endpoint,
+            "last_updated": frappe.utils.now(),
+            "documentation": documentation
+        })
+    
+    doc.documentation = json.dumps({"apis": apis})
+    doc.save()
+
+def save_documentation_for_site_app(project_branch:str,endpoint:str,documentation:str):
+
+    if frappe.db.exists("Commit Branch Documentation",project_branch):
+        doc = frappe.get_doc("Commit Branch Documentation", project_branch)
+        docs = json.loads(doc.documentation) if doc.documentation else {}
+        apis = docs.get("apis", [])
+
+        # apis is list of dict with keys function_name, path, last_updated, documentation
+        # loop over apis and check if function_name and path matches then update the documentation else create a new dict and append to the documentation
+        found = False
+        for api in apis:
+            if api.get("function_name") == endpoint.split(".")[-1] and api.get("path") == endpoint:
+                api["documentation"] = documentation
+                api["last_updated"] = frappe.utils.now()
+                found = True
+                break
+        if not found:
+            apis.append({
+                "function_name": endpoint.split(".")[-1],
+                "path": endpoint,
+                "last_updated": frappe.utils.now(),
+                "documentation": documentation
+            })
+        doc.documentation = json.dumps({"apis": apis})
+        doc.save()
+    else:
+        # Create a new document and append the documentation
+        doc = frappe.new_doc("Commit Branch Documentation")
+        doc.app = project_branch
+        doc.documentation = json.dumps({"apis": [{
+            "function_name": endpoint.split(".")[-1],
+            "path": endpoint,
+            "last_updated": frappe.utils.now(),
+            "documentation": documentation
+        }]})
+        doc.save()
