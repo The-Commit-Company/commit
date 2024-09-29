@@ -57,7 +57,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
         }
     }, [selectedendpoint, navigate])
 
-    const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>(
+    const { data, isLoading, error, mutate } = useFrappeGetCall<{ message: GetAPIResponse }>(
         'commit.api.api_explorer.get_apis_for_project',
         {
             project_branch: projectBranch
@@ -106,6 +106,7 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                             selectedEndpoint={selectedendpoint}
                             setSelectedEndpoint={setSelectedEndpoint}
                             viewerType="project"
+                            mutate={mutate}
                         />
                     </div>
                 )}

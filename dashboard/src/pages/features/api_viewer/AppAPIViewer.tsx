@@ -49,7 +49,7 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
         }
     }, [selectedendpoint, navigate])
 
-    const { data, isLoading, error } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.meta_data.get_apis_for_app', {
+    const { data, isLoading, error, mutate } = useFrappeGetCall<{ message: GetAPIResponse }>('commit.api.meta_data.get_apis_for_app', {
         app_name: appName
     }, undefined, {
         revalidateIfStale: false,
@@ -89,7 +89,7 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
                         className={`fixed z-10  right-0 w-[80vw] h-full bg-white shadow-lg transition-transform transform ${selectedendpoint ? 'translate-x-0' : 'translate-x-full'
                             } md:relative md:translate-x-0 sm:w-[55%]`}
                     >
-                        <APIDetails project_branch={appName} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="app" />
+                        <APIDetails project_branch={appName} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="app" mutate={mutate} />
                     </div>
                 )}
             </div>}

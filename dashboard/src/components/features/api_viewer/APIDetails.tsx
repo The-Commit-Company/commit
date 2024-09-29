@@ -12,7 +12,7 @@ import { useMemo } from "react"
 import { MdOutlineFileDownload } from "react-icons/md"
 import { APIDocumentationOfSiteApp } from "../documentation/APIDocumentation"
 
-export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string }) => {
+export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType, mutate }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string, mutate: () => void }) => {
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
     }, [endpointData, selectedEndpoint])
@@ -119,7 +119,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                     <Bruno doc={data!} />
                 </TabsContent>
                 <TabsContent value="Documentation">
-                    <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} viewerType={viewerType} key={data?.api_path} />
+                    <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} viewerType={viewerType} key={data?.api_path} mutate={mutate} />
                 </TabsContent>
             </Tabs>
         </div >
