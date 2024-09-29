@@ -116,7 +116,7 @@ export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint, searchQu
 
     return (
         <div ref={listRef}>
-            <ul role="list" className="divide-y divide-gray-100 px-1">
+            <ul role="list" className="divide-y divide-gray-100 px-1 pb-6">
             {list.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)] space-y-2" style={{ minHeight: '20rem' }} >
                     <p className="text-gray-500 text-lg">Sorry we couldn't find what you were looking for.</p>
