@@ -110,7 +110,6 @@ export const APIClientContent = ({ endpoint, open, parameters }: APIClientConten
         }, {} as Record<string, string>)
 
         const paramsData = handleFormData(filteredParameterValues)
-        console.log('paramsData', paramsData, filteredParameterValues)
 
         if (requestType === 'GET') {
             // call get api with endpoint and parameterValues

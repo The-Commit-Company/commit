@@ -8,9 +8,13 @@ import { web_url } from "@/config/socket"
 import { APIData, Argument } from "@/types/APIData"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { MdOutlineFileDownload } from "react-icons/md"
 import { APIDocumentationOfSiteApp } from "../documentation/APIDocumentation"
+import { Dialog } from "@/components/ui/dialog"
+import { APIClientContent } from "../APIClient/APIClientContent"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { AiOutlineThunderbolt } from "react-icons/ai"
 
 export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType, mutate }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string, mutate: () => void }) => {
     const data = useMemo(() => {
@@ -44,11 +48,14 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                 return 'ring-gray-600/20'
         }
     }
+
+    const [apiOpen, setApiOpen] = useState(false)
+
     return (
         <div className="flex flex-col space-y-3 p-3">
             <div className="border-b border-gray-200 pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-semibold leading-6 text-gray-900">API Details</h1>
+                    <h1 className="text-lg font-semibold leading-6 text-gray-900">{data?.name}</h1>
                     {data?.allow_guest || data?.xss_safe ? <div className="border-b border-gray-100  space-x-2">
                         {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
                             Allow Guest
@@ -73,20 +80,33 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
             <div>
                 <div className="mt-0 border-b border-gray-100">
                     <dl className="divide-y divide-gray-100">
-                        <div className="py-2 grid grid-cols-5 gap-4 px-0">
-                            <dt className="text-sm font-medium leading-6 text-gray-900">Name :</dt>
-                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><code>{data?.name}</code></dd>
-                        </div>
-                        <div className="py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
+                        <div className="pb-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0 items-center">
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
-                            <div className="flex items-start justify-between space-x-2 sm:col-span-4">
-                                <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate w-[58ch]">{data?.api_path}</dd>
-                                <CopyButton value={data?.api_path ?? ''} className="h-6 w-6" />
+                            <div className="flex items-center justify-between space-x-2 sm:col-span-4">
+                                <div className="flex items-center space-x-2">
+                                    <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate">{data?.api_path}</dd>
+                                    <CopyButton value={data?.api_path ?? ''} />
+                                </div>
+                                {viewerType === 'app' && <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                size="sm"
+                                                onClick={() => setApiOpen(true)}
+                                            >
+                                                Call API <AiOutlineThunderbolt className="h-4 w-4 ml-2" />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="bottom" className="mr-4">
+                                            Click to make an API call to this endpoint
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>}
                             </div>
                         </div>
-                        <div className="py-2 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0">
+                        <div className="py-4 sm:grid sm:grid-cols-5 sm:gap-4 sm:px-0 items-center">
                             <dt className="text-sm font-medium leading-6 text-gray-900">Req. Types :</dt>
-                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 space-x-1">
+                            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 space-x-1 items-center">
                                 {data?.request_types.map((type: string, idx: number) => (
                                     <span key={idx} className={`inline-flex items-center rounded-md ${requestTypeBgColor(type)} px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ${requestTypeBorderColor(type)}`}>
                                         {type}
@@ -122,6 +142,9 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                     <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} viewerType={viewerType} key={data?.api_path} mutate={mutate} />
                 </TabsContent>
             </Tabs>
+            <Dialog open={apiOpen} onOpenChange={setApiOpen}>
+                <APIClientContent endpoint={data?.api_path ?? ''} parameters={data?.arguments} open={apiOpen} />
+            </Dialog>
         </div >
     )
 }
@@ -172,7 +195,7 @@ export const CodeSnippet = ({ apiData, project_branch, file_path, viewerType }: 
             {isLoading && <div className="flex items-center justify-center h-[calc(100vh-16rem)]">
                 <FullPageLoader />
             </div>}
-            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
+            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-18rem)]">
                 <div className="absolute top-0 right-0 p-2">
                     <CopyButton value={copyValue()} className="h-6 w-6" variant={'outline'} />
                 </div>
@@ -208,7 +231,7 @@ export const Bruno = ({ doc }: { doc: APIData }) => {
             {isLoading && <div className="flex items-center justify-center h-[calc(100vh-16rem)]">
                 <FullPageLoader />
             </div>}
-            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-22rem)]">
+            <code className="relative bg-gray-50 p-4 rounded-md text-sm overflow-auto border-2 border-gray-200 h-[calc(100vh-20rem)]">
                 <div className="absolute top-0 right-0 p-2">
                     <div className="flex items-center space-x-1">
                         <Button variant={'outline'} size={'icon'} className="h-8 w-8">

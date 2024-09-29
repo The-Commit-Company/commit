@@ -83,7 +83,7 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
     return (
         <div className="flex flex-col space-y-2 h-full overflow-y-hidden">
             {error && <ErrorBanner error={error} />}
-            <div className="flex flex-col space-y-2 overflow-auto h-[calc(100vh-20rem)]">
+            <div className="flex flex-col space-y-2 h-full">
                 {apiData?.last_updated ? <div className="flex justify-between px-2 items-center">
                     <div className="text-sm text-gray-500">
                         Last Docs Updated - {convertFrappeTimestampToTimeAgo(apiData?.last_updated)}
@@ -97,7 +97,7 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
                     data-color-mode="light"
                     onChange={(value) => onDocumentationChange(value ?? '')}
                     style={{
-                        minHeight: (apiData?.last_updated || isCreateAccess) ? 'calc(100vh - 24rem)' : 'calc(100vh - 21rem)',
+                        minHeight: (apiData?.last_updated || isCreateAccess) ? 'calc(100vh - 22rem)' : 'calc(100vh - 19rem)',
                         overflowY: 'auto', margin: 8, padding: 4
                     }}
                 />
