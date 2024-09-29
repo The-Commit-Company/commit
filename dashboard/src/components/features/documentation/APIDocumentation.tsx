@@ -119,7 +119,7 @@ export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveE
                                     <MdOutlineRocketLaunch className="h-4 w-4" />}
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="bottom">
+                        <TooltipContent side="bottom" className="mr-6">
                             Generate Documentation for this API
                         </TooltipContent>
                     </Tooltip>
