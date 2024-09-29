@@ -13,6 +13,7 @@ export interface APIData {
     block_start: number
     block_end: number
     documentation?: string
+    last_updated: string
 }
 
 export interface Argument {

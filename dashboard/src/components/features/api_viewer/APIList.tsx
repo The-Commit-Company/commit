@@ -3,12 +3,11 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AiOutlineBranches } from "react-icons/ai"
 import { GoPackage } from "react-icons/go"
 import { CommandContent } from "../commands/CommandsContent"
 import { HiOutlineCommandLine } from "react-icons/hi2";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export interface APIListProps {
     apiList: APIData[]
@@ -17,9 +16,10 @@ export interface APIListProps {
     setSelectedEndpoint: (endpoint: string) => void
     selectedEndpoint?: string
     path_to_folder: string
+    listRef?: React.RefObject<HTMLDivElement>
 }
 
-export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder }: APIListProps) => {
+export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder, listRef }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
@@ -34,7 +34,18 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
     }, [searchQuery, apiList, requestTypeFilter])
 
     useEffect(() => {
-        setSelectedEndpoint(filterList[0]?.name ?? '')
+        const searchParams = new URLSearchParams(window.location.search)
+        const endpointFromURL = searchParams.get('api')
+        if (endpointFromURL) {
+            if (filterList.map((api) => api.name).includes(endpointFromURL)) {
+                setSelectedEndpoint(endpointFromURL)
+            } else {
+                setSelectedEndpoint(filterList[0]?.name ?? '')
+            }
+        }
+        else {
+            setSelectedEndpoint(filterList[0]?.name ?? '')
+        }
     }, [filterList, setSelectedEndpoint])
 
     return (
@@ -51,24 +62,15 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
                         <p>{branch_name}</p>
                     </div>
                 </div>
-                <TooltipProvider>
-                    <Tooltip>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <TooltipTrigger asChild>
-                                    <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
-                                        <HiOutlineCommandLine className="h-4 w-4 mr-2" />
-                                        Commands
-                                    </Button>
-                                </TooltipTrigger>
-                            </DialogTrigger>
-                            <CommandContent app={app_name} app_path={path_to_folder} />
-                        </Dialog>
-                        <TooltipContent side="bottom">
-                            Click to view available bench commands in this app
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
+                            <HiOutlineCommandLine className="h-4 w-4 mr-2" />
+                            Commands
+                        </Button>
+                    </DialogTrigger>
+                    <CommandContent app={app_name} app_path={path_to_folder} />
+                </Dialog>
             </div>
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">
@@ -93,16 +95,28 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
             </div>
             {/* fixed height container */}
             <div className="flex flex-col space-y-4  overflow-y-auto h-[calc(100vh-12rem)]">
-                <ListView list={filterList} setSelectedEndpoint={setSelectedEndpoint} selectedEndpoint={selectedEndpoint} />
+                <ListView list={filterList} setSelectedEndpoint={setSelectedEndpoint} selectedEndpoint={selectedEndpoint} searchQuery={searchQuery} listRef={listRef} />
             </div>
         </div>
     )
 }
 
-export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void, selectedEndpoint?: string }) => {
+export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint, searchQuery, listRef }: { list: APIData[], setSelectedEndpoint: (endpoint: string) => void, selectedEndpoint?: string, searchQuery?: string, listRef?: React.RefObject<HTMLDivElement> }) => {
+
+    const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+    useEffect(() => {
+        if (listRef?.current && selectedEndpoint) {
+            const selectedElement = itemRefs?.current?.find(item => item?.dataset.endpoint === selectedEndpoint);
+            if (selectedElement) {
+                selectedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, []);
+
     return (
-        <div>
-        <ul role="list" className="divide-y divide-gray-100 px-1">
+        <div ref={listRef}>
+            <ul role="list" className="divide-y divide-gray-100 px-1">
             {list.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)] space-y-2" style={{ minHeight: '20rem' }} >
                     <p className="text-gray-500 text-lg">Sorry we couldn't find what you were looking for.</p>
@@ -110,7 +124,12 @@ export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint }: { list
                 </div>
             )}
             {list.map((person: APIData, index: number) => (
-                <li key={`${person.name}-${index}`} className={`flex justify-between gap-x-6 p-2 hover:bg-gray-100 cursor-pointer group ${selectedEndpoint === person.name ? 'bg-gray-100' : ''} `} onClick={() => setSelectedEndpoint(person.name)}>
+                <li key={`${person.name}-${index}`} ref={el => {
+                    if (el) {
+                        el.dataset.endpoint = person.name;
+                        itemRefs.current[index] = el;
+                    }
+                }} className={`flex justify-between gap-x-6 p-2 hover:bg-gray-100 cursor-pointer group ${selectedEndpoint === person.name ? 'bg-gray-100' : ''} `} onClick={() => setSelectedEndpoint(person.name)}>
                     <div className="flex min-w-0 gap-x-4">
                         <div className="min-w-0 flex-auto">
                             <p className={`text-sm font-semibold leading-6 cursor-pointer group-hover:text-blue-600 ${selectedEndpoint === person.name ? 'text-blue-600' : 'text-gray-900'}`}><code>{person.name}</code></p>
@@ -137,8 +156,8 @@ export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint }: { list
             ))}
         </ul>
             {/* create a div which is at fixed location  and should be stick bottom which will show total list count at right corner of same w as above ul*/}
-            {list.length && <div className="fixed bottom-0 flex justify-end p-2 w-[54%] bg-white h-10 border-t">
-                <p className="text-sm justify-end">Total {list.length} API's</p>
+            {list.length && <div className="fixed bottom-0 flex justify-end p-2 w-[44%] bg-white h-10 border-t">
+                <p className="text-sm justify-end">{list.length} API's {searchQuery ? "found" : ''}</p>
             </div>}
         </div>
     )
