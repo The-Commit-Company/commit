@@ -12,7 +12,7 @@ def get_project_app_commands(app: str, app_path: str = None) -> dict:
     '''
     if not app_path or app_path == '':
         # Check the permissions of the user
-        if not frappe.has_permission('System Manager'):
+        if not is_system_manager():
             return frappe.throw('You do not have permission to access this resource', frappe.PermissionError)
         return get_site_app_commands(app)
     else:
@@ -52,8 +52,14 @@ def get_project_app_commands(app: str, app_path: str = None) -> dict:
 
 @frappe.whitelist()
 def get_site_app_commands(app: str) -> dict:
-    app_command_module = importlib.import_module(f"{app}.commands")
+    try:
+        app_command_module = importlib.import_module(f"{app}.commands")
      # Call get_commands if it is a callable
+    except ModuleNotFoundError as e:
+        if e.name == f"{app}.commands":
+            return []
+        traceback.print_exc()
+        return []
 
     command_list = []
     if hasattr(app_command_module, 'commands'):
@@ -68,3 +74,8 @@ def get_site_app_commands(app: str) -> dict:
                 }
                 command_list.append(obj)
     return command_list
+
+def is_system_manager():
+    user = frappe.session.user
+    roles = frappe.get_roles(user)
+    return 'System Manager' in roles
