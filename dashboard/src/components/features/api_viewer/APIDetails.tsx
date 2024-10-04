@@ -55,7 +55,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
         <div className="flex flex-col space-y-3 p-3">
             <div className="border-b border-gray-200 pb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-semibold leading-6 text-gray-900">{data?.name}</h1>
+                    <h1 className="text-lg font-semibold pt-1 leading-6 text-gray-900">{data?.name}</h1>
                     {data?.allow_guest || data?.xss_safe ? <div className="border-b border-gray-100  space-x-2">
                         {data?.allow_guest && <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-green-600/20">
                             Allow Guest
@@ -84,7 +84,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
                             <div className="flex items-center justify-between space-x-2 sm:col-span-4">
                                 <div className="flex items-center space-x-2">
-                                    <dd className="mt-1 text-sm text-blue-500 cursor-pointer leading-6 sm:col-span-2 sm:mt-0 truncate">{data?.api_path}</dd>
+                                    <dd className="mt-1 text-sm text-blue-500 cursor-pointer max-w-[56ch] leading-6 sm:col-span-2 sm:mt-0 truncate">{data?.api_path}</dd>
                                     <CopyButton value={data?.api_path ?? ''} />
                                 </div>
                                 {viewerType === 'app' && <TooltipProvider>
