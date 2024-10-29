@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-29 19:41:29.822737",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "parent_label",
+  "docs_page",
+  "hide_on_sidebar",
+  "badge",
+  "badge_color"
+ ],
+ "fields": [
+  {
+   "fieldname": "parent_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Parent Label",
+   "reqd": 1
+  },
+  {
+   "fieldname": "docs_page",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Docs Page",
+   "options": "Commit Docs Page",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_on_sidebar",
+   "fieldtype": "Check",
+   "label": "Hide on Sidebar"
+  },
+  {
+   "description": "This is badge field, eg: GET , POST etc.",
+   "fieldname": "badge",
+   "fieldtype": "Data",
+   "label": "Badge"
+  },
+  {
+   "description": "Add Tailwind colours like red, green etc.",
+   "fieldname": "badge_color",
+   "fieldtype": "Data",
+   "label": "Badge Color"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-29 19:49:34.523154",
+ "modified_by": "Administrator",
+ "module": "commit",
+ "name": "Commit Docs Group Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
