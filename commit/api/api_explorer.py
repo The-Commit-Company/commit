@@ -19,6 +19,10 @@ def get_apis_for_project(project_branch: str):
             if doc.get("function_name") == api.get("name") and doc.get("path") == api.get("api_path"):
                 api["documentation"] = doc.get("documentation")
                 api["last_updated"] = doc.get("last_updated")
+                api["is_published"] = doc.get("is_published", 0)
+                api["published_on"] = doc.get("published_on", None)
+                api["published_by"] = doc.get("published_by", None)
+                api['publish_id'] = doc.get('publish_id', None)
                 break
             
     app_name, organization, app_logo = frappe.db.get_value("Commit Project", branch_doc.project, ["app_name", "org", "image"])
