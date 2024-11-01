@@ -23,6 +23,7 @@ def get_apis_for_project(project_branch: str):
                 api["published_on"] = doc.get("published_on", None)
                 api["published_by"] = doc.get("published_by", None)
                 api['publish_id'] = doc.get('publish_id', None)
+                api['published_route'] = doc.get('published_route', None)
                 break
             
     app_name, organization, app_logo = frappe.db.get_value("Commit Project", branch_doc.project, ["app_name", "org", "image"])

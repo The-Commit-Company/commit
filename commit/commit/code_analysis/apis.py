@@ -130,13 +130,14 @@ def get_api_details(app_name, file, file_content: str, indexes: list,line_nos:li
             'file': file,
             'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
         }
-        documentation, last_updated, is_published, published_on, publish_by, publish_id = get_documentation_from_branch_documentation(app_name, obj.get('name'), obj.get('api_path'))
+        documentation, last_updated, is_published, published_on, publish_by, publish_id,published_route = get_documentation_from_branch_documentation(app_name, obj.get('name'), obj.get('api_path'))
         obj['documentation'] = documentation
         obj['last_updated'] = last_updated
         obj['is_published'] = is_published
         obj['published_on'] = published_on
         obj['publish_by'] = publish_by
         obj['publish_id'] = publish_id
+        obj['published_route'] = published_route
         apis.append(obj)
     
     return apis
@@ -312,6 +313,7 @@ def get_documentation_from_branch_documentation(app_name:str, name: str, api_pat
         published_on = ''
         publish_by = ''
         publish_id = ''
+        published_route = ''
         for api in apis:
             if api.get("function_name") == name and api.get("path") == api_path:
                 documentation = api.get("documentation")
@@ -320,8 +322,9 @@ def get_documentation_from_branch_documentation(app_name:str, name: str, api_pat
                 published_on = api.get("published_on", None)
                 publish_by = api.get("publish_by", None)
                 publish_id = api.get("publish_id", None)
+                published_route = api.get("published_route", None)
                 break
-        return documentation, last_updated, is_published, published_on, publish_by, publish_id
+        return documentation, last_updated, is_published, published_on, publish_by, publish_id,published_route
     else:
         return '', ''
    

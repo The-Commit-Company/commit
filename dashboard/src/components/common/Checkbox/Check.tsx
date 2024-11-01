@@ -27,7 +27,7 @@ export const Check = ({ name, label, controllerProps, alignWithLabel = false, ru
                 )}
                 {...controllerProps}
             />
-            <label htmlFor={name} className="ml-2">{label}</label>
+            <label htmlFor={name} className="ml-2 text-sm">{label}</label>
         </div>
     )
 }
