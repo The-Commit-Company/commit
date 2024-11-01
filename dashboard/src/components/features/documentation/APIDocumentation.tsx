@@ -3,11 +3,11 @@ import { SpinnerLoader } from "@/components/common/FullPageLoader/SpinnerLoader"
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { APIData } from "@/types/APIData";
-import { useFrappePostCall } from "frappe-react-sdk";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { FrappeConfig, FrappeContext, useFrappePostCall } from "frappe-react-sdk";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { MdOutlineRocketLaunch } from "react-icons/md";
 import MDEditor from '@uiw/react-md-editor';
-import { FiEdit, FiSave } from "react-icons/fi";
+import { FiEdit, FiExternalLink, FiSave } from "react-icons/fi";
 import { isSystemManager } from "@/utils/roles";
 import { IoMdClose } from "react-icons/io";
 import { convertFrappeTimestampToTimeAgo } from "@/components/utils/dateconversion";
@@ -19,6 +19,7 @@ import { FormElement } from "@/components/common/Forms/FormControl";
 import { Input } from "@/components/ui/input";
 import { AsyncDropdown } from "@/components/common/AsyncDropdown/AsyncDropdown";
 import { Check } from "@/components/common/Checkbox/Check";
+import { FormCreatableSelect } from "@/components/common/Checkbox/CreatableSelect";
 
 export interface DocumentationResponse {
     function_name: string,
@@ -128,13 +129,16 @@ export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveE
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <div>
-                                <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => setOpen(true)} disabled={loading || !data?.documentation} >
-                                    <AiOutlineGlobal className="h-4 w-4" />
+                                {data?.is_published ? <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => window.open(`/docs/${data?.published_route}`, '_blank')}>
+                                    <FiExternalLink className="h-4 w-4" />
                                 </Button>
+                                    : <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => setOpen(true)} disabled={loading || !data?.documentation} >
+                                    <AiOutlineGlobal className="h-4 w-4" />
+                                    </Button>}
                             </div>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="mr-6">
-                            {data?.documentation ? 'Publish Documentation.' : 'Generate / Save the Documentation to Publish.'}
+                            {data?.is_published ? 'Click to view the published documentation.' : data?.documentation ? 'Publish Documentation.' : 'Generate / Save the Documentation to Publish.'}
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
@@ -175,10 +179,12 @@ export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveE
 }
 
 export interface PublishDocumentationFormFields {
-    page_name: string,
-    module_name: string,
-    live: boolean,
-    documentation: string
+    docs_name: string,
+    parent_label: string,
+    title: string,
+    published: boolean,
+    allow_guest: boolean,
+    content: string
 }
 
 export const PublishDocumentationDialog = ({ open, setOpen, project_branch, endPoint, viewerType, mutate, documentation }: { open: boolean, setOpen: (value: boolean) => void, project_branch: string, endPoint: string, viewerType: string, mutate: () => void, documentation: string }) => {
@@ -186,37 +192,62 @@ export const PublishDocumentationDialog = ({ open, setOpen, project_branch, endP
     const { toast } = useToast()
     const methods = useForm<PublishDocumentationFormFields>({
         defaultValues: {
-            page_name: '',
-            module_name: '',
-            live: true,
-            documentation: documentation
+            docs_name: '',
+            parent_label: '',
+            title: '',
+            published: true,
+            allow_guest: true,
+            content: documentation
         }
     })
 
-    const { call, reset, loading, error } = useFrappePostCall('commit.commit.doctype.commit_documentation_page.commit_documentation_page.publish_documentation')
+    const { call: postCall, reset, loading, error } = useFrappePostCall('commit.commit.doctype.commit_docs_page.commit_docs_page.publish_documentation')
 
     const onSubmit: SubmitHandler<PublishDocumentationFormFields> = (data) => {
-        // call({
-        //     project_branch: project_branch,
-        //     endpoint: endPoint,
-        //     viewer_type: viewerType,
-        //     page_name: data.page_name,
-        //     module_name: data.module_name,
-        //     live: data.live,
-        //     documentation: data.documentation
-        // }).then(() => {
-        //     mutate()
-        //     reset()
-        //     toast({
-        //         description: "Documentation Published",
-        //         duration: 1500
-        //     })
-        // }).then(() => setOpen(false))
+        postCall({
+            project_branch: project_branch,
+            endpoint: endPoint,
+            viewer_type: viewerType,
+            ...data
+        }).then(() => {
+            mutate()
+            reset()
+            toast({
+                description: "Documentation Published",
+                duration: 1500
+            })
+        }).then(() => setOpen(false))
     }
 
     useEffect(() => {
         methods.reset()
+        setOpt([])
     }, [open])
+
+    const { call } = useContext(FrappeContext) as FrappeConfig
+
+    const [opt, setOpt] = useState<{
+        label: string
+        value: string
+    }[]>([])
+
+    const onDocsNameChange = useCallback((value: string) => {
+        if (value) {
+            call.get('commit.commit.doctype.commit_docs.commit_docs.get_docs_sidebar_parent_labels', {
+                id: value
+            }).then((res) => {
+                const options = [
+                    ...opt,
+                    ...res.message
+                ]
+                // Remove duplicates
+                const uniqueOptions = options.filter((v, i, a) => a.findIndex(t => (t.value === v.value)) === i)
+                setOpt(uniqueOptions)
+            })
+        } else {
+            setOpt([])
+        }
+    }, [setOpt])
 
     return (
         <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
@@ -227,22 +258,41 @@ export const PublishDocumentationDialog = ({ open, setOpen, project_branch, endP
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <div className='flex flex-col gap-3'>
-                        {/* <FormElement name="page_name" label="Page Name" aria-required>
-                            <Input
-                                {...methods.register("page_name", {
-                                    required: 'Page Name is required'
-                                })}
-                                id="page_name"
-                                type="text"
-                                placeholder="eg. GET List"
+                        <FormElement name="docs_name" label="Documentation" aria-required>
+                            <AsyncDropdown name="docs_name" placeholder="Documentation" doctype="Commit Docs" rules={{
+                                onChange: (e) => onDocsNameChange(e.target.value)
+                            }} />
+                        </FormElement>
+                        <FormElement name="parent_label" label="Parent Label" aria-required>
+                            <FormCreatableSelect
+                                mode="single"
+                                name="parent_label"
+                                options={opt}
+                                label="Parent Label"
+                                onCreate={(value: string) => {
+                                    methods.setValue('parent_label', value)
+                                    setOpt(
+                                        [...opt, {
+                                            label: value,
+                                            value: value
+                                        }]
+                                    )
+                                }}
                             />
+                            <p className="text-sm text-gray-500">Parent Label is the group under which the title will be shown</p>
                         </FormElement>
-                        <FormElement name="module_name" label="Module Name" aria-required>
-                            <AsyncDropdown name="module_name" placeholder="Module" doctype="Commit Documentation Module" filters={[['app_name', '=', project_branch]]} />
+                        <FormElement name="title" label="Title" aria-required>
+                            <Input {...methods.register("title", {
+                                required: 'Title is required'
+                            })} />
+                            <p className="text-sm text-gray-500">Title is the name which will be shown on the sidebar under the parent label</p>
                         </FormElement>
-                        <FormElement name="live" aria-required>
-                            <Check name="live" label="Live" />
-                        </FormElement> */}
+                        <FormElement name="published">
+                            <Check name="published" label="Published" />
+                        </FormElement>
+                        <FormElement name="allow_guest">
+                            <Check name="allow_guest" label="Allow Guest" />
+                        </FormElement>
                         <DialogFooter>
                             <Button type="submit" disabled={loading}>
                                 {loading && <SpinnerLoader />}

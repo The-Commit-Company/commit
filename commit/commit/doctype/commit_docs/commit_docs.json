@@ -8,6 +8,7 @@
  "field_order": [
   "header",
   "route",
+  "published",
   "section_break_camv",
   "sidebar",
   "logo_section",
@@ -112,11 +113,17 @@
    "fieldtype": "Table",
    "label": "Sidebar",
    "options": "Commit Docs Group Item"
+  },
+  {
+   "default": "1",
+   "fieldname": "published",
+   "fieldtype": "Check",
+   "label": "Published"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-29 19:51:08.985705",
+ "modified": "2024-11-01 11:22:21.970571",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs",
