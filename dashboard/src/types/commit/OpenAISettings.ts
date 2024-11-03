@@ -1,5 +1,5 @@
 
-export interface CommitSettings{
+export interface OpenAISettings{
 	name: string
 	creation: string
 	modified: string
@@ -10,6 +10,10 @@ export interface CommitSettings{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Show System Apps : Check	*/
-	show_system_apps?: 0 | 1
+	/**	Organization : Data	*/
+	organization: string
+	/**	API Key : Password	*/
+	api_key: string
+	/**	Project : Data	*/
+	project?: string
 }

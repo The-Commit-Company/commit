@@ -1,5 +1,5 @@
 
-export interface CommitSettings{
+export interface LinkedCommitDocsPage{
 	name: string
 	creation: string
 	modified: string
@@ -10,6 +10,6 @@ export interface CommitSettings{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Show System Apps : Check	*/
-	show_system_apps?: 0 | 1
+	/**	Commit Docs Page : Link - Commit Docs Page	*/
+	commit_docs_page: string
 }

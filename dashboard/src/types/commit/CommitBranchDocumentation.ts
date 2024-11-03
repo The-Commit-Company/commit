@@ -1,5 +1,5 @@
 
-export interface CommitSettings{
+export interface CommitBranchDocumentation{
 	name: string
 	creation: string
 	modified: string
@@ -10,6 +10,8 @@ export interface CommitSettings{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Show System Apps : Check	*/
-	show_system_apps?: 0 | 1
+	/**	App : Data	*/
+	app: string
+	/**	Documentation : JSON	*/
+	documentation?: any
 }

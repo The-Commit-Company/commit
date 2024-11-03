@@ -1,5 +1,5 @@
 
-export interface CommitSettings{
+export interface OAuthScope{
 	name: string
 	creation: string
 	modified: string
@@ -10,6 +10,6 @@ export interface CommitSettings{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Show System Apps : Check	*/
-	show_system_apps?: 0 | 1
+	/**	Scope : Data	*/
+	scope?: string
 }
