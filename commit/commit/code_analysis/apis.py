@@ -324,7 +324,7 @@ def get_documentation_from_branch_documentation(app_name:str, name: str, api_pat
                 publish_id = api.get("publish_id", None)
                 published_route = api.get("published_route", None)
                 break
-        return documentation, last_updated, is_published, published_on, publish_by, publish_id,published_route
+        return documentation, last_updated, is_published, published_on, publish_by, publish_id, published_route
     else:
-        return '', ''
+        return '', '', '', '', '', '', ''
    
