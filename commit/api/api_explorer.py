@@ -16,6 +16,13 @@ def get_apis_for_project(project_branch: str):
     for api in apis:
         # find the documentation for the api whose function_name equals to name and path same as path
         for doc in documentation:
+            if isinstance(doc, str):
+                try:
+                    doc = json.loads(doc)
+                except json.JSONDecodeError:
+                    frappe.log_error(f"Invalid JSON format in documentation entry: {doc}", "Commit Docs Error")
+                    continue
+
             if doc.get("function_name") == api.get("name") and doc.get("path") == api.get("api_path"):
                 api["documentation"] = doc.get("documentation")
                 api["last_updated"] = doc.get("last_updated")
