@@ -157,90 +157,92 @@ def get_navbar_items(navbar):
 	return navbar_obj
 
 def get_sidebar_items(sidebar):
-	'''
-		Get the Sidebar Items
-		# 1. Loop Over the Sidebar Items and Get the Commit Docs Page
-		# 2. Check if the Commit Docs Page is Published and Permitted
-		# 3. Check if the Commit Docs Page is Group Page
-		# 4. If Group Page then treat it as a Group and Loop Over the Group Items and Get the Commit Docs Page
-		# 2. Return the Sidebar Items
-	'''
-	sidebar_obj = {}
-	for sidebar_item in sidebar:
-		if sidebar_item.hide_on_sidebar:
-			continue
+    '''
+    Get the Sidebar Items with support for nested Group Pages.
+    '''
+    def get_group_items(commit_docs_page):
+        """
+        Recursive function to fetch items for a Group Page, handling nested groups.
+        """
+        group_items = []
+        for group_item in commit_docs_page.linked_pages:
+            # Get the document for each linked page
+            group_commit_docs_page = frappe.get_doc('Commit Docs Page', group_item.commit_docs_page)
 
-		commit_docs_page = frappe.get_doc('Commit Docs Page',sidebar_item.docs_page)
+            # Check permissions and publication status
+            permitted = group_commit_docs_page.allow_guest or frappe.session.user != 'Guest'
+            published = group_commit_docs_page.published
 
-		permitted = commit_docs_page.allow_guest or frappe.session.user != 'Guest'
-		published = commit_docs_page.published
-		is_group_page = commit_docs_page.is_group_page
+            if not permitted or not published:
+                continue
+            
+            # Check if the linked page is also a Group Page
+            is_nested_group_page = group_commit_docs_page.is_group_page
 
-		if not permitted or not published:
-			continue
+            # If it's a nested Group Page, recursively fetch its group items
+            if is_nested_group_page:
+                nested_group_items = get_group_items(group_commit_docs_page)
+                group_items.append({
+                    'name': group_commit_docs_page.name,
+                    'type': 'Docs Page',
+                    'title': group_commit_docs_page.title,
+                    'route': group_commit_docs_page.route,
+                    'badge': group_commit_docs_page.badge,
+                    'badge_color': group_commit_docs_page.badge_color,
+                    'icon': group_commit_docs_page.icon,
+                    'parent_name': commit_docs_page.name,
+                    'is_group_page': True,
+                    'group_items': nested_group_items
+                })
+            else:
+                # If it's a regular Docs Page, add it directly
+                group_items.append({
+                    'name': group_commit_docs_page.name,
+                    'type': 'Docs Page',
+                    'title': group_commit_docs_page.title,
+                    'route': group_commit_docs_page.route,
+                    'badge': group_commit_docs_page.badge,
+                    'badge_color': group_commit_docs_page.badge_color,
+                    'icon': group_commit_docs_page.icon,
+                    'parent_name': commit_docs_page.name
+                })
+        return group_items
 
-		if is_group_page:
-			group_items = []
-			for group_item in commit_docs_page.linked_pages:
-				group_commit_docs_page = frappe.get_doc('Commit Docs Page',group_item.commit_docs_page)
+    sidebar_obj = {}
+    for sidebar_item in sidebar:
+        if sidebar_item.hide_on_sidebar:
+            continue
 
-				permitted = group_commit_docs_page.allow_guest or frappe.session.user != 'Guest'
-				published = group_commit_docs_page.published
+        commit_docs_page = frappe.get_doc('Commit Docs Page', sidebar_item.docs_page)
 
-				if not permitted or not published:
-					continue
-				
-				# Make the Array of the Group Items
-				group_items.append({
-					'name': group_commit_docs_page.name,
-					'type': 'Docs Page',
-					'title': group_commit_docs_page.title,
-					'route': group_commit_docs_page.route,
-					'badge': group_commit_docs_page.badge,
-					'badge_color': group_commit_docs_page.badge_color,
-					'icon': group_commit_docs_page.icon,
-					'parent_name': commit_docs_page.name
-				})
-			
-			if sidebar_item.parent_label not in sidebar_obj:
-				sidebar_obj[sidebar_item.parent_label] = [
-					{
-						'name': commit_docs_page.name,
-						'type': 'Docs Page',
-						'title': commit_docs_page.title,
-						'route': commit_docs_page.route,
-						'badge': commit_docs_page.badge,
-						'badge_color': commit_docs_page.badge_color,
-						'icon': commit_docs_page.icon,
-						'group_name': sidebar_item.parent_label,
-						'is_group_page': is_group_page,
-						'group_items': group_items
-					}
-				]
+        permitted = commit_docs_page.allow_guest or frappe.session.user != 'Guest'
+        published = commit_docs_page.published
+        is_group_page = commit_docs_page.is_group_page
 
-		if sidebar_item.parent_label not in sidebar_obj:
-			sidebar_obj[sidebar_item.parent_label] = [
-				{
-					'name': commit_docs_page.name,
-					'type': 'Docs Page',
-					'title': commit_docs_page.title,
-					'route': commit_docs_page.route,
-					'badge': commit_docs_page.badge,
-					'badge_color': commit_docs_page.badge_color,
-					'icon': commit_docs_page.icon,
-					'group_name': sidebar_item.parent_label
-				}
-			]
-		else:
-			sidebar_obj[sidebar_item.parent_label].append({
-				'name': commit_docs_page.name,
-				'type': 'Docs Page',
-				'title': commit_docs_page.title,
-				'route': commit_docs_page.route,
-				'badge': commit_docs_page.badge,
-				'badge_color': commit_docs_page.badge_color,
-				'icon': commit_docs_page.icon,
-				'group_name': sidebar_item.parent_label
-			})
+        if not permitted or not published:
+            continue
 
-	return sidebar_obj
+        # Process group items if it's a Group Page
+        group_items = get_group_items(commit_docs_page) if is_group_page else []
+
+        # Prepare sidebar entry with group items if it exists
+        sidebar_entry = {
+            'name': commit_docs_page.name,
+            'type': 'Docs Page',
+            'title': commit_docs_page.title,
+            'route': commit_docs_page.route,
+            'badge': commit_docs_page.badge,
+            'badge_color': commit_docs_page.badge_color,
+            'icon': commit_docs_page.icon,
+            'group_name': sidebar_item.parent_label,
+            'is_group_page': is_group_page,
+            'group_items': group_items if is_group_page else None
+        }
+
+        # Add sidebar entry to the parent label
+        if sidebar_item.parent_label not in sidebar_obj:
+            sidebar_obj[sidebar_item.parent_label] = [sidebar_entry]
+        else:
+            sidebar_obj[sidebar_item.parent_label].append(sidebar_entry)
+
+    return sidebar_obj
