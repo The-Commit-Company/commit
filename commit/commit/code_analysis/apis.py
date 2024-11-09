@@ -18,7 +18,6 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
     api_count = 0
     file_count = 0
     api_details = []
-    # print(py_files)
     # For each file, check if @frappe.whitelist is present
     for file in py_files:
         file_content = open(file, 'r').read()
@@ -39,10 +38,6 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
             api_details.extend(apis)
     
     return api_details
-    
-    # print(f'Number of APIs: {api_count}')
-    # print(f'Number of files: {file_count}')
-    # print(f'Number of Python files: {len(py_files)}')
 
 def find_indexes_of_whitelist(file_content: str, count: int):
     '''
