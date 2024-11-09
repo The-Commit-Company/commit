@@ -10,8 +10,8 @@ interface MarkdownRendererProps {
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
     return <ReactMarkdown
+        // @ts-expect-error
         remarkPlugins={[remarkGfm]}
-        //@ts-expect-error rehype-raw types are not updated
         rehypePlugins={[rehypeRaw]}
         className='markdown'>
         {content}
