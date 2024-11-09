@@ -6,7 +6,24 @@ from frappe.model.document import Document
 
 
 class CommitDocs(Document):
-	pass
+
+	def after_insert(self):
+		'''
+		Validate the Document
+		# 1. Check if the Route is Unique
+		'''
+		if frappe.db.exists('Commit Docs',{'route':self.route}):
+			frappe.throw('Route Already Exists')
+		
+	def validate(self):
+		# 2. Loop Over through the Navbar Items and check there should be only one is Primary Button
+		primary_button_count = 0
+		for navbar_item in self.navbar_items:
+			if navbar_item.is_primary_button:
+				primary_button_count += 1
+			if primary_button_count > 1:
+				frappe.throw('Only One Primary Button is Allowed')
+				break
 
 
 @frappe.whitelist()
@@ -119,40 +136,50 @@ def get_navbar_items(navbar):
 	'''
 
 	navbar_obj = {}
+	parent_labels = []
 	for navbar_item in navbar:
 		if navbar_item.hide_on_navbar:
 			continue
 		
-		# If the Item don't have parent label then add it as Object in the Navbar Object with the type as Button
-		# If the Item have parent label then check if navbar_obj have the parent label if not then add it in array as item with type as Menu
-		if not navbar_item.parent_label:
-			if navbar_item.label not in navbar_obj:
-				navbar_obj[navbar_item.label] = {
+		
+		if navbar_item.parent_label:
+			parent_labels.append(navbar_item.parent_label)
+			if navbar_item.parent_label not in navbar_obj:
+				navbar_obj[navbar_item.parent_label] = {
 					'type':'Menu',
+					'label': navbar_item.parent_label,
 					'items': [{
 						'label': navbar_item.label,
 						'url': navbar_item.url,
 						'type': 'Button',
 						'icon': navbar_item.icon,
 						'open_in_new_tab': navbar_item.open_in_new_tab
-					}]
+					}],
+					'is_primary_button': navbar_item.is_primary_button
 				}
 			else:
-				navbar_obj[navbar_item.label]['items'].append({
+				navbar_obj[navbar_item.parent_label]['items'].append({
 					'label': navbar_item.label,
 					'url': navbar_item.url,
 					'type': 'Button',
 					'icon': navbar_item.icon,
-					'open_in_new_tab': navbar_item.open_in_new_tab
+					'open_in_new_tab': navbar_item.open_in_new_tab,
 				})
 		else:
-			navbar_obj[navbar_item.label] = {
-				'label': navbar_item.label,
-				'url': navbar_item.url,
-				'type': 'Button',
-				'icon': navbar_item.icon,
-				'open_in_new_tab': navbar_item.open_in_new_tab
-			}
+			if navbar_item.url:
+				navbar_obj[navbar_item.label] = {
+					'label': navbar_item.label,
+					'type': 'Button',
+					'icon': navbar_item.icon,
+					'open_in_new_tab': navbar_item.open_in_new_tab,
+					'url': navbar_item.url,
+					'is_primary_button': navbar_item.is_primary_button
+				}
+	
+	# Remove that Object whose type is Button and Key is in Parent Labels
+	button_type_keys = [key for key in navbar_obj if navbar_obj[key]['type'] == 'Button' and key in parent_labels]
+	for key in button_type_keys:
+		navbar_obj.pop(key)
 
 	return navbar_obj
 

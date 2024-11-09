@@ -9,6 +9,7 @@
   "header",
   "route",
   "published",
+  "company_name",
   "section_break_camv",
   "sidebar",
   "logo_section",
@@ -19,8 +20,13 @@
   "footer_tab",
   "twitter_url",
   "linkedin",
+  "slack",
+  "youtube",
+  "column_break_oxzh",
   "github",
   "raven",
+  "telegram",
+  "section_break_gawv",
   "footer"
  ],
  "fields": [
@@ -119,11 +125,46 @@
    "fieldname": "published",
    "fieldtype": "Check",
    "label": "Published"
+  },
+  {
+   "description": "Add Slack URL",
+   "fieldname": "slack",
+   "fieldtype": "Data",
+   "label": "Slack",
+   "options": "URL"
+  },
+  {
+   "fieldname": "column_break_oxzh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Add Telegram URL",
+   "fieldname": "telegram",
+   "fieldtype": "Data",
+   "label": "Telegram",
+   "options": "URL"
+  },
+  {
+   "fieldname": "section_break_gawv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Add Youtube URL",
+   "fieldname": "youtube",
+   "fieldtype": "Data",
+   "label": "Youtube",
+   "options": "URL"
+  },
+  {
+   "description": "For Copyright Purpose",
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-01 11:22:21.970571",
+ "modified": "2024-11-09 12:53:12.416589",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs",
