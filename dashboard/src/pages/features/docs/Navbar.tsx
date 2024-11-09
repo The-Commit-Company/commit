@@ -24,6 +24,7 @@ export const Navbar = ({ navbar_items }: { navbar_items: Record<string, DocsNavb
                                 key={navbar_items[key].label}
                                 variant={navbar_items[key]?.is_primary_button ? 'default' : 'ghost'}
                                 size={'sm'}
+                                className={navbar_items[key]?.is_primary_button ? 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full' : ''}
                                 onClick={() => window.open(navbar_items[key].url, navbar_items[key].open_in_new_tab ? "_blank" : "_self")}
                             >
                                 {navbar_items[key].icon && <DynamicIcon icon={navbar_items[key].icon} className="mr-2" size="14px" />}
