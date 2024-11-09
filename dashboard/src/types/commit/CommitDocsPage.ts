@@ -24,7 +24,7 @@ export interface CommitDocsPage{
 	icon?: string
 	/**	Badge : Data - This is badge field, eg: GET , POST etc.	*/
 	badge?: string
-	/**	Badge Color : Data - Add Tailwind colours like red, green etc.	*/
+	/**	Badge Color : Data - Add Tailwind colours like red-500, green-500 etc.	*/
 	badge_color?: string
 	/**	Is Group Page : Check - When enabled, this page can hold and display nested sub-pages, creating a structured hierarchy in the sidebar.	*/
 	is_group_page?: 0 | 1

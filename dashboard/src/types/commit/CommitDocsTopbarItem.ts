@@ -22,4 +22,6 @@ export interface CommitDocsTopbarItem{
 	parent_label?: string
 	/**	Icon : Data	*/
 	icon?: string
+	/**	Is Primary Button : Check	*/
+	is_primary_button?: 0 | 1
 }

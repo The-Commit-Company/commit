@@ -19,6 +19,8 @@ export interface CommitDocs{
 	route: string
 	/**	Published : Check	*/
 	published?: 0 | 1
+	/**	Company Name : Data - For Copyright Purpose	*/
+	company_name?: string
 	/**	Sidebar : Table - Commit Docs Group Item	*/
 	sidebar?: CommitDocsGroupItem[]
 	/**	Light Mode Logo : Attach Image	*/
@@ -31,10 +33,16 @@ export interface CommitDocs{
 	twitter_url?: string
 	/**	LinkedIn  : Data - Add LinkedIn URL	*/
 	linkedin?: string
+	/**	Slack : Data - Add Slack URL	*/
+	slack?: string
+	/**	Youtube : Data - Add Youtube URL	*/
+	youtube?: string
 	/**	Github : Data - Add Github URL	*/
 	github?: string
 	/**	Raven : Data - Add Raven URL	*/
 	raven?: string
+	/**	Telegram : Data - Add Telegram URL	*/
+	telegram?: string
 	/**	Footer : Table - Commit Docs Footer Item	*/
 	footer?: CommitDocsFooterItem[]
 }
