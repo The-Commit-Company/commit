@@ -7,7 +7,7 @@ from frappe.model.document import Document
 
 class CommitDocs(Document):
 
-	def after_insert(self):
+	def before_insert(self):
 		'''
 		Validate the Document
 		# 1. Check if the Route is Unique
@@ -71,8 +71,11 @@ def get_commit_docs_details(route:str):
 			# Get the Commit Docs Document
 			commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
 
+			# Maintain route_map from the sidebar where key is the route and value is the name of the page
+			route_map = {}
+
 			# Get the Sidebar Items
-			sidebar_items = get_sidebar_items(commit_docs.sidebar)
+			sidebar_items, route_map = get_sidebar_items(commit_docs.sidebar,route_map)
 
 			# Get the Footer Items
 			footer_items = get_footer_items(commit_docs.footer)
@@ -89,7 +92,8 @@ def get_commit_docs_details(route:str):
 				'commit_docs': commit_docs,
 				'sidebar_items': sidebar_items,
 				'footer_items': footer_items,
-				'navbar_items': navbar_items
+				'navbar_items': navbar_items,
+				'route_map': route_map
 			}
 
 		else:
@@ -183,7 +187,7 @@ def get_navbar_items(navbar):
 
 	return navbar_obj
 
-def get_sidebar_items(sidebar):
+def get_sidebar_items(sidebar, route_map):
     '''
     Get the Sidebar Items with support for nested Group Pages.
     '''
@@ -233,6 +237,8 @@ def get_sidebar_items(sidebar):
                     'icon': group_commit_docs_page.icon,
                     'parent_name': commit_docs_page.name
                 })
+                # Add route to route_map
+                route_map[group_commit_docs_page.route] = group_commit_docs_page.name
         return group_items
 
     sidebar_obj = {}
@@ -272,4 +278,8 @@ def get_sidebar_items(sidebar):
         else:
             sidebar_obj[sidebar_item.parent_label].append(sidebar_entry)
 
-    return sidebar_obj
+        # Add route to route_map if it's not a group page
+        if not is_group_page:
+            route_map[commit_docs_page.route] = commit_docs_page.name
+
+    return sidebar_obj, route_map

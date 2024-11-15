@@ -4,6 +4,8 @@ import DynamicIcon from "@/components/common/DynamicIconImport/IconComponent";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
+import classNames from "classnames";
+import { cn } from "@/lib/utils";
 
 export const Sidebar = ({ commit_docs, sidebar_items, selectedEndpoint, setSelectedEndpoint }: { commit_docs: Omit<CommitDocs, 'sidebar' | 'navbar_items' | 'footer'>, sidebar_items: Record<string, DocsSidebarItem[]>, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void }) => {
 
@@ -61,6 +63,26 @@ const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, 
 
     const isSelected = item.route === selectedEndpoint;
 
+    const badgeClass = classNames({
+        'text-[10px] px-1 py-0': true,
+        'bg-blue-500': item.badge_color === 'blue',
+        'bg-red-500': item.badge_color === 'red',
+        'bg-green-500': item.badge_color === 'green',
+        'bg-yellow-500': item.badge_color === 'yellow',
+        'bg-purple-500': item.badge_color === 'purple',
+        'bg-pink-500': item.badge_color === 'pink',
+        'bg-indigo-500': item.badge_color === 'indigo',
+        'bg-cyan-500': item.badge_color === 'cyan',
+        'bg-teal-500': item.badge_color === 'teal',
+        'bg-lime-500': item.badge_color === 'lime',
+        'bg-orange-500': item.badge_color === 'orange',
+        'bg-blue-gray-500': item.badge_color === 'blue-gray',
+        'bg-gray-500': item.badge_color === 'gray',
+        'bg-true-gray-500': item.badge_color === 'true-gray',
+        'bg-warm-gray-500': item.badge_color === 'warm-gray',
+        'bg-cool-gray-500': item.badge_color === 'cool-gray',
+    })
+
     return (
         <div
             className={`flex items-center px-4 py-2 gap-2 cursor-pointer text-sm rounded-md transition-colors
@@ -71,8 +93,8 @@ const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, 
             <div className="flex justify-between items-center w-full">
                 <div className="flex flex-row gap-2">
                     {item.icon && <DynamicIcon icon={item.icon} size="18px" className={isSelected ? "text-blue-800" : "text-gray-500"} />}
-                    {item.badge && <Badge className={`${item.badge_color ? `bg-${item.badge_color} hover:bg-${item.badge_color}` : 'bg-blue-500 hover:bg-blue-500'} text-[10px] px-1 py-0 `}
-                    >{item.badge}</Badge>}
+                    {item.badge && <Badge
+                        className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
                     <div className="">
                         {item.title}
                     </div>
