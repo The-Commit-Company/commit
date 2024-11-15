@@ -54,6 +54,7 @@
    "depends_on": "eval:doc.is_group_page == 0",
    "fieldname": "content",
    "fieldtype": "Markdown Editor",
+   "ignore_xss_filter": 1,
    "label": "Content"
   },
   {
@@ -105,7 +106,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-15 13:00:46.803980",
+ "modified": "2024-11-15 15:20:42.503563",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs Page",

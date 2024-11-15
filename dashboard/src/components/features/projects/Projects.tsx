@@ -7,6 +7,7 @@ import { AddMenuButton } from "./AddMenuButton";
 import { APIExplorer } from "./APIExplorer";
 import ProjectCard from "./Projects/ProjectCard";
 import { ViewERDButton } from "./ViewERDButton";
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 
 
 export interface ProjectWithBranch extends CommitProject {
@@ -37,7 +38,7 @@ export const Projects = () => {
     );
 
     if (error) {
-        return <div>Error</div>;
+        return <ErrorBanner error={error} />;
     }
 
     if (isLoading) {
