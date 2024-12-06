@@ -65,7 +65,7 @@ def generate_docs_for_chunk(api_chunk):
                 "- ## Description: Detailed description of what the function does and what it is used for \n"
                 "- ## Parameters: List of parameters with their types, descriptions, and indicate which are mandatory or optional\n"
                 "- ## Return Type: Type and description of the return value\n"
-                "- ## Examples: Code examples demonstrating how to use the function (enclosed using <pre> and <code> Tags`).\n\n"
+                "- ## Examples\n Provide code examples demonstrating how to use the function, enclosed in triple backticks (``````).\n\n"
                 "The response should be a valid JSON list of objects formatted as follows: "
                 "{function_name: <function_name>, path: <path>, last_updated:<last_updated>, documentation: <documentation in Markdown>}.\n"
                 "Ensure the response is in valid JSON format only, enclosed in triple backticks, and does not include `---`."
@@ -223,7 +223,7 @@ def save_documentation_for_site_app(project_branch:str,endpoint:str,documentatio
             apis.append({
                 "function_name": endpoint.split(".")[-1],
                 "path": endpoint,
-                "last_updated": frappe.utils.now(),
+                "last_updated": frappe.utils.now(), 
                 "documentation": documentation
             })
         doc.documentation = json.dumps({"apis": apis})
