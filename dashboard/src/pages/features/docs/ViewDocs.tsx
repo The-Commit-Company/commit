@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { PageContent } from "./PageContent";
 
 const ViewDocs = () => {
     const { ID } = useParams();
@@ -64,37 +65,31 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
 
     if (data && data?.message) {
         return (
-            <div className="overflow-hidden">
-                <div className="flex w-full h-[100vh]">
+            <div className="relative antialiased">
+                <div className="z-20 fixed lg:sticky top-0 w-full">
+                    <Navbar navbar_items={data.message.navbar_items} />
+                </div>
+                <div className="flex flex-col lg:flex-row min-h-screen">
                     {/* Sidebar */}
-                    <div className="w-[22vw] flex justify-center">
-                        <div className="w-[20vw] h-full">
-                            <Sidebar
-                                commit_docs={data.message.commit_docs}
-                                sidebar_items={data.message.sidebar_items}
-                                selectedEndpoint={selectedendpoint}
-                                setSelectedEndpoint={setSelectedEndpoint}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Vertical Divider */}
-                    <div className="w-[1px] bg-gray-100 h-full"></div>
+                    <aside className="hidden lg:block lg:w-[20rem] z-30 -mt-16">
+                        <Sidebar
+                            commit_docs={data.message.commit_docs}
+                            sidebar_items={data.message.sidebar_items}
+                            selectedEndpoint={selectedendpoint}
+                            setSelectedEndpoint={setSelectedEndpoint}
+                        />
+                    </aside>
 
                     {/* Main Content */}
-                    <div className="w-[78vw] flex flex-col overflow-hidden">
-                        {/* Fixed Navbar */}
-                        <div className="fixed w-[78vw] top-0 z-10">
-                            <Navbar navbar_items={data.message.navbar_items} />
+                    <main className="flex-1 w-full h-full">
+                        <div id="content-container" className="pb-10">
+                            <PageContent selectedEndpoint={selectedendpoint} route_map={data.message.route_map} />
                         </div>
-
-                        {/* Content area with top padding to accommodate fixed Navbar */}
-                        <div className="mt-[60px] overflow-y-auto h-full"> {/* Adjust '60px' based on Navbar height */}
-                            {/* Page Content */}
-                        </div>
-                    </div>
+                    </main>
                 </div>
+
                 <Footer footer_items={data.message.footer_items} commit_docs={data.message.commit_docs} />
+
             </div>
         );
     }

@@ -18,51 +18,50 @@ export const Footer = ({ commit_docs, footer_items }: { commit_docs: Omit<Commit
         'telegram': commit_docs.telegram,
     }
     return (
-        <footer className="bg-white flex flex-col gap-8 p-16 border-t">
-            <div className="container mx-auto px-4">
-                <div className="flex justify-between items-start">
-                    {/* Logo */}
-                    <div className="flex items-center justify-center flex-row gap-2">
-                        {commit_docs.light_mode_logo && (
-                            <img src={commit_docs.light_mode_logo} alt="Logo" className="h-8 w-auto" />
-                        )}
-                        {commit_docs.header && (
-                            <h4 className="text-lg font-semibold">{commit_docs.header}</h4>
-                        )}
-                    </div>
+        <footer id="footer" className="flex flex-col items-center mx-auto py-4 border-t w-full border-gray-100 dark:border-gray-800/50">
+            <div className="flex w-full flex-col gap-12 justify-between p-8 z-0">
+                <div className="container mx-auto px-4">
+                    <div className="flex justify-between items-start">
+                        <div className="flex items-center justify-center flex-row gap-2">
+                            {commit_docs.light_mode_logo && (
+                                <img src={commit_docs.light_mode_logo} alt="Logo" className="h-8 w-auto" />
+                            )}
+                            {commit_docs.header && (
+                                <h4 className="text-lg font-semibold">{commit_docs.header}</h4>
+                            )}
+                        </div>
 
-                    {/* Footer sections */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-                        {Object.keys(footer_items).map((section) => (
-                            <div key={section} className="flex flex-col gap-4">
-                                <h5 className="text-sm font-semibold text-gray-950">{section}</h5>
-                                <ul className="space-y-4">
-                                    {footer_items[section].map((item) => (
-                                        <li key={item.label} className="text-sm max-w-36 whitespace-normal md:truncate text-gray-950/50 hover:text-gray-950/70">
-                                            <a
-                                                href={item.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {item.label}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+                            {Object.keys(footer_items).map((section) => (
+                                <div key={section} className="flex flex-col gap-4">
+                                    <h5 className="text-sm font-semibold text-gray-950">{section}</h5>
+                                    <ul className="space-y-4">
+                                        {footer_items[section].map((item) => (
+                                            <li key={item.label} className="text-sm max-w-36 whitespace-normal md:truncate text-gray-950/50 hover:text-gray-950/70">
+                                                <a
+                                                    href={item.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {item.label}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
 
-                    {/* Social media icons */}
-                    <div className="flex space-x-4">
-                        {Object.entries(social_links).map(([field, url]) =>
-                            url ? <SocialMediaIcon key={field} field={field} url={url} /> : null
-                        )}
+                        <div className="flex space-x-4">
+                            {Object.entries(social_links).map(([field, url]) =>
+                                url ? <SocialMediaIcon key={field} field={field} url={url} /> : null
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="container mx-auto px-4 text-center text-sm text-gray-950/50">
-                Copyright © {new Date().getFullYear()} {commit_docs.company_name}, Build with commit.
+                <div className="container mx-auto px-4 text-center text-sm text-gray-950/50">
+                    Copyright © {new Date().getFullYear()} {commit_docs.company_name}, Build with commit.
+                </div>
             </div>
         </footer>
     )

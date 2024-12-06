@@ -7,35 +7,58 @@ import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import classNames from "classnames";
 import { cn } from "@/lib/utils";
 
-export const Sidebar = ({ commit_docs, sidebar_items, selectedEndpoint, setSelectedEndpoint }: { commit_docs: Omit<CommitDocs, 'sidebar' | 'navbar_items' | 'footer'>, sidebar_items: Record<string, DocsSidebarItem[]>, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void }) => {
-
+export const Sidebar = ({
+    commit_docs,
+    sidebar_items,
+    selectedEndpoint,
+    setSelectedEndpoint,
+}: {
+    commit_docs: Omit<CommitDocs, 'sidebar' | 'navbar_items' | 'footer'>;
+    sidebar_items: Record<string, DocsSidebarItem[]>;
+    selectedEndpoint: string;
+    setSelectedEndpoint: (selectedEndpoint: string) => void;
+}) => {
     return (
-        <div className="flex flex-col w-full h-full p-2">
-            <div className="flex flex-row items-center gap-4 p-4">
-                {commit_docs.light_mode_logo && <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />}
-                {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
-            </div>
-            <div className="flex flex-col overflow-y-auto gap-3">
+        <div className="sticky top-0 h-screen overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+            <div className="py-6 px-8">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8">
+                    {commit_docs.light_mode_logo && (
+                        <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />
+                    )}
+                    {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
+                </div>
+                {/* Sidebar Items */}
                 {Object.keys(sidebar_items).map((key) => (
-                    <SidebarGroup key={key} groupName={key} items={sidebar_items[key]} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} />
+                    <SidebarGroup
+                        key={key}
+                        groupName={key}
+                        items={sidebar_items[key]}
+                        selectedEndpoint={selectedEndpoint}
+                        setSelectedEndpoint={setSelectedEndpoint}
+                    />
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
 const SidebarGroup = ({ groupName, items, selectedEndpoint, setSelectedEndpoint }: { groupName: string, items: DocsSidebarItem[], selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void }) => {
     const [isExpanded, setIsExpanded] = useState(true);
 
     return (
-        <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center text-sm font-semibold p-2 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-                <span>{groupName}</span>
+        <div className="flex flex-col gap-1 mt-6 lg:mt-4">
+            <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="mb-2 font-semibold text-gray-900 dark:text-gray-200">{groupName}</div>
                 <span>{isExpanded ? <MdKeyboardArrowDown className={'h-6'} /> : <MdKeyboardArrowRight className={'h-6'} />}</span>
             </div>
-            {isExpanded && items.map((item) => (
-                <SidebarItem item={item} key={item.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} />
-            ))}
+            {isExpanded && items.length > 0 && (
+                <ul>
+                    {items.map((item) => (
+                        <SidebarItem item={item} key={item.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} />
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }
@@ -45,17 +68,23 @@ const SidebarItem = ({ item, selectedEndpoint, setSelectedEndpoint, className, l
     if (item.is_group_page && item.group_items?.length) {
         const [isExpanded, setIsExpanded] = useState(false);
         return (
-            <div className="flex flex-col gap-1">
+            <li>
                 <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
-                {isExpanded && item.group_items.map((groupItem) => (
-                    <SidebarItem item={groupItem} key={groupItem.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={`pl-${6 + (2 * (level - 1))}`} level={level + 1} />
-                ))}
-            </div>
+                {isExpanded && item.group_items.length &&
+                    <ul>
+                        {item.group_items.map((groupItem) => (
+                            <SidebarItem item={groupItem} key={groupItem.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={`pl-${6 + (2 * (level))}`} level={level + 1} />
+                        ))}
+                    </ul>
+                }
+            </li>
         )
     }
 
     return (
-        <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} />
+        <li>
+            <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} />
+        </li>
     )
 }
 
@@ -85,14 +114,16 @@ const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, 
 
     return (
         <div
-            className={`flex items-center px-4 py-2 gap-2 cursor-pointer text-sm rounded-md transition-colors
-                        ${isSelected ? "bg-blue-50 text-blue-500 font-medium" : "text-[--foreground]"}
-                        hover:bg-gray-100 ${className}`}
+            className={cn(
+                `group flex items-center py-1.5 cursor-pointer text-sm font-medium focus:outline-primary dark:focus:outline-primary-light space-x-3  border-l border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/20 text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300`,
+                isSelected ? 'border-blue-600 dark:border-primary-light text-blue-600 dark:text-primary-light' : '',
+                className
+            )}
             onClick={item.is_group_page ? () => setIsExpanded && setIsExpanded(!isExpanded) : () => setSelectedEndpoint(item.route)}
         >
-            <div className="flex justify-between items-center w-full">
+            <div className="flex justify-between items-center w-full ml-4 py-1">
                 <div className="flex flex-row gap-2">
-                    {item.icon && <DynamicIcon icon={item.icon} size="18px" className={isSelected ? "text-blue-800" : "text-gray-500"} />}
+                    {item.icon && <DynamicIcon icon={item.icon} size="18px" className={isSelected ? "text-blue-600" : "text-gray-500"} />}
                     {item.badge && <Badge
                         className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
                     <div className="">
