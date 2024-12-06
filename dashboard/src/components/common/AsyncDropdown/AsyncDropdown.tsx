@@ -12,7 +12,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { getLinkTitleAtom, setLinkTitleAtom } from './LinkTitles';
 import { AsyncSpinnerLoader } from '../FullPageLoader/SpinnerLoader';
 import { getErrorMessages } from '../ErrorBanner/ErrorBanner';
-import { MarkdownRenderer } from '../MarkdownRenderer/MarkdownRenderer';
+import MDXRenderer from '../MarkdownRenderer/MDX';
 
 
 interface ResultItem {
@@ -472,7 +472,7 @@ const ErrorContainer = ({ error }: { error?: FrappeError }) => {
             <div className="absolute w-full z-10 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 rounded-b-md p-2"
                 style={{ boxShadow: '0px 8px 14px rgba(25, 39, 52, 0.08), 0px 2px 6px rgba(25, 39, 52, 0.04)' }}>
                 <p className="text-red-500 text-sm">
-                    {getErrorMessages(error).map(e => <MarkdownRenderer key={e.message} content={e.message} />)}
+                    {getErrorMessages(error).map(e => <MDXRenderer key={e.message} mdxContent={e.message} />)}
                 </p>
             </div>
         );

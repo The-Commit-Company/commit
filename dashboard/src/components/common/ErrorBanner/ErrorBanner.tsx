@@ -1,6 +1,6 @@
 import { FrappeError } from 'frappe-react-sdk'
 import { useMemo } from 'react'
-import { MarkdownRenderer } from '../MarkdownRenderer/MarkdownRenderer'
+import MDXRenderer from '../MarkdownRenderer/MDX'
 
 
 interface ErrorBannerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -123,7 +123,8 @@ export const ErrorBanner = ({ error, overrideHeading, ...props }: ErrorBannerPro
                 </div>
                 <div className="ml-3">
                     <p className="text-sm text-red-700">
-                        {messages.map((m, i) => <MarkdownRenderer key={i} content={m.message} />)}
+                        {messages.map((m, i) =>
+                            <MDXRenderer key={i} mdxContent={m.message} />)}
                     </p>
                 </div>
             </div>
