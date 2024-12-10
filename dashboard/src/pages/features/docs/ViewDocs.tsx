@@ -3,23 +3,21 @@ import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoade
 import { useFrappeGetCall } from "frappe-react-sdk";
 import { useNavigate, useParams } from "react-router-dom";
 import { Docs } from "./docs";
-import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { PageContent } from "./PageContent";
 
 const ViewDocs = () => {
-    const { ID } = useParams();
+    const { ID, pageID } = useParams();
 
-    if (ID) {
-        return <ViewDocsDetails ID={ID} />;
+    if (ID && pageID) {
+        return <ViewDocsDetails ID={ID} pageID={pageID} />;
     }
     return null;
 };
 
-const ViewDocsDetails = ({ ID }: { ID: string }) => {
-    const [selectedendpoint, setSelectedEndpoint] = useState<string>("");
+const ViewDocsDetails = ({ ID, pageID }: { ID: string, pageID: string }) => {
     const navigate = useNavigate();
 
     const { data, error, isLoading } = useFrappeGetCall<{
@@ -32,29 +30,11 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
         {
             revalidateOnFocus: false,
             revalidateIfStale: false,
-            onSuccess: (d: { message: Docs }) => {
-                if (!selectedendpoint) {
-                    setSelectedEndpoint(d.message.sidebar_items[Object.keys(d.message.sidebar_items)[0]][0].route);
-                }
-            },
         });
 
-    useEffect(() => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const endpointFromURL = searchParams.get("page");
-
-        if (endpointFromURL) {
-            setSelectedEndpoint(endpointFromURL);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (selectedendpoint) {
-            const searchParams = new URLSearchParams(window.location.search);
-            searchParams.set("page", selectedendpoint);
-            navigate({ search: searchParams.toString() }, { replace: true });
-        }
-    }, [selectedendpoint, navigate]);
+    const onPageChange = (pageID: string) => {
+        navigate(`/docs/${ID}/${pageID}`);
+    }
 
     if (isLoading) {
         return <FullPageLoader />;
@@ -75,15 +55,15 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
                         <Sidebar
                             commit_docs={data.message.commit_docs}
                             sidebar_items={data.message.sidebar_items}
-                            selectedEndpoint={selectedendpoint}
-                            setSelectedEndpoint={setSelectedEndpoint}
+                            selectedEndpoint={pageID}
+                            setSelectedEndpoint={onPageChange}
                         />
                     </aside>
 
                     {/* Main Content */}
                     <main className="flex-1 w-full h-full">
                         <div id="content-container" className="pb-10">
-                            <PageContent selectedEndpoint={selectedendpoint} route_map={data.message.route_map} />
+                            <PageContent selectedEndpoint={pageID} route_map={data.message.route_map} />
                         </div>
                     </main>
                 </div>

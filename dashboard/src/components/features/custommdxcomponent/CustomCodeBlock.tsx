@@ -24,7 +24,7 @@ const CustomCodeBlock = ({ children }: { children: React.ReactNode }) => {
 
 
     return (
-        <div className="relative bg-gray-50 text-white rounded-lg">
+        <div className="relative bg-gray-50 rounded-lg">
             <pre className="overflow-x-auto p-4 font-mono text-sm">
                 <code>{children}</code>
             </pre>
