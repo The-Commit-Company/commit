@@ -283,3 +283,24 @@ def get_sidebar_items(sidebar, route_map):
             route_map[commit_docs_page.route] = commit_docs_page.name
 
     return sidebar_obj, route_map
+
+
+@frappe.whitelist(allow_guest=True)
+def get_first_page_route(route:str):
+	'''
+	Get the First Page Route from the Commit Docs
+	'''
+	if frappe.db.exists('Commit Docs',{'route':route}):
+		commit_docs = frappe.get_doc('Commit Docs',{'route':route})
+		found = False
+		for sidebar in commit_docs.sidebar:
+			commit_docs_page = frappe.get_doc('Commit Docs Page',sidebar.docs_page)
+			if commit_docs_page.published:
+				found = True
+				return commit_docs_page.route
+		
+		if not found:
+			return frappe.throw('Create and Publish the First Page')
+	
+	else:
+		return frappe.throw('Commit Docs Not Found')

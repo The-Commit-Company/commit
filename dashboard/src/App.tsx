@@ -7,6 +7,7 @@ import { AppAPIViewerContainer } from './pages/features/api_viewer/AppAPIViewer'
 import { CreateERD } from './pages/features/erd/meta/CreateERDForMeta'
 import ViewDocs from './pages/features/docs/ViewDocs'
 import { PageNotFound } from './components/common/PageNotFound/PageNotFound'
+import DocsPage from './pages/features/docs/DocsPage'
 
 function App() {
 
@@ -38,7 +39,8 @@ function App() {
           <Route path="/meta-viewer/:ID" element={<AppAPIViewerContainer />} />
           <Route path='/meta-erd/:ID' element={<ERDViewer />} />
           <Route path='/meta-erd/create' element={<CreateERD />} />
-          <Route path='/docs/:ID' element={<ViewDocs />} />
+          <Route path='/docs/:ID' element={<DocsPage />} />
+          <Route path='/docs/:ID/:pageID' element={<ViewDocs />} />
           <Route path='*' element={<PageNotFound />} />
         </Routes>
         {/* </UserProvider> */}
