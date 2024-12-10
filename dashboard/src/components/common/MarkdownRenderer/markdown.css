@@ -388,8 +388,8 @@
   .markdown-body h4,
   .markdown-body h5,
   .markdown-body h6 {
-    margin-top: var(--base-size-8);
-    margin-bottom: var(--base-size-8);
+    margin-top: var(--base-size-16);
+    margin-bottom: var(--base-size-16);
     font-weight: var(--base-text-weight-semibold, 600);
     line-height: 1.25;
   }

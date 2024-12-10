@@ -1,17 +1,8 @@
 import { cn } from "@/lib/utils";
 import { TocItem, TocObj } from "@/pages/features/docs/PageContent";
-import { useEffect } from "react";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 
 export const OnThisPage = ({ toc_obj }: { toc_obj: TocObj }) => {
-
-    useEffect(() => {
-        const hash = window.location.hash;
-        if (!hash) {
-            const firstKey = Object.keys(toc_obj)[0]?.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase();
-            window.location.hash = `#${firstKey}`;
-        }
-    }, [toc_obj]);
 
     if (Object.keys(toc_obj).length > 0) {
 
@@ -23,8 +14,8 @@ export const OnThisPage = ({ toc_obj }: { toc_obj: TocObj }) => {
                     <span>On This Page</span>
                 </div>
                 <ul className="space-y-2">
-                    {Object.keys(toc_obj).map((key) => (
-                        <TocItemComponent key={key} item={toc_obj[key]} hash={hash} />
+                    {Object.keys(toc_obj).map((key, index) => (
+                        <TocItemComponent key={key} item={toc_obj[key]} hash={hash} index={index} />
                     ))}
                 </ul>
             </div>
@@ -33,7 +24,7 @@ export const OnThisPage = ({ toc_obj }: { toc_obj: TocObj }) => {
     return null;
 };
 
-const TocItemComponent = ({ item, hash }: { item: TocItem, hash: string }) => {
+const TocItemComponent = ({ item, hash, index }: { item: TocItem, hash: string, index: number }) => {
     // fetch the hash from url and compare with the item name
     // if it matches, add a class to the anchor tag
 
@@ -41,7 +32,7 @@ const TocItemComponent = ({ item, hash }: { item: TocItem, hash: string }) => {
         return name.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').toLowerCase();
     };
 
-    const isActive = hash === `#${sanitizeName(item.name)}`;
+    const isActive = hash === `#${sanitizeName(item.name)}` || (index === 0 && hash === "");
 
     return (
         <li>
@@ -55,7 +46,7 @@ const TocItemComponent = ({ item, hash }: { item: TocItem, hash: string }) => {
             {Object.keys(item.children).length > 0 && (
                 <ul className="ml-4 mt-2 space-y-2">
                     {Object.keys(item.children).map((key) => (
-                        <TocItemComponent key={key} item={item.children[key]} hash={hash} />
+                        <TocItemComponent key={key} item={item.children[key]} hash={hash} index={1} />
                     ))}
                 </ul>
             )}
