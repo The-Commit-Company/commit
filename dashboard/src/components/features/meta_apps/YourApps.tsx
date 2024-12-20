@@ -1,10 +1,10 @@
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { AvatarImage } from "@radix-ui/react-avatar"
-import { useFrappeGetCall } from "frappe-react-sdk"
 import { useMemo } from "react"
 import { YourAppAPIExplorer } from "./YourAppAPIExplorer"
 import { ViewERDButtonForSiteApps } from "../projects/ViewERDButton"
+import { useInstalledApps } from "./useGetInstalledApp"
 
 export interface AppsData {
     app_name: string
@@ -15,13 +15,9 @@ export interface AppsData {
     git_branch?: string
 }
 
-export const YourApps = () => {
+const YourApps = () => {
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: AppsData[] }>('commit.api.meta_data.get_installed_apps', {}, 'get_installed_apps', {
-        keepPreviousData: true,
-        revalidateOnFocus: true,
-        revalidateIfStale: false,
-    })
+    const { data, error, isLoading } = useInstalledApps()
 
     if (error) {
         return <div>Error</div>
@@ -81,3 +77,5 @@ const AppsCard = ({ app }: { app: AppsData }) => {
         </div>
     );
 };
+
+export default YourApps
