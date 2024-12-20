@@ -21,7 +21,7 @@ export interface ProjectData extends CommitProjectBranch {
     name: string;
     about: string;
 }
-export const Projects = () => {
+const Projects = () => {
     const isCreateAccess = isSystemManager();
 
     const { data, error, isLoading, mutate } = useFrappeGetCall<{
@@ -32,8 +32,9 @@ export const Projects = () => {
         "get_project_list_with_branches",
         {
             keepPreviousData: true,
-            revalidateOnFocus: true,
             revalidateIfStale: false,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
         }
     );
 
@@ -78,3 +79,5 @@ export const Projects = () => {
         );
     }
 };
+
+export default Projects;

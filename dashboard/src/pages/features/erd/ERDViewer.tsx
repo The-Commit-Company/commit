@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AppModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
-import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -14,10 +13,10 @@ import { ERDForDoctypes } from "./ERDForDoctypes"
 import { Dialog as Dialog2 } from "@/components/ui/dialog"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { DoctypeListPopover, ViewERDAppList } from "./meta/ERDDoctypeAndAppModal"
-import { BsDownload } from "react-icons/bs"
 import { toPng } from 'html-to-image'
+import { Download, X } from "lucide-react"
 
-export const ERDViewer = () => {
+const ERDViewer = () => {
 
     const [open, setOpen] = useState(true)
 
@@ -70,7 +69,7 @@ export const ERDViewer = () => {
                         });
                     }}>
                         <div className="flex items-center gap-2">
-                            <BsDownload /> Download
+                            <Download size={16} /> Download
                         </div>
                     </Button>
                 </div>
@@ -168,7 +167,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                                     >
                                                         <span className="absolute -inset-2.5" />
                                                         <span className="sr-only">Close panel</span>
-                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                            <X className="h-4 w-4" aria-hidden="true" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -289,3 +288,5 @@ export const ModuleList = ({ apps, doctype, setDocType }: { apps: string[], doct
     return null
 
 }
+
+export default ERDViewer

@@ -20,7 +20,8 @@ export interface CommitDocsTopbarItem{
 	hide_on_navbar?: 0 | 1
 	/**	Parent Label : Select - If you set this, this Item will come in a drop-down under the selected parent.	*/
 	parent_label?: string
-	/**	Icon : Data	*/
+	/**	Icon : Data - "Supports only icons from the lucid-react library. Enter the icon name, eg:"Bell" to display it beside the title in the sidebar."
+	*/
 	icon?: string
 	/**	Is Primary Button : Check	*/
 	is_primary_button?: 0 | 1

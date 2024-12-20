@@ -1,19 +1,20 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Header } from "@/components/common/Header"
-import { APIDetails } from "@/components/features/api_viewer/APIDetails"
-import { APIList } from "@/components/features/api_viewer/APIList"
 import { APIData } from "@/types/APIData"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { useEffect, useRef, useState } from "react"
+import { lazy, Suspense, useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+
+const APIList = lazy(() => import('@/components/features/api_viewer/APIList'))
+const APIDetails = lazy(() => import('@/components/features/api_viewer/APIDetails'))
 
 interface GetAPIResponse {
     apis: APIData[]
     app_name: string
     branch_name: string
 }
-export const AppAPIViewerContainer = () => {
+const AppAPIViewerContainer = () => {
     const { ID } = useParams()
 
     if (ID) {
@@ -72,15 +73,17 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
             {error && <ErrorBanner error={error} />}
             {data && <div className="flex w-full h-[calc(100vh-4rem)]">
                 <div className={selectedendpoint ? "w-full sm:w-[45%]" : "w-full"}>
-                    <APIList
-                        apiList={data?.message.apis ?? []}
-                        app_name={data?.message.app_name ?? ''}
-                        branch_name={data?.message.branch_name ?? ''}
-                        setSelectedEndpoint={setSelectedEndpoint}
-                        selectedEndpoint={selectedendpoint}
-                        path_to_folder=""
-                        listRef={listRef}
-                    />
+                    <Suspense fallback={<FullPageLoader />}>
+                        <APIList
+                            apiList={data?.message.apis ?? []}
+                            app_name={data?.message.app_name ?? ''}
+                            branch_name={data?.message.branch_name ?? ''}
+                            setSelectedEndpoint={setSelectedEndpoint}
+                            selectedEndpoint={selectedendpoint}
+                            path_to_folder=""
+                            listRef={listRef}
+                        />
+                    </Suspense>
 
                 </div>
 
@@ -89,7 +92,9 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
                         className={`fixed z-10  right-0 w-[80vw] h-full bg-white shadow-lg transition-transform transform ${selectedendpoint ? 'translate-x-0' : 'translate-x-full'
                             } md:relative md:translate-x-0 sm:w-[55%]`}
                     >
-                        <APIDetails project_branch={appName} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="app" mutate={mutate} />
+                        <Suspense fallback={<FullPageLoader />}>
+                            <APIDetails project_branch={appName} endpointData={data?.message.apis ?? []} selectedEndpoint={selectedendpoint} setSelectedEndpoint={setSelectedEndpoint} viewerType="app" mutate={mutate} />
+                        </Suspense>
                     </div>
                 )}
             </div>}
@@ -97,3 +102,5 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
 
     )
 }
+
+export default AppAPIViewerContainer

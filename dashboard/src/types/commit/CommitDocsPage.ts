@@ -19,7 +19,7 @@ export interface CommitDocsPage{
 	published?: 0 | 1
 	/**	Allow Guest : Check	*/
 	allow_guest?: 0 | 1
-	/**	Icon : Data - "Supports only icons from the react-icons library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar."
+	/**	Icon : Data - "Supports only icons from the lucid-react library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar."
 	*/
 	icon?: string
 	/**	Badge : Data - This is badge field, eg: GET , POST etc.	*/
