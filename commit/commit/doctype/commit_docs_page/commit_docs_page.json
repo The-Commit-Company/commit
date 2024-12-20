@@ -1,133 +1,133 @@
 {
- "actions": [],
- "allow_rename": 1,
- "autoname": "format:{title}-{route}",
- "creation": "2024-10-29 19:39:29.842455",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "title",
-  "route",
-  "published",
-  "allow_guest",
-  "icon",
-  "column_break_sedp",
-  "badge",
-  "badge_color",
-  "is_group_page",
-  "documentation_section",
-  "content",
-  "section_break_twyn",
-  "linked_pages"
- ],
- "fields": [
-  {
-   "fieldname": "title",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Title",
-   "reqd": 1
-  },
-  {
-   "fieldname": "route",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Route",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "default": "1",
-   "fieldname": "published",
-   "fieldtype": "Check",
-   "label": "Published"
-  },
-  {
-   "default": "1",
-   "fieldname": "allow_guest",
-   "fieldtype": "Check",
-   "label": "Allow Guest"
-  },
-  {
-   "depends_on": "eval:doc.is_group_page == 0",
-   "fieldname": "content",
-   "fieldtype": "Markdown Editor",
-   "ignore_xss_filter": 1,
-   "label": "Content"
-  },
-  {
-   "description": "This is badge field, eg: GET , POST etc.",
-   "fieldname": "badge",
-   "fieldtype": "Data",
-   "label": "Badge"
-  },
-  {
-   "description": "Add Tailwind colours like red, green, blue, yellow, purple, pink, indigo, cyan, teal, lime, orange, gray etc.",
-   "fieldname": "badge_color",
-   "fieldtype": "Data",
-   "label": "Badge Color"
-  },
-  {
-   "fieldname": "column_break_sedp",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "description": "When enabled, this page can hold and display nested sub-pages, creating a structured hierarchy in the sidebar.",
-   "fieldname": "is_group_page",
-   "fieldtype": "Check",
-   "label": "Is Group Page"
-  },
-  {
-   "fieldname": "documentation_section",
-   "fieldtype": "Section Break",
-   "label": "Documentation"
-  },
-  {
-   "description": "\"Supports only icons from the react-icons library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar.\"\n",
-   "documentation_url": "https://react-icons.github.io/react-icons/search/",
-   "fieldname": "icon",
-   "fieldtype": "Data",
-   "label": "Icon"
-  },
-  {
-   "fieldname": "section_break_twyn",
-   "fieldtype": "Section Break"
-  },
-  {
-   "depends_on": "eval:doc.is_group_page == 1",
-   "fieldname": "linked_pages",
-   "fieldtype": "Table",
-   "label": "Linked Pages",
-   "options": "Linked Commit Docs Page"
-  }
- ],
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-11-15 15:20:42.503563",
- "modified_by": "Administrator",
- "module": "commit",
- "name": "Commit Docs Page",
- "naming_rule": "Expression",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
- "sort_field": "creation",
- "sort_order": "DESC",
- "states": [],
- "title_field": "title"
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "format:{title}-{route}",
+  "creation": "2024-10-29 19:39:29.842455",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "title",
+    "route",
+    "published",
+    "allow_guest",
+    "icon",
+    "column_break_sedp",
+    "badge",
+    "badge_color",
+    "is_group_page",
+    "documentation_section",
+    "content",
+    "section_break_twyn",
+    "linked_pages"
+  ],
+  "fields": [
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Title",
+      "reqd": 1
+    },
+    {
+      "fieldname": "route",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "in_preview": 1,
+      "in_standard_filter": 1,
+      "label": "Route",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "default": "1",
+      "fieldname": "published",
+      "fieldtype": "Check",
+      "label": "Published"
+    },
+    {
+      "default": "1",
+      "fieldname": "allow_guest",
+      "fieldtype": "Check",
+      "label": "Allow Guest"
+    },
+    {
+      "depends_on": "eval:doc.is_group_page == 0",
+      "fieldname": "content",
+      "fieldtype": "Markdown Editor",
+      "ignore_xss_filter": 1,
+      "label": "Content"
+    },
+    {
+      "description": "This is badge field, eg: GET , POST etc.",
+      "fieldname": "badge",
+      "fieldtype": "Data",
+      "label": "Badge"
+    },
+    {
+      "description": "Add Tailwind colours like red, green, blue, yellow, purple, pink, indigo, cyan, teal, lime, orange, gray etc.",
+      "fieldname": "badge_color",
+      "fieldtype": "Data",
+      "label": "Badge Color"
+    },
+    {
+      "fieldname": "column_break_sedp",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "0",
+      "description": "When enabled, this page can hold and display nested sub-pages, creating a structured hierarchy in the sidebar.",
+      "fieldname": "is_group_page",
+      "fieldtype": "Check",
+      "label": "Is Group Page"
+    },
+    {
+      "fieldname": "documentation_section",
+      "fieldtype": "Section Break",
+      "label": "Documentation"
+    },
+    {
+      "description": "\"Supports only icons from the lucid-react library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar.\"\n",
+      "documentation_url": "https://lucide.dev/icons",
+      "fieldname": "icon",
+      "fieldtype": "Data",
+      "label": "Icon"
+    },
+    {
+      "fieldname": "section_break_twyn",
+      "fieldtype": "Section Break"
+    },
+    {
+      "depends_on": "eval:doc.is_group_page == 1",
+      "fieldname": "linked_pages",
+      "fieldtype": "Table",
+      "label": "Linked Pages",
+      "options": "Linked Commit Docs Page"
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "links": [],
+  "modified": "2024-12-13 14:07:48.524842",
+  "modified_by": "Administrator",
+  "module": "commit",
+  "name": "Commit Docs Page",
+  "naming_rule": "Expression",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "title"
 }

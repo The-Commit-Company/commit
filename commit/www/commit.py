@@ -2,19 +2,16 @@ import frappe
 import json
 import frappe.sessions
 import re
-
+from commit.api.meta_data import get_installed_apps
 no_cache = 1
 
 SCRIPT_TAG_PATTERN = re.compile(r"\<script[^<]*\</script\>")
 CLOSING_SCRIPT_TAG_PATTERN = re.compile(r"</script\>")
 
 def get_context(context):
-    csrf_token = frappe.sessions.get_csrf_token()
-    frappe.db.commit()
 
     context = frappe._dict()
     context.boot = get_boot()
-    context.csrf_token = csrf_token
     context.build_version = frappe.utils.get_build_version()
 
     return context
@@ -36,6 +33,7 @@ def get_boot():
     show_system_apps = commit_settings.show_system_apps
     
     boot["show_system_apps"] = show_system_apps
+    boot["get_installed_apps"] = get_installed_apps()
 
     boot_json = frappe.as_json(boot, indent=None, separators=(",", ":"))
     boot_json = SCRIPT_TAG_PATTERN.sub("", boot_json)

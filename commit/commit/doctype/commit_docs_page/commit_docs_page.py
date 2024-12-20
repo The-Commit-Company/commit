@@ -93,7 +93,7 @@ def publish_documentation(project_branch, endpoint, viewer_type, docs_name, pare
 		'commit_docs': commit_docs.name
 	}
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_commit_docs_page(name):
 	'''
 		Get the Commit Docs Page
