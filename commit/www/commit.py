@@ -3,6 +3,7 @@ import json
 import frappe.sessions
 import re
 from commit.api.meta_data import get_installed_apps
+from commit.commit.doctype.commit_docs.commit_docs import get_all_commit_docs_detail
 no_cache = 1
 
 SCRIPT_TAG_PATTERN = re.compile(r"\<script[^<]*\</script\>")
@@ -34,6 +35,7 @@ def get_boot():
     
     boot["show_system_apps"] = show_system_apps
     boot["get_installed_apps"] = get_installed_apps()
+    boot["get_all_commit_docs_detail"] = get_all_commit_docs_detail()
 
     boot_json = frappe.as_json(boot, indent=None, separators=(",", ":"))
     boot_json = SCRIPT_TAG_PATTERN.sub("", boot_json)
