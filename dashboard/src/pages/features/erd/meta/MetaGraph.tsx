@@ -18,8 +18,7 @@ import ReactFlow, {
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { PostgresTable, PostgresRelationship, TableNodeData } from '@/types/Table'
-import { CgMaximizeAlt } from 'react-icons/cg'
-import { TbArrowsMinimize } from 'react-icons/tb'
+import { Maximize2, Minimize2 } from 'lucide-react'
 import { TableNode } from '../TableNode'
 import { MetaTableDrawer } from '../../TableDrawer/MetaTableDrawer'
 import { Button } from '@/components/ui/button'
@@ -338,8 +337,8 @@ const TablesGraph: FC<{
                 >
                     <Controls showFitView={false}>
                         <ControlButton onClick={toggleFullScreen}>
-                            {!fullscreenOn && <CgMaximizeAlt />}
-                            {fullscreenOn && <TbArrowsMinimize />}
+                            {!fullscreenOn && <Minimize2 size={14} />}
+                            {fullscreenOn && <Maximize2 size={14} />}
                         </ControlButton>
                     </Controls>
                     <div className="absolute top-0 right-0 p-2 pr-16 m-1 bg-white z-10 flex flex-col gap-2 rounded-lg shadow-lg">

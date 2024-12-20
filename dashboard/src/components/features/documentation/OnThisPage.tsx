@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { TocItem, TocObj } from "@/pages/features/docs/PageContent";
-import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import { Menu } from "lucide-react";
 
 export const OnThisPage = ({ toc_obj }: { toc_obj: TocObj }) => {
 
@@ -10,7 +10,7 @@ export const OnThisPage = ({ toc_obj }: { toc_obj: TocObj }) => {
         return (
             <div className="sticky top-[8rem] max-h-[calc(100vh-16rem)] overflow-y-auto text-gray-600 text-sm leading-6 w-[16.5rem] space-y-2">
                 <div className="text-gray-700 dark:text-gray-300 font-medium flex items-center space-x-2 mb-4">
-                    <HiOutlineMenuAlt1 className="h-5 w-5 text-blue-500" />
+                    <Menu className="h-4 w-4 text-blue-500" />
                     <span>On This Page</span>
                 </div>
                 <ul className="space-y-2">

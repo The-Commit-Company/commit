@@ -1,8 +1,6 @@
 import { ICON_KEY, ICON_KEY_MAP } from "@/components/common/Icons";
 import { PostgresColumn } from "@/types/Table";
 import { Arrow, HoverCardContent } from "@radix-ui/react-hover-card";
-// import { AiOutlineLink } from "react-icons/ai";
-
 
 export const TableHoverCard = ({ column }: { column: PostgresColumn }) => {
 
@@ -14,7 +12,7 @@ export const TableHoverCard = ({ column }: { column: PostgresColumn }) => {
                 {/* <div className="flex gap-x-1 items-center"> */}
                 {/* <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={column.imageUrl} alt="" /> */}
                 <div className="h-8 w-8 flex-none rounded-full border border-gray-200 flex items-center justify-center">
-                    <IconComponent className="h-4 w-4" />
+                    <IconComponent className="h-3 w-3" />
                 </div>
 
                 <div className="flex-auto ">

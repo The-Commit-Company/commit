@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
-import { IoCloudOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import { Cloud } from 'lucide-react';
 
-export const PageNotFound = () => {
+const PageNotFound = () => {
 
     const navigate = useNavigate()
 
@@ -33,7 +33,7 @@ export const PageNotFound = () => {
                 transition={{ duration: 1.2, ease: 'easeInOut' }}
                 className="mb-10"
             >
-                <IoCloudOutline className="w-24 h-24 opacity-60 text-white" />
+                <Cloud size={24} className="w-24 h-24 opacity-60 text-white" />
             </motion.div>
 
             <motion.p
@@ -54,3 +54,5 @@ export const PageNotFound = () => {
         </div>
     );
 }
+
+export default PageNotFound;
