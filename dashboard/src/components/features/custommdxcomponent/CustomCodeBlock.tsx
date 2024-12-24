@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // Custom Code Block Component
-const CustomCodeBlock = ({ children }: { children: React.ReactNode }) => {
+const CustomCodeBlock = ({ children, ...props }: { children: React.ReactNode, props?: any }) => {
     const [isCopied, setIsCopied] = useState(false);
+    const preRef = useRef<HTMLPreElement>(null);
 
     const { toast } = useToast()
 
@@ -24,14 +24,9 @@ const CustomCodeBlock = ({ children }: { children: React.ReactNode }) => {
 
 
     return (
-        <div className="relative bg-gray-50 rounded-lg">
-            <pre className="overflow-x-auto p-4 font-mono text-sm">
-                <code>{children}</code>
-            </pre>
-            <Button
-                size="icon"
-                variant="ghost"
-                className={`absolute top-2 right-2`}
+        <pre ref={preRef} {...props} className='relative'>
+            <button
+                disabled={isCopied}
                 onClick={() => {
                     copyToClipboardWithMeta()
                         .then(() => setIsCopied(true))
@@ -40,15 +35,16 @@ const CustomCodeBlock = ({ children }: { children: React.ReactNode }) => {
                             setIsCopied(false)
                         })
                 }}
+                className='absolute right-3 top-3 size-6'
             >
-                <span className="sr-only">Copy</span>
                 {isCopied ? (
-                    <CheckIcon className="h-4 w-4 text-green-500" />
+                    <CheckIcon className="h-5 w-5 text-green-500" />
                 ) : (
-                    <CopyIcon className="h-4 w-4 text-gray-500" />
+                        <CopyIcon className="h-5 w-5 text-gray-500" />
                 )}
-            </Button>
-        </div>
+            </button>
+            {children}
+        </pre>
     );
 };
 
