@@ -13,6 +13,7 @@ import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
 import CustomHeading from '@/components/features/custommdxcomponent/CustomHeading';
 import CustomCodeBlock from '@/components/features/custommdxcomponent/CustomCodeBlock';
+import rehypePrettyCode from "rehype-pretty-code";
 
 // Custom components
 const CustomParagraph = ({ children }: { children?: React.ReactNode }) => {
@@ -42,7 +43,7 @@ const compileMDX = async (mdxContent: string) => {
     const compiled = await compile(mdxContent, {
         outputFormat: 'function-body',
         remarkPlugins: [remarkMdx, remarkMath, remarkBreaks, remarkGfm],
-        rehypePlugins: [rehypeSlug, rehypeKatex],
+        rehypePlugins: [rehypeSlug, rehypeKatex, rehypePrettyCode],
     });
     return String(compiled);
 };

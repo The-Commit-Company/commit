@@ -1,17 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AiOutlineDelete } from "react-icons/ai";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { KeyedMutator } from "swr";
 import { useMemo, useState } from "react";
 import { isSystemManager } from "@/utils/roles";
-import { RxDragHandleDots1 } from "react-icons/rx";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { Dialog } from "@radix-ui/react-dialog";
 import ManageBranchModal from "../Branch/ManageBranchModal";
 import { ProjectWithBranch, ProjectData } from "../Projects";
 import DeleteProjectModal from "./DeleteProjectModal";
+import { EllipsisVertical, Grip, Trash } from "lucide-react";
 
 export interface ProjectCardProps {
   project: ProjectWithBranch
@@ -59,21 +57,21 @@ const ProjectCard = ({ project, mutate, orgName, githubOrg }: ProjectCardProps) 
         {isCreateAccess && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size='icon' className="h-7 w-7">
-                <BsThreeDotsVertical />
+              <Button variant="outline" size='icon' className="h-6 w-6">
+                <EllipsisVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-50 mr-4">
               {project.branches.length > 0 && (
                 <DropdownMenuItem onClick={() => { setOpenManageModal(true) }}>
                   <>
-                    <RxDragHandleDots1 className="h-4 w-4 mr-2" />
+                    <Grip className="h-4 w-4 mr-2" />
                     Manage Branches
                   </>
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem onClick={() => setOpenDeleteDialogModal(true)}>
-                <AiOutlineDelete className="h-4 w-4 mr-2" />
+                <Trash className="h-4 w-4 mr-2" />
                 Delete Project
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Link2 } from "lucide-react";
 import React, { useEffect, useRef } from "react";
-import { MdLink } from "react-icons/md";
 
 const CustomHeading = ({ id, children, as }: { id: string, children: React.ReactNode, as: string }) => {
     const headingRef = useRef<HTMLDivElement>(null);
@@ -50,9 +50,9 @@ const CustomHeading = ({ id, children, as }: { id: string, children: React.React
                 <Button
                     variant="outline"
                     size="icon"
-                    className="mt-2 h-6 w-6"
+                    className="h-5 w-5"
                 >
-                    <MdLink className="h-4 w-4 text-gray-500" />
+                    <Link2 size={12} className="text-gray-500" />
                 </Button>
             </a>
         </div>

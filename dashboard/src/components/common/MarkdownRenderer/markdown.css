@@ -237,10 +237,10 @@
     font-size: 1em;
   }
   
-  .markdown-body figure {
+  /* .markdown-body figure {
     margin: 1em var(--base-size-40);
   }
-  
+   */
   .markdown-body hr {
     box-sizing: content-box;
     overflow: hidden;
@@ -829,7 +829,7 @@
     text-decoration: inherit;
   }
   
-  .markdown-body samp {
+  .markdown-body samp { 
     font-size: 85%;
   }
   
@@ -838,10 +838,10 @@
   }
   
   .markdown-body pre>code {
-    padding: 0;
+    padding: 4px;
     margin: 0;
     word-break: normal;
-    white-space: pre;
+    /* white-space: pre; */
     background: transparent;
     border: 0;
   }
@@ -870,8 +870,8 @@
   .markdown-body pre tt {
     display: inline;
     max-width: auto;
-    padding: 0;
-    margin: 0;
+    padding: 2px;
+    margin: 2px;
     overflow: visible;
     line-height: inherit;
     word-wrap: normal;

@@ -7,14 +7,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
-import { IoIosGitBranch } from "react-icons/io"
-import { MdAdd } from "react-icons/md"
-import { VscGithubProject, VscOrganization } from "react-icons/vsc"
 import CreateOrgModal from "./Org/CreateOrgModal"
 import { KeyedMutator } from "swr"
 import { ProjectData } from "./Projects"
 import CreateProjectModal from "./Projects/CreateProjectModal"
 import CreateBranchModal from "./Branch/CreateBranchModal"
+import { Building, GitBranch, PanelsTopLeft, Plus } from "lucide-react"
 
 export const AddMenuButton = ({ mutate }: {
     mutate: KeyedMutator<{
@@ -41,20 +39,20 @@ export const AddMenuButton = ({ mutate }: {
             <DropdownMenuTrigger asChild>
                 <Button size='sm' variant="outline">
                     Add
-                    <MdAdd className="ml-2 h-4 w-4" />
+                    <Plus className="ml-2 h-4 w-4" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 <DropdownMenuItem onClick={() => setCreateOrg(true)} >
-                    <VscOrganization className="mr-2 h-4 w-4" />
+                    <Building className="mr-2 h-4 w-4" />
                     <span>Add Org</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCreateProject(true)}>
-                    <VscGithubProject className="mr-2 h-4 w-4" />
+                    <PanelsTopLeft className="mr-2 h-4 w-4" />
                     <span>Add Project</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setOpen(true)} >
-                    <IoIosGitBranch className="mr-2 h-4 w-4" />
+                    <GitBranch className="mr-2 h-4 w-4" />
                     <span>Add Branch</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

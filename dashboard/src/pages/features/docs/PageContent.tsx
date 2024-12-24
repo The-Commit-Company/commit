@@ -1,11 +1,11 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
-import MDXRenderer from "@/components/common/MarkdownRenderer/MDX";
 import { OnThisPage } from "@/components/features/documentation/OnThisPage";
 import { CommitDocsPage } from "@/types/commit/CommitDocsPage";
 import { useFrappeGetCall } from "frappe-react-sdk";
+import { lazy, Suspense } from "react";
 
-
+const MDXRenderer = lazy(() => import('@/components/common/MarkdownRenderer/MDX'));
 export interface PageData {
     doc: CommitDocsPage
     toc_obj: TocObj
@@ -47,7 +47,9 @@ export const PageContent = ({ selectedEndpoint, route_map }: { selectedEndpoint:
             <div className="flex flex-row gap-12 h-full w-full pt-40 lg:pt-2">
                 <div className="flex flex-col gap-4 w-full py-6 px-16">
                     <div className="inline-block text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-gray-200">{data?.message?.doc?.title}</div>
-                    <MDXRenderer mdxContent={data?.message?.doc?.content ?? ''} />
+                    <Suspense fallback={<FullPageLoader />}>
+                        <MDXRenderer mdxContent={data?.message?.doc?.content ?? ''} />
+                    </Suspense>
                 </div>
                 <div className="z-10 hidden xl:flex pl-10 box-border w-[19rem] py-6">
                     <OnThisPage toc_obj={data?.message?.toc_obj} />

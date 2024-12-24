@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { web_url } from "@/config/socket"
 import { APIData, Argument } from "@/types/APIData"
-import { XMarkIcon } from "@heroicons/react/24/outline"
 import { useFrappeGetCall } from "frappe-react-sdk"
-import { useMemo, useState } from "react"
-import { MdOutlineFileDownload } from "react-icons/md"
-import { APIDocumentationOfSiteApp } from "../documentation/APIDocumentation"
+import { lazy, Suspense, useMemo, useState } from "react"
 import { Dialog } from "@/components/ui/dialog"
-import { APIClientContent } from "../APIClient/APIClientContent"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { AiOutlineThunderbolt } from "react-icons/ai"
+import { Download, X, Zap } from "lucide-react"
 
-export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType, mutate }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string, mutate: () => void }) => {
+
+const APIDocumentationOfSiteApp = lazy(() => import('../documentation/APIDocumentation'))
+const APIClientContent = lazy(() => import('../APIClient/APIClientContent'))
+
+const APIDetails = ({ project_branch, endpointData, selectedEndpoint, setSelectedEndpoint, viewerType, mutate }: { project_branch: string, endpointData: APIData[], selectedEndpoint: string, setSelectedEndpoint: React.Dispatch<React.SetStateAction<string>>, viewerType: string, mutate: () => void }) => {
     const data = useMemo(() => {
         return endpointData.find((endpoint: APIData) => endpoint.name === selectedEndpoint)
     }, [endpointData, selectedEndpoint])
@@ -73,7 +73,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                     >
                         <span className="absolute -inset-2.5" />
                         <span className="sr-only">Close panel</span>
-                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                        <X className="h-4 w-4" aria-hidden="true" />
                     </button>
                 </div>
             </div>
@@ -94,7 +94,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                                                 size="sm"
                                                 onClick={() => setApiOpen(true)}
                                             >
-                                                Call API <AiOutlineThunderbolt className="h-4 w-4 ml-2" />
+                                                Call API <Zap size={12} className="ml-2" />
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent side="bottom" className="mr-4">
@@ -139,11 +139,15 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                     <Bruno doc={data!} />
                 </TabsContent>
                 <TabsContent value="Documentation">
-                    <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} viewerType={viewerType} key={data?.api_path} mutate={mutate} />
+                    <Suspense fallback={<FullPageLoader />}>
+                        <APIDocumentationOfSiteApp apiData={data!} project_branch={project_branch} file_path={data?.file ?? ''} endPoint={data?.api_path ?? ''} viewerType={viewerType} key={data?.api_path} mutate={mutate} />
+                    </Suspense>
                 </TabsContent>
             </Tabs>
             <Dialog open={apiOpen} onOpenChange={setApiOpen}>
-                <APIClientContent endpoint={data?.api_path ?? ''} parameters={data?.arguments} open={apiOpen} />
+                <Suspense fallback={<FullPageLoader />}>
+                    <APIClientContent endpoint={data?.api_path ?? ''} parameters={data?.arguments} open={apiOpen} />
+                </Suspense>
             </Dialog>
         </div >
     )
@@ -236,7 +240,7 @@ export const Bruno = ({ doc }: { doc: APIData }) => {
                     <div className="flex items-center space-x-1">
                         <Button variant={'outline'} size={'icon'} className="h-8 w-8">
                             <a href={`${web_url}/api/method/commit.api.bruno.generate_bruno_file?data=${JSON.stringify(rest)}`} target="_blank">
-                                <MdOutlineFileDownload className="h-4 w-4" />
+                                <Download size={16} className="h-4 w-4" />
                             </a>
                         </Button>
                         <CopyButton value={copyValue()} className="h-8 w-8" variant={'outline'} />
@@ -259,3 +263,5 @@ export const Bruno = ({ doc }: { doc: APIData }) => {
         </div>
     )
 }
+
+export default APIDetails

@@ -1,9 +1,7 @@
 import { CommitDocs } from "@/types/commit/CommitDocs";
 import { DocsFooterItem } from "./docs";
-import { FaLinkedin, FaSlack, FaGithub, FaYoutube, FaTelegram } from "react-icons/fa";
-import { GiRaven } from "react-icons/gi";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { FaXTwitter } from "react-icons/fa6";
+import { Bird, Github, Linkedin, Send, Slack, Twitter, Youtube } from "lucide-react";
 
 
 export const Footer = ({ commit_docs, footer_items }: { commit_docs: Omit<CommitDocs, 'sidebar' | 'navbar_items' | 'footer'>, footer_items: Record<string, DocsFooterItem[]> }) => {
@@ -75,13 +73,13 @@ interface SocialMediaIconProps {
 const classsName = "text-gray-600 hover:text-gray-800 h-5 w-5";
 
 const iconMap: Record<string, JSX.Element> = {
-    twitter: <FaXTwitter className={classsName} />,
-    linkedin: <FaLinkedin className={classsName} />,
-    slack: <FaSlack className={classsName} />,
-    github: <FaGithub className={classsName} />,
-    youtube: <FaYoutube className={classsName} />,
-    telegram: <FaTelegram className={classsName} />,
-    raven: <GiRaven className={classsName} />,
+    twitter: <Twitter className={classsName} />,
+    linkedin: <Linkedin className={classsName} />,
+    slack: <Slack className={classsName} />,
+    github: <Github className={classsName} />,
+    youtube: <Youtube className={classsName} />,
+    telegram: <Send className={classsName} />,
+    raven: <Bird className={classsName} />,
     // Add more icons here as needed
 };
 

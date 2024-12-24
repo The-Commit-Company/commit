@@ -1,6 +1,4 @@
-import { APIDetails } from "@/components/features/api_viewer/APIDetails"
-import { APIList } from "@/components/features/api_viewer/APIList"
-import { useEffect, useRef, useState } from "react"
+import { lazy, Suspense, useEffect, useRef, useState } from "react"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { APIData } from "@/types/APIData"
 import { useNavigate, useParams } from "react-router-dom"
@@ -8,6 +6,8 @@ import { Header } from "@/components/common/Header"
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 
+const APIList = lazy(() => import('@/components/features/api_viewer/APIList'))
+const APIDetails = lazy(() => import('@/components/features/api_viewer/APIDetails'))
 
 interface GetAPIResponse {
     apis: APIData[]
@@ -21,7 +21,8 @@ interface GetAPIResponse {
     project_branch: string,
     path_to_folder: string
 }
-export const APIViewerContainer = () => {
+
+const APIViewerContainer = () => {
     const { ID } = useParams()
 
     if (ID) {
@@ -84,15 +85,17 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
             {error && <ErrorBanner error={error} />}
             {data && <div className="flex w-full h-[calc(100vh-4rem)]">
                 <div className={selectedendpoint ? "w-full sm:w-[45%]" : "w-full"}>
-                    <APIList
-                        apiList={data?.message.apis ?? []}
-                        app_name={data?.message.app_name ?? ''}
-                        branch_name={data?.message.branch_name ?? ''}
-                        setSelectedEndpoint={setSelectedEndpoint}
-                        selectedEndpoint={selectedendpoint}
-                        path_to_folder={data?.message.path_to_folder}
-                        listRef={listRef}
-                    />
+                    <Suspense fallback={<FullPageLoader />}>
+                        <APIList
+                            apiList={data?.message.apis ?? []}
+                            app_name={data?.message.app_name ?? ''}
+                            branch_name={data?.message.branch_name ?? ''}
+                            setSelectedEndpoint={setSelectedEndpoint}
+                            selectedEndpoint={selectedendpoint}
+                            path_to_folder={data?.message.path_to_folder}
+                            listRef={listRef}
+                        />
+                    </Suspense>
                 </div>
 
                 {selectedendpoint && (
@@ -100,17 +103,21 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                         className={`fixed z-10  right-0 w-[80vw] h-full bg-white shadow-lg transition-transform transform ${selectedendpoint ? 'translate-x-0' : 'translate-x-full'
                             } md:relative md:translate-x-0 sm:w-[55%]`}
                     >
-                        <APIDetails
-                            project_branch={projectBranch}
-                            endpointData={data?.message.apis ?? []}
-                            selectedEndpoint={selectedendpoint}
-                            setSelectedEndpoint={setSelectedEndpoint}
-                            viewerType="project"
-                            mutate={mutate}
-                        />
+                        <Suspense fallback={<FullPageLoader />}>
+                            <APIDetails
+                                project_branch={projectBranch}
+                                endpointData={data?.message.apis ?? []}
+                                selectedEndpoint={selectedendpoint}
+                                setSelectedEndpoint={setSelectedEndpoint}
+                                viewerType="project"
+                                mutate={mutate}
+                            />
+                        </Suspense>
                     </div>
                 )}
             </div>}
         </div>
     )
 }
+
+export default APIViewerContainer

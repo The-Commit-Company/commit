@@ -1,12 +1,11 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
-import { useFrappeGetCall } from "frappe-react-sdk";
 import { useNavigate, useParams } from "react-router-dom";
-import { Docs } from "./docs";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { PageContent } from "./PageContent";
+import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
 
 const ViewDocs = () => {
     const { ID, pageID } = useParams();
@@ -20,17 +19,7 @@ const ViewDocs = () => {
 const ViewDocsDetails = ({ ID, pageID }: { ID: string, pageID: string }) => {
     const navigate = useNavigate();
 
-    const { data, error, isLoading } = useFrappeGetCall<{
-        message: Docs;
-    }>("commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_details",
-        {
-            route: ID,
-        },
-        undefined,
-        {
-            revalidateOnFocus: false,
-            revalidateIfStale: false,
-        });
+    const { data, error, isLoading } = useGetCommitDocsDetails(ID);
 
     const onPageChange = (pageID: string) => {
         navigate(`/docs/${ID}/${pageID}`);
@@ -43,18 +32,18 @@ const ViewDocsDetails = ({ ID, pageID }: { ID: string, pageID: string }) => {
         return <ErrorBanner error={error} />;
     }
 
-    if (data && data?.message) {
+    if (data) {
         return (
             <div className="relative antialiased">
                 <div className="z-20 fixed lg:sticky top-0 w-full">
-                    <Navbar navbar_items={data.message.navbar_items} />
+                    <Navbar navbar_items={data.navbar_items} />
                 </div>
                 <div className="flex flex-col lg:flex-row min-h-screen">
                     {/* Sidebar */}
                     <aside className="hidden lg:block lg:w-[20rem] z-30 -mt-16">
                         <Sidebar
-                            commit_docs={data.message.commit_docs}
-                            sidebar_items={data.message.sidebar_items}
+                            commit_docs={data.commit_docs}
+                            sidebar_items={data.sidebar_items}
                             selectedEndpoint={pageID}
                             setSelectedEndpoint={onPageChange}
                         />
@@ -63,12 +52,12 @@ const ViewDocsDetails = ({ ID, pageID }: { ID: string, pageID: string }) => {
                     {/* Main Content */}
                     <main className="flex-1 w-full h-full">
                         <div id="content-container" className="pb-10">
-                            <PageContent selectedEndpoint={pageID} route_map={data.message.route_map} />
+                            <PageContent selectedEndpoint={pageID} route_map={data.route_map} />
                         </div>
                     </main>
                 </div>
 
-                <Footer footer_items={data.message.footer_items} commit_docs={data.message.commit_docs} />
+                <Footer footer_items={data.footer_items} commit_docs={data.commit_docs} />
 
             </div>
         );

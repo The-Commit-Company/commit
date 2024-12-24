@@ -1,6 +1,5 @@
 import { useFrappeUpdateDoc } from "frappe-react-sdk"
 import { Accept } from "react-dropzone"
-import { MdOutlineFileUpload } from 'react-icons/md'
 import { useState } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { File } from "@/types/Core/File"
@@ -11,6 +10,7 @@ import { SpinnerLoader } from "../FullPageLoader/SpinnerLoader"
 import { DocumentUploadModal } from "./DocumentUploadModal"
 import { cn } from "@/lib/utils"
 import { useGetFilePreviewUrl } from "./FileDrop"
+import { Upload } from "lucide-react"
 
 /**
  * Custom File Type for FILE UPLOADER component; with 'fileID' for unique ID & 'preview' for blob URL.
@@ -136,7 +136,7 @@ export const ImageUploader = ({ file, doctype, docname, onUpdate, fieldname = 'i
                 </div> : updatingDoc ? <div className={cn(`w-${boxSize} h-${boxSize} rounded-md border border-dashed border-gray-400 flex items-center justify-center cursor-not-allowed`, props.className)}>
                     <SpinnerLoader />
                 </div> : <div className={`h-${boxSize} aspect-square rounded-md border border-dashed border-gray-400 flex items-center justify-center cursor-pointer ${props.className}`} onClick={onOpen}>
-                    {icon ? icon : <MdOutlineFileUpload fontSize={40} />}
+                    {icon ? icon : <Upload size={40} />}
                 </div>}
             <DocumentUploadModal open={isOpen} onClose={onClose} doctype={doctype} docname={docname} onUpdate={uploadImage} maxFiles={1} accept={accept} maxFileSize={maxFileSize} />
             {deleteImage && <DeleteModal isOpen={isDelete} onClose={onDeleteClose} onDelete={deleteImage} />}

@@ -3,9 +3,9 @@ import { DocsSidebarItem } from "./docs";
 import DynamicIcon from "@/components/common/DynamicIconImport/IconComponent";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import classNames from "classnames";
 import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 export const Sidebar = ({
     commit_docs,
@@ -50,7 +50,7 @@ const SidebarGroup = ({ groupName, items, selectedEndpoint, setSelectedEndpoint 
         <div className="flex flex-col gap-1 mt-6 lg:mt-4">
             <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="mb-2 font-semibold text-gray-900 dark:text-gray-200">{groupName}</div>
-                <span>{isExpanded ? <MdKeyboardArrowDown className={'h-6'} /> : <MdKeyboardArrowRight className={'h-6'} />}</span>
+                <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span>
             </div>
             {isExpanded && items.length > 0 && (
                 <ul>
@@ -122,15 +122,15 @@ const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, 
             onClick={item.is_group_page ? () => setIsExpanded && setIsExpanded(!isExpanded) : () => setSelectedEndpoint(item.route)}
         >
             <div className="flex justify-between items-center w-full ml-4 py-1">
-                <div className="flex flex-row gap-2">
-                    {item.icon && <DynamicIcon icon={item.icon} size="18px" className={isSelected ? "text-blue-600" : "text-gray-500"} />}
+                <div className="flex flex-row gap-2 items-center">
+                    {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
                     {item.badge && <Badge
                         className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
                     <div className="">
                         {item.title}
                     </div>
                 </div>
-                {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <MdKeyboardArrowDown className={'h-6'} /> : <MdKeyboardArrowRight className={'h-6'} />}</span> : null}
+                {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span> : null}
             </div>
         </div>
     )

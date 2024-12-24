@@ -1,12 +1,9 @@
 import { Accept, useDropzone } from "react-dropzone"
-import { MdOutlineDevices } from "react-icons/md"
 import { useEffect, useState } from "react"
 import { CustomFile } from "./ImageUploader"
 import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
-import { TbTrash } from "react-icons/tb"
-import { FiFile, FiLink } from 'react-icons/fi'
-import { IoMdCheckmark } from "react-icons/io"
+import { Check, MonitorSmartphone, Trash2, File as LucidFile, Link } from "lucide-react"
 
 
 export interface FileDropProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -87,7 +84,7 @@ export const FileDrop = ({ files, onFileChange, maxFiles = 1, uploading, accept,
                         <p className="text-sm">Drag 'n' drop your files here.</p>
                         <div className="flex space-x-4 items-center justify-center">
                             <button {...getRootProps()} className="flex items-center space-x-2 text-sm bg-transparent border-none">
-                                <MdOutlineDevices size={20} />
+                                <MonitorSmartphone size={16} />
                                 <span>My Device</span>
                                 <input type="file" {...getInputProps()} />
                             </button>
@@ -128,7 +125,7 @@ export const FileListItem = ({ file, removeFile, isUploading, ...props }: FileLi
                 {previewURL ? (
                     <img src={previewURL} alt="File preview" className="h-8 w-8 rounded-md" />
                 ) : (
-                    file.fileType === 'file' ? <FiFile className="h-6 w-6" /> : <FiLink className="h-6 w-6" />
+                        file.fileType === 'file' ? <LucidFile size={16} className="h-6 w-6" /> : <Link size={16} className="h-6 w-6" />
                 )}
             </div>
 
@@ -140,10 +137,10 @@ export const FileListItem = ({ file, removeFile, isUploading, ...props }: FileLi
 
             <div>
                 {isUploading ? (
-                    <IoMdCheckmark className="h-6 w-6 text-green-500" />
+                    <Check size={16} className="text-green-500" />
                 ) : (
                     <Button variant={'ghost'} size={'icon'} onClick={removeFile} className="text-red-500 hover:text-red-700">
-                        <TbTrash className="h-6 w-6" />
+                            <Trash2 size={16} />
                     </Button>
                 )}
             </div>

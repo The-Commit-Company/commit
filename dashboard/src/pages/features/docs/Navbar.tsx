@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DocsNavbarItem } from "./docs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { FaCaretDown } from "react-icons/fa";
-import { RiSearchLine } from "react-icons/ri";
+import { ChevronDown, Search } from "lucide-react";
+
 
 export const Navbar = ({ navbar_items }: { navbar_items: Record<string, DocsNavbarItem> }) => {
     return (
@@ -17,7 +17,7 @@ export const Navbar = ({ navbar_items }: { navbar_items: Record<string, DocsNavb
                             {/* Left side: Search bar */}
                             <div className="flex items-center w-1/3 relative">
                                 <Input placeholder="Search..." className="w-full pl-10" />
-                                <RiSearchLine className="absolute left-3 text-gray-800" />
+                                <Search size={16} className="absolute left-3 text-gray-800" />
                             </div>
                             {/* Right side: Navbar items */}
                             <div className="flex items-center space-x-2">
@@ -59,7 +59,7 @@ const MenuButton = ({ item }: { item: DocsNavbarItem }) => {
                     size={'sm'}
                 >
                     {item.label}
-                    <FaCaretDown className="ml-2" />
+                    <ChevronDown size={16} className="ml-2" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-4">
