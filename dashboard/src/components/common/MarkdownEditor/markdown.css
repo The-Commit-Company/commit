@@ -1,0 +1,7 @@
+.milkdown .ProseMirror {
+    padding:0 !important;
+}
+.milkdown .ProseMirror h1, .milkdown .ProseMirror h2, .milkdown .ProseMirror h3, .milkdown .ProseMirror h4, .milkdown .ProseMirror h5, .milkdown .ProseMirror h6 {
+    font-family: inherit;
+    font-weight: 600;
+}
