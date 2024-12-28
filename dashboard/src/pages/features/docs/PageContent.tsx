@@ -1,11 +1,13 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
-import { OnThisPage } from "@/components/features/documentation/OnThisPage";
 import { CommitDocsPage } from "@/types/commit/CommitDocsPage";
 import { useFrappeGetCall } from "frappe-react-sdk";
-import { lazy, Suspense } from "react";
+import { useState } from "react";
+import { Renderer } from "./Renderer";
+import { EditorComponent } from "./EditorComponent";
+import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
+import { useParams } from "react-router-dom";
 
-const MDXRenderer = lazy(() => import('@/components/common/MarkdownRenderer/MDX'));
 export interface PageData {
     doc: CommitDocsPage
     toc_obj: TocObj
@@ -24,13 +26,33 @@ export interface TocObj {
     [key: string]: TocItem;
 };
 
-export const PageContent = ({ selectedEndpoint, route_map }: { selectedEndpoint: string, route_map: Record<string, string> }) => {
+export const PageContent = ({ ID }: { ID: string }) => {
 
+    const { data } = useGetCommitDocsDetails(ID);
+
+    const { pageID } = useParams();
+
+    if (data && pageID) {
+        return (
+            <PageContentFetch selectedEndpoint={pageID} route_map={data.route_map} />
+        )
+    }
+    return null;
+}
+
+const PageContentFetch = ({ selectedEndpoint, route_map }: { selectedEndpoint: string, route_map: Record<string, string> }) => {
     const selectedEndpointRoute = route_map[selectedEndpoint];
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: PageData; }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page", {
+    const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: PageData; }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page", {
         name: selectedEndpointRoute
+    }, undefined, {
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
+        revalidateOnReconnect: false,
+        keepPreviousData: true
     });
+
+    const [edit, setEdit] = useState<boolean>(false);
 
     if (isLoading) {
         return <FullPageLoader />;
@@ -44,18 +66,9 @@ export const PageContent = ({ selectedEndpoint, route_map }: { selectedEndpoint:
 
     if (data && data?.message) {
         return (
-            <div className="flex flex-row gap-12 h-full w-full pt-40 lg:pt-2">
-                <div className="flex flex-col gap-4 w-full py-6 px-16">
-                    <div className="inline-block text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-gray-200">{data?.message?.doc?.title}</div>
-                    <Suspense fallback={<FullPageLoader />}>
-                        <MDXRenderer mdxContent={data?.message?.doc?.content ?? ''} />
-                    </Suspense>
-                </div>
-                <div className="z-10 hidden xl:flex pl-10 box-border w-[19rem] py-6">
-                    <OnThisPage toc_obj={data?.message?.toc_obj} />
-                </div>
-            </div>
+            <>
+                {edit ? <EditorComponent data={data.message?.doc} setEdit={setEdit} mutate={mutate} key={data.message.doc.name} /> : <Renderer data={data.message} setEdit={setEdit} key={data.message.doc.name} />}
+            </>
         )
     }
-
 }

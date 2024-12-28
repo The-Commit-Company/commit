@@ -6,44 +6,45 @@ import { useState } from "react";
 import classNames from "classnames";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
 
-export const Sidebar = ({
-    commit_docs,
-    sidebar_items,
-    selectedEndpoint,
-    setSelectedEndpoint,
-}: {
-    commit_docs: Omit<CommitDocs, 'sidebar' | 'navbar_items' | 'footer'>;
-    sidebar_items: Record<string, DocsSidebarItem[]>;
-    selectedEndpoint: string;
-    setSelectedEndpoint: (selectedEndpoint: string) => void;
-}) => {
-    return (
-        <div className="sticky top-0 h-screen overflow-y-auto border-r border-gray-200 dark:border-gray-700">
-            <div className="py-6 px-8">
-                {/* Header */}
-                <div className="flex items-center gap-4 mb-8">
-                    {commit_docs.light_mode_logo && (
-                        <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />
-                    )}
-                    {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
+export const Sidebar = ({ ID }: { ID: string }) => {
+
+    const { data, isLoading } = useGetCommitDocsDetails(ID);
+
+    if (data) {
+        const commit_docs: CommitDocs = data.commit_docs;
+        const sidebar_items = data.sidebar_items;
+        return (
+            <div className="sticky top-0 h-screen overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+                <div className="py-6 px-8">
+                    {/* Header */}
+                    <div className="flex items-center gap-4 mb-8">
+                        {commit_docs.light_mode_logo && (
+                            <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />
+                        )}
+                        {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
+                    </div>
+                    {/* Sidebar Items */}
+                    {Object.keys(sidebar_items).map((key) => (
+                        <SidebarGroup
+                            key={key}
+                            groupName={key}
+                            items={sidebar_items[key]}
+
+                        />
+                    ))}
                 </div>
-                {/* Sidebar Items */}
-                {Object.keys(sidebar_items).map((key) => (
-                    <SidebarGroup
-                        key={key}
-                        groupName={key}
-                        items={sidebar_items[key]}
-                        selectedEndpoint={selectedEndpoint}
-                        setSelectedEndpoint={setSelectedEndpoint}
-                    />
-                ))}
             </div>
-        </div>
-    );
+        );
+    }
+    if (isLoading) {
+        return <SidebarSkeleton />;
+    }
 };
 
-const SidebarGroup = ({ groupName, items, selectedEndpoint, setSelectedEndpoint }: { groupName: string, items: DocsSidebarItem[], selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void }) => {
+const SidebarGroup = ({ groupName, items }: { groupName: string, items: DocsSidebarItem[] }) => {
     const [isExpanded, setIsExpanded] = useState(true);
 
     return (
@@ -55,7 +56,7 @@ const SidebarGroup = ({ groupName, items, selectedEndpoint, setSelectedEndpoint 
             {isExpanded && items.length > 0 && (
                 <ul>
                     {items.map((item) => (
-                        <SidebarItem item={item} key={item.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} />
+                        <SidebarItem item={item} key={item.route} />
                     ))}
                 </ul>
             )}
@@ -63,17 +64,17 @@ const SidebarGroup = ({ groupName, items, selectedEndpoint, setSelectedEndpoint 
     )
 }
 
-const SidebarItem = ({ item, selectedEndpoint, setSelectedEndpoint, className, level = 1 }: { item: DocsSidebarItem, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void, className?: string, level?: number }) => {
+const SidebarItem = ({ item, className, level = 1 }: { item: DocsSidebarItem, className?: string, level?: number }) => {
 
     if (item.is_group_page && item.group_items?.length) {
         const [isExpanded, setIsExpanded] = useState(false);
         return (
             <li>
-                <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+                <SidebarTitle item={item} className={className} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
                 {isExpanded && item.group_items.length &&
                     <ul>
                         {item.group_items.map((groupItem) => (
-                            <SidebarItem item={groupItem} key={groupItem.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={`pl-${6 + (2 * (level))}`} level={level + 1} />
+                            <SidebarItem item={groupItem} key={groupItem.route} className={`pl-${6 + (2 * (level))}`} level={level + 1} />
                         ))}
                     </ul>
                 }
@@ -83,14 +84,15 @@ const SidebarItem = ({ item, selectedEndpoint, setSelectedEndpoint, className, l
 
     return (
         <li>
-            <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} />
+            <SidebarTitle item={item} className={className} />
         </li>
     )
 }
 
-const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, isExpanded, setIsExpanded }: { item: DocsSidebarItem, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void, className?: string, isExpanded?: boolean, setIsExpanded?: (isExpanded: boolean) => void }) => {
+const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: DocsSidebarItem, className?: string, isExpanded?: boolean, setIsExpanded?: (isExpanded: boolean) => void }) => {
 
-    const isSelected = item.route === selectedEndpoint;
+    const { pageID, ID } = useParams();
+    const isSelected = item.route === pageID;
 
     const badgeClass = classNames({
         'text-[10px] px-1 py-0': true,
@@ -119,19 +121,52 @@ const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, 
                 isSelected ? 'border-blue-600 dark:border-primary-light text-blue-600 dark:text-primary-light' : '',
                 className
             )}
-            onClick={item.is_group_page ? () => setIsExpanded && setIsExpanded(!isExpanded) : () => setSelectedEndpoint(item.route)}
+            onClick={item.is_group_page ? () => setIsExpanded && setIsExpanded(!isExpanded) : () => { }}
         >
             <div className="flex justify-between items-center w-full ml-4 py-1">
-                <div className="flex flex-row gap-2 items-center">
+                {item.is_group_page ? <div className="flex items-center gap-2">
                     {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
                     {item.badge && <Badge
                         className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
                     <div className="">
                         {item.title}
                     </div>
-                </div>
+                </div> : <a className="flex flex-row gap-2 items-center" href={`../${ID}/${item.route}`}>
+                    {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
+                    {item.badge && <Badge
+                        className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
+                    <div className="">
+                        {item.title}
+                        </div>
+                </a>}
                 {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span> : null}
             </div>
         </div>
     )
 }
+
+const SidebarSkeleton = () => {
+    return (
+        <div className="py-6 px-8 animate-pulse">
+            {/* Header Skeleton */}
+            <div className="flex items-center gap-4 mb-8">
+                <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            </div>
+            {/* Sidebar Groups Skeleton */}
+            {[...Array(5)].map((_, groupIndex) => (
+                <div key={groupIndex} className="flex flex-col gap-1 mt-6 lg:mt-4">
+                    <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer">
+                        <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                        <span className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded"></span>
+                    </div>
+                    <ul>
+                        {[...Array(3 + Math.floor(Math.random() * 2))].map((_, itemIndex) => (
+                            <li key={itemIndex} className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+        </div>
+    );
+};

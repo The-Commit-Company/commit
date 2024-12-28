@@ -137,10 +137,7 @@ const APIClientContent = ({ endpoint, open, parameters }: APIClientContentProps)
             return obj
         }
         else {
-            return Object.keys(data)?.filter((key) => !(key.includes('key') || key.includes('value'))).reduce((acc, key) => {
-                acc[key] = data[key]
-                return acc
-            }, {} as Record<string, string>)
+            return data
         }
     }
 

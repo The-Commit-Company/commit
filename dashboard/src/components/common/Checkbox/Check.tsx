@@ -23,7 +23,7 @@ export const Check = ({ name, label, controllerProps, alignWithLabel = false, ru
                 name={name}
                 rules={rules}
                 render={({ field: { name, onChange, ref, value } }) => (
-                    <Checkbox name={name} ref={ref} checked={value} onCheckedChange={onChange} {...props} />
+                    <Checkbox name={name} ref={ref} checked={value ? true : false} onCheckedChange={onChange} {...props} />
                 )}
                 {...controllerProps}
             />
