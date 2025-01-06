@@ -84,7 +84,7 @@ export const APIDetails = ({ project_branch, endpointData, selectedEndpoint, set
                             <dt className="text-sm font-medium leading-6 text-gray-900">Endpoint :</dt>
                             <div className="flex items-center justify-between space-x-2 sm:col-span-4">
                                 <div className="flex items-center space-x-2">
-                                    <dd className="mt-1 text-sm text-blue-500 cursor-pointer max-w-[56ch] leading-6 sm:col-span-2 sm:mt-0 truncate">{data?.api_path}</dd>
+                                    <dd className="mt-1 text-sm text-blue-500 cursor-pointer max-w-[50ch] leading-6 sm:col-span-2 sm:mt-0 truncate">{data?.api_path}</dd>
                                     <CopyButton value={data?.api_path ?? ''} />
                                 </div>
                                 {viewerType === 'app' && <TooltipProvider>
