@@ -1,10 +1,12 @@
+import { keyframes } from "framer-motion";
+
 /** @type {import('tailwindcss').Config} */
 export const darkMode = ["class"];
 export const content = [
-  './pages/**/*.{ts,tsx}',
-  './components/**/*.{ts,tsx}',
-  './app/**/*.{ts,tsx}',
-  './src/**/*.{ts,tsx}',
+  "./pages/**/*.{ts,tsx}",
+  "./components/**/*.{ts,tsx}",
+  "./app/**/*.{ts,tsx}",
+  "./src/**/*.{ts,tsx}",
 ];
 export const theme = {
   container: {
@@ -15,6 +17,9 @@ export const theme = {
     },
   },
   extend: {
+    fontFamily: {
+      title_font: ["Parkinsans", "sans-serif"],
+    },
     colors: {
       border: "hsl(var(--border))",
       input: "hsl(var(--input))",
@@ -71,4 +76,7 @@ export const theme = {
     },
   },
 };
-export const plugins = [import ("tailwindcss-animate")];
+export const plugins = [
+  import("tailwindcss-animate"),
+  import("@tailwindcss/typography"),
+];
