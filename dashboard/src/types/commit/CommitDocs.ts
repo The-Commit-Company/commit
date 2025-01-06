@@ -45,4 +45,5 @@ export interface CommitDocs{
 	telegram?: string
 	/**	Footer : Table - Commit Docs Footer Item	*/
 	footer?: CommitDocsFooterItem[]
+	description?: string
 }

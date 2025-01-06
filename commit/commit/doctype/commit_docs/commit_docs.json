@@ -10,6 +10,7 @@
   "route",
   "published",
   "company_name",
+  "description",
   "section_break_camv",
   "sidebar",
   "logo_section",
@@ -160,11 +161,16 @@
    "fieldname": "company_name",
    "fieldtype": "Data",
    "label": "Company Name"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-09 12:53:12.416589",
+ "modified": "2024-12-07 22:34:40.239467",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs",
