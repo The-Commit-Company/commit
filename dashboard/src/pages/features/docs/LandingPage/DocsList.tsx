@@ -38,14 +38,13 @@ const DocCard = ({ data }: { data: CommitDocs }) => {
                     <div className="font-bold text-xl">
                         {data.header}
                     </div>
-                    <Button
-                        size={"icon"}
+                    <a
+                        href={`../docs/${data.route}`}
                         aria-label="redirect"
-                        variant={"link"}
-                        onClick={() => navigate(`../docs/${data.route}`)}
+                        className="inline-flex items-center p-1 hover:bg-slate-100 rounded-md"
                     >
                         <MdArrowOutward className="h-5 w-5" />
-                    </Button>
+                    </a>
                 </div>
                 {data.published == 1 && <div className="flex-none rounded-full bg-emerald-500/20 p-1.5">
                     <div className="size-1.5 rounded-full bg-emerald-500" />
