@@ -10,7 +10,7 @@ const DocsLandingPage = () => {
   const { data, error, isLoading } = useFrappeGetDocList<CommitDocs>(
     "Commit Docs",
     {
-      fields: ["*"],
+      fields: ["header", "light_mode_logo", "route", "published", "description"],
     }
   );
 
