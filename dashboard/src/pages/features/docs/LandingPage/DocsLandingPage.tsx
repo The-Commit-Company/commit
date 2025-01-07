@@ -41,8 +41,8 @@ const DocsLandingPage = () => {
             <HeroSection />
           </div>
         </div>
-        <div className="flex justify-center">
-          <div className="w-[90vw] pb-10">
+        <div className="flex justify-center m-10">
+          <div className="w-full pb-10">
             <DocsList data={data} />
           </div>
         </div>

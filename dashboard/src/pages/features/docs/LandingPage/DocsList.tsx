@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const DocsList = ({ data }: { data: CommitDocs[] }) => {
     return (
-        <div className="overflow-hidden rounded-lg sm:grid sm:grid-cols-2 sm:gap-6 ">
+        <div className="overflow-hidden rounded-lg sm:grid sm:grid-cols-2 sm:gap-6 mx-4 sm:mx-14">
             {data.map((item, idx) => (
                 <DocCard key={idx} data={item} />
             ))}
@@ -26,7 +26,7 @@ const DocCard = ({ data }: { data: CommitDocs }) => {
     const navigate = useNavigate()
 
     return (
-        <div className="p-4 font-title_font border-l-2">
+        <div className="p-4 font-title_font border-l-[1.5px] ">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <Avatar className="h-10 w-10 flex items-center rounded-lg">
