@@ -88,19 +88,21 @@ def get_commit_docs_details(route:str):
 		# 4. Get The Sidebar Items for the Commit Docs
 		# 5. Return the Sidebar Items
 	'''
-
+	user = frappe.session.user
 	# Check if the Commit Docs Document Exists
 	if frappe.db.exists('Commit Docs',{'route':route}):
 
-		# Check if the document is published
-		if frappe.db.get_value('Commit Docs',{'route':route},'published'):
-			# Get the Commit Docs Document
+		if user == "Guest":
+			if frappe.db.get_value('Commit Docs',{'route':route},'published'):
+				commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
+
+				return parse_commit_docs(commit_docs)
+			else:
+				return frappe.throw('Docs Not Published')
+		else:
 			commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
 
 			return parse_commit_docs(commit_docs)
-			
-		else:
-			return frappe.throw('Docs Not Published')
 		
 	else:
 		return frappe.throw('Docs Not Found')

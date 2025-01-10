@@ -25,6 +25,11 @@ export const Sidebar = ({ ID }: { ID: string }) => {
                             <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />
                         )}
                         {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
+                        {commit_docs.published == 0 && (
+                            <Badge className="px-1 py-0 bg-orange-500">
+                                Draft
+                            </Badge>
+                        )}
                     </div>
                     {/* Sidebar Items */}
                     {Object.keys(sidebar_items).map((key) => (
