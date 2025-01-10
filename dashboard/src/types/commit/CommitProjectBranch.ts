@@ -1,7 +1,7 @@
 
 export interface CommitProjectBranch{
-	creation: string
 	name: string
+	creation: string
 	modified: string
 	owner: string
 	modified_by: string
@@ -22,6 +22,8 @@ export interface CommitProjectBranch{
 	app_name?: string
 	/**	Last fetched : Datetime	*/
 	last_fetched?: string
+	/**	Frequency : Select	*/
+	frequency?: "" | "Daily" | "Weekly" | "Monthly"
 	/**	Modules : Long Text	*/
 	modules?: string
 	/**	Module - Doctypes Map : JSON	*/
@@ -30,5 +32,6 @@ export interface CommitProjectBranch{
 	doctype_module_map?: any
 	/**	Whitelisted APIs : JSON	*/
 	whitelisted_apis?: any
-	frequency?: "Daily" | "Weekly" | "Monthly" 
+	/**	Documentation : JSON	*/
+	documentation?: any
 }

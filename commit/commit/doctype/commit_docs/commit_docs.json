@@ -1,0 +1,190 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:header",
+ "creation": "2024-10-29 18:30:47.336889",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "header",
+  "route",
+  "published",
+  "company_name",
+  "section_break_camv",
+  "sidebar",
+  "logo_section",
+  "light_mode_logo",
+  "night_mode_logo",
+  "navbar_tab",
+  "navbar_items",
+  "footer_tab",
+  "twitter_url",
+  "linkedin",
+  "slack",
+  "youtube",
+  "column_break_oxzh",
+  "github",
+  "raven",
+  "telegram",
+  "section_break_gawv",
+  "footer"
+ ],
+ "fields": [
+  {
+   "fieldname": "header",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Header",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Route",
+   "reqd": 1
+  },
+  {
+   "fieldname": "navbar_tab",
+   "fieldtype": "Tab Break",
+   "label": "Navbar"
+  },
+  {
+   "fieldname": "footer_tab",
+   "fieldtype": "Tab Break",
+   "label": "Footer"
+  },
+  {
+   "fieldname": "logo_section",
+   "fieldtype": "Section Break",
+   "label": "Logo"
+  },
+  {
+   "fieldname": "light_mode_logo",
+   "fieldtype": "Attach Image",
+   "label": "Light Mode Logo"
+  },
+  {
+   "fieldname": "night_mode_logo",
+   "fieldtype": "Attach Image",
+   "label": "Night Mode Logo"
+  },
+  {
+   "fieldname": "navbar_items",
+   "fieldtype": "Table",
+   "label": "Navbar Items",
+   "options": "Commit Docs Topbar Item"
+  },
+  {
+   "description": "Add Twitter URL",
+   "fieldname": "twitter_url",
+   "fieldtype": "Data",
+   "label": "Twitter ",
+   "options": "URL"
+  },
+  {
+   "description": "Add LinkedIn URL",
+   "fieldname": "linkedin",
+   "fieldtype": "Data",
+   "label": "LinkedIn ",
+   "options": "URL"
+  },
+  {
+   "description": "Add Github URL",
+   "fieldname": "github",
+   "fieldtype": "Data",
+   "label": "Github",
+   "options": "URL"
+  },
+  {
+   "description": "Add Raven URL",
+   "fieldname": "raven",
+   "fieldtype": "Data",
+   "label": "Raven",
+   "options": "URL"
+  },
+  {
+   "fieldname": "footer",
+   "fieldtype": "Table",
+   "label": "Footer",
+   "options": "Commit Docs Footer Item"
+  },
+  {
+   "fieldname": "section_break_camv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sidebar",
+   "fieldtype": "Table",
+   "label": "Sidebar",
+   "options": "Commit Docs Group Item"
+  },
+  {
+   "default": "1",
+   "fieldname": "published",
+   "fieldtype": "Check",
+   "label": "Published"
+  },
+  {
+   "description": "Add Slack URL",
+   "fieldname": "slack",
+   "fieldtype": "Data",
+   "label": "Slack",
+   "options": "URL"
+  },
+  {
+   "fieldname": "column_break_oxzh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Add Telegram URL",
+   "fieldname": "telegram",
+   "fieldtype": "Data",
+   "label": "Telegram",
+   "options": "URL"
+  },
+  {
+   "fieldname": "section_break_gawv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Add Youtube URL",
+   "fieldname": "youtube",
+   "fieldtype": "Data",
+   "label": "Youtube",
+   "options": "URL"
+  },
+  {
+   "description": "For Copyright Purpose",
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-09 12:53:12.416589",
+ "modified_by": "Administrator",
+ "module": "commit",
+ "name": "Commit Docs",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

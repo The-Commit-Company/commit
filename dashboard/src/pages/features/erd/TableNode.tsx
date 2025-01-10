@@ -2,8 +2,8 @@ import { PostgresTable } from "@/types/Table";
 import { NodeProps, Handle, useReactFlow } from "reactflow";
 import { NODE_WIDTH } from "./Graph";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
 
 export const TableNode = ({ data, targetPosition, sourcePosition }: NodeProps<PostgresTable>) => {
@@ -66,7 +66,7 @@ export const TableNode = ({ data, targetPosition, sourcePosition }: NodeProps<Po
                     </div>
                 </TooltipTrigger>
                 <TooltipContent align="start" side="right" sideOffset={0.5} className="p-0 rounded-full bg-white border border-black shadow-sm">
-                    <XMarkIcon className="h-2 w-2 m-1 text-black" aria-hidden="true" onClick={onDelete} />
+                    <X className="h-2 w-2 m-1 text-black" aria-hidden="true" onClick={onDelete} />
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

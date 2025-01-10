@@ -62,11 +62,8 @@ class CommitProjectBranch(Document):
             project.org, project.repo_name)
 
         folder_path = self.path_to_folder
-        # print("Folder path", folder_path)
-        # print("Repo url", repo_url)
-        # print("Branch name", self.branch_name)
+
         repo = git.Repo.clone_from(repo_url, folder_path, branch=self.branch_name, single_branch=True)
-        # print("Cloned repo")
         self.last_fetched = frappe.utils.now_datetime()
         self.commit_hash = repo.head.object.hexsha
 
@@ -86,7 +83,6 @@ class CommitProjectBranch(Document):
         pass
 
     def get_modules(self):
-        # print("Getting modules")
         modules_path = os.path.join(
             self.path_to_folder, self.app_name, 'modules.txt')
         if os.path.isfile(modules_path):
@@ -104,12 +100,10 @@ class CommitProjectBranch(Document):
 
             self.module_doctypes_map = module_doctypes_map
             self.doctype_module_map = doctype_module_map
-        # print("Modules", self.modules)
 
     def find_all_apis(self):
         apis = find_all_occurrences_of_whitelist(
             self.path_to_folder, self.app_name)
-        # print(apis)
         # Convert list to string and save to database
         self.whitelisted_apis = {
             "apis": apis
@@ -149,7 +143,6 @@ class CommitProjectBranch(Document):
         if self.doctype_module_map:
             doctype_module_map = json.loads(self.doctype_module_map)
             module = doctype_module_map.get(doctype_name)
-            # print("Module", module)
             if module:
                 return get_doctype_json(self.path_to_folder, self.app_name, module, doctype_name)
         return None

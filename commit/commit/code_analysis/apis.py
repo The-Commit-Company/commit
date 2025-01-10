@@ -1,5 +1,7 @@
 import os
 import ast
+import frappe
+import json
 
 other_decorators = [
     '@cache_source',
@@ -16,7 +18,6 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
     api_count = 0
     file_count = 0
     api_details = []
-    # print(py_files)
     # For each file, check if @frappe.whitelist is present
     for file in py_files:
         file_content = open(file, 'r').read()
@@ -33,14 +34,10 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
             # if file.endswith('party.py'):
             indexes,line_nos,no_of_occurrences = find_indexes_of_whitelist(file_content, no_of_occurrences)
             api_count += no_of_occurrences
-            apis = get_api_details(file, file_content, indexes,line_nos, path)
+            apis = get_api_details(app_name, file, file_content, indexes,line_nos, path)
             api_details.extend(apis)
     
     return api_details
-    
-    # print(f'Number of APIs: {api_count}')
-    # print(f'Number of files: {file_count}')
-    # print(f'Number of Python files: {len(py_files)}')
 
 def find_indexes_of_whitelist(file_content: str, count: int):
     '''
@@ -109,7 +106,7 @@ def find_indexes_of_whitelist(file_content: str, count: int):
     
     return indexes, line_nos, actual_count
 
-def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: str):
+def get_api_details(app_name, file, file_content: str, indexes: list,line_nos:list, path: str):
     '''
     Get details of the API
     '''
@@ -118,7 +115,7 @@ def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: 
         whitelist_details = get_whitelist_details(file_content, index)
         api_details = get_api_name(file_content, index)
         other_decorators = get_other_decorators(file_content, index, api_details.get('def_index'))
-        apis.append({
+        obj = {
             **api_details,
             **whitelist_details,
             'other_decorators': other_decorators,
@@ -127,7 +124,16 @@ def get_api_details(file, file_content: str, indexes: list,line_nos:list, path: 
             'block_end': find_function_end_lines(file_content,api_details.get('name','')),
             'file': file,
             'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
-        })
+        }
+        documentation, last_updated, is_published, published_on, publish_by, publish_id,published_route = get_documentation_from_branch_documentation(app_name, obj.get('name'), obj.get('api_path'))
+        obj['documentation'] = documentation
+        obj['last_updated'] = last_updated
+        obj['is_published'] = is_published
+        obj['published_on'] = published_on
+        obj['publish_by'] = publish_by
+        obj['publish_id'] = publish_id
+        obj['published_route'] = published_route
+        apis.append(obj)
     
     return apis
 
@@ -185,10 +191,10 @@ def get_api_name(file_content: str, index: int):
     def_index = file_content.find('def ', index)
 
     # Find occurrence of ":" after the def_index
-    colon_index = file_content.find(':', def_index)
+    colon_index = file_content.find('):', def_index)
 
     # Get the string between def_index and colon_index
-    api_def = file_content[def_index:colon_index].replace('\n', '').replace('\t', '')
+    api_def = file_content[def_index:colon_index+1].replace('\n', '').replace('\t', '')
 
     # api_def is of the form "def api_name(self, arg1, arg2, ...)"
     # We need to get the api_name. To do this, we can remove the "def " first
@@ -287,3 +293,33 @@ def get_decorators(node):
         if decorator_name is not None:
             decorators.append(decorator_name)
     return decorators
+
+def get_documentation_from_branch_documentation(app_name:str, name: str, api_path: str):
+    '''
+    Get documentation from the Commit Branch Documentation
+    '''
+    if frappe.db.exists('Commit Branch Documentation',app_name):
+        branch_documentation = frappe.get_doc('Commit Branch Documentation', app_name)
+        docs = json.loads(branch_documentation.documentation) if branch_documentation.documentation else {}
+        apis = docs.get("apis", [])
+        documentation = ''
+        last_updated = ''
+        is_published = ''
+        published_on = ''
+        publish_by = ''
+        publish_id = ''
+        published_route = ''
+        for api in apis:
+            if api.get("function_name") == name and api.get("path") == api_path:
+                documentation = api.get("documentation")
+                last_updated = api.get("last_updated")
+                is_published = api.get("is_published",0)
+                published_on = api.get("published_on", None)
+                publish_by = api.get("publish_by", None)
+                publish_id = api.get("publish_id", None)
+                published_route = api.get("published_route", None)
+                break
+        return documentation, last_updated, is_published, published_on, publish_by, publish_id, published_route
+    else:
+        return '', '', '', '', '', '', ''
+   

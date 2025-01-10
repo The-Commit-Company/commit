@@ -3,19 +3,22 @@ import { Button } from "@/components/ui/button"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { ProjectData, ProjectWithBranch } from "./Projects"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { AiOutlineApi } from "react-icons/ai"
 import { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
 import { Label } from "@/components/ui/label"
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import api from '../../../assets/api.svg'
+import { ChevronRight } from "lucide-react"
 
 export const APIExplorer = () => {
     const { data, error, isLoading } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches', {}, 'get_project_list_with_branches', {
         keepPreviousData: true,
-        revalidateOnFocus: true,
         revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
     })
 
     if (error) {
@@ -28,15 +31,33 @@ export const APIExplorer = () => {
 
     if (data && data.message) {
         return (
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button size='sm' disabled={data.message?.length === 0} variant={'outline'}>
-                        <AiOutlineApi className="mr-2" />
-                        API Explorer
-                    </Button>
-                </DialogTrigger>
-                <ViewAPIExplorerContent data={data.message} />
-            </Dialog>
+            <Card className="flex flex-col sm:flex-row items-start p-2 border rounded-lg w-full h-full shadow-sm bg-white relative">
+                <div className="flex-grow h-full">
+                    <CardHeader className="pb-4">
+                        <CardTitle>Explore your API's and Bench Commands</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-sm text-gray-500 sm:mb-8">
+                            Effortlessly explore and interact with your whitelisted API's and Bench commands using our API Explorer. 
+                        </div>
+                    </CardContent>
+
+                    <CardFooter className="absolute bottom-0">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button size='sm' disabled={data.message?.length === 0} className="rounded-full px-4 pr-2 py-2 shadow-md">
+                                    Get Started
+                                    <ChevronRight size={14} className="ml-2 mr-0 p-0" />
+                                </Button>
+                            </DialogTrigger>
+                            <ViewAPIExplorerContent data={data.message} />
+                        </Dialog>
+                    </CardFooter>
+                </div>
+                <div className="flex-shrink-0 sm:mb-0 mb-16 p-4 sm:p-0 items-center justify-center">
+                    <img src={api} alt="API" height={'full'} className="w-full rounded-md sm:w-[170px] sm:mr-6 sm:rounded-md" />
+                </div>
+            </Card>
         )
     }
     return null
@@ -55,11 +76,11 @@ export const ViewAPIExplorerContent = ({ data }: { data: ProjectData[] }) => {
     }, [branch, navigate])
 
     return (
-        <DialogContent className="p-4 px-6">
-            <DialogHeader>
-                <DialogTitle>Select Apps</DialogTitle>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
+                <DialogTitle>Select App</DialogTitle>
                 <DialogDescription>
-                    Select the apps to view API's
+                    Select the app to view API's
                 </DialogDescription>
             </DialogHeader>
             <RadioGroup defaultValue={branch} onValueChange={(value) => setBranch(value)} className="flex flex-col space-y-1" >
@@ -95,9 +116,9 @@ export const ViewAPIExplorerCard = ({ project }: ViewERDProjectCardProps) => {
         <li className="w-full px-2">
             <div className="flex items-center justify-between py-2 w-full">
                 <div className="flex space-x-3 items-center">
-                    <RadioGroupItem value={branch} key={branch} id={`${project.name}-${branch}`} />
                     <Label htmlFor={`${project.name}-${branch}`} className="flex items-center space-x-3">
-                        <h1 className="text-lg font-medium tracking-normal" >{project.display_name}</h1>
+                        <RadioGroupItem value={branch} key={branch} id={`${project.name}-${branch}`} />
+                        <h1 className="text-[16px] font-medium tracking-normal cursor-pointer" >{project.display_name}</h1>
                     </Label>
                 </div>
                 <Select

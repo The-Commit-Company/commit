@@ -13,8 +13,8 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl">
-                <DialogHeader>
+            <DialogContent className="p-6 w-[90vw] sm:max-w-[44vw] overflow-hidden">
+                <DialogHeader className="text-left">
                     <DialogTitle>
                         <div className='pr-2'>{field.label} ({field.fieldname})
                             <CopyButton value={field.fieldname ?? ''} className="h-6 w-6 hover:bg-gray-300 ml-2 align-middle" />
@@ -54,11 +54,11 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                     </DialogDescription>
                 </DialogHeader>
                 <div>
-                    <div className="flex justify-between gap-2 items-start">
+                    <div className="flex flex-col justify-between gap-2 items-start">
                         <div className="grid gap-2 h-full">
                             <div className="grid items-start gap-2">
                                 <div className="text-sm font-semibold">Visibility</div>
-                                <div className="grid grid-cols-3 gap-1">
+                                <div className="grid grid-cols-3 gap-2">
                                     <div className={`flex gap-1 justify-between ${field.hidden === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Hidden</span>
                                         {field.hidden === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
@@ -88,7 +88,7 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                             </div>
                             <div className="grid items-start gap-2">
                                 <div className="text-sm font-semibold">List / Search Settings</div>
-                                <div className="grid grid-cols-3 gap-1">
+                                <div className="grid grid-cols-3 gap-2">
                                     <div className={`flex gap-1 justify-between ${field.in_list_view === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">List View</span>
                                         {field.in_list_view === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-cyan-50" />}
@@ -113,7 +113,7 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                             </div>
                             <div className="grid items-start gap-2">
                                 <div className="text-sm font-semibold">Permissions and Constraints</div>
-                                <div className="grid grid-cols-3 gap-1">
+                                <div className="grid grid-cols-3 gap-2">
                                     <div className={`flex gap-1 justify-between ${field.read_only === 1 ? 'bg-green-600' : 'bg-gray-400'} rounded-md p-1`}>
                                         <span className="text-xs text-cyan-50 font-semibold">Read Only</span>
                                         {field.read_only === 1 ? <CheckCircleIcon className="h-4 w-4 text-cyan-50" /> : <CrossCircledIcon className="h-4 w-4 text-gray-50" />}
@@ -186,7 +186,7 @@ export const FieldActionModal = ({ field, open, onClose }: { field: DocField, op
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={onClose} variant={'ghost'}>Close</Button>
+                    <Button onClick={onClose}>Close</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

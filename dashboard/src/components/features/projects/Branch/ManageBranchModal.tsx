@@ -15,11 +15,11 @@ export interface ManageBranchModalProps {
 const ManageBranchModal = ({ branches, mutate, setOpenManageModal }: ManageBranchModalProps) => {
 
     return (
-        <DialogContent className="sm:max-w-[600px] sm:max-h-[800px] overflow-y-scroll">
-            <DialogHeader>
+        <DialogContent className="p-6 w-[90vw] sm:max-w-[44vw] overflow-hidden">
+            <DialogHeader className="text-left">
                 <DialogTitle>Manage Branches</DialogTitle>
             </DialogHeader>
-            <ul role="list" className="divide-y divide-gray-200">
+            <ul role="list" className="divide-y divide-gray-200 max-h-[60vh] overflow-y-scroll">
                 {branches?.map((branch: CommitProjectBranch) => {
                     return (
                         <ManageBranchItem key={branch.name} branch={branch} mutate={mutate} />

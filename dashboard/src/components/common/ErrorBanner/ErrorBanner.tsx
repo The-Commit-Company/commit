@@ -1,7 +1,8 @@
 import { FrappeError } from 'frappe-react-sdk'
-import { useMemo } from 'react'
-import { MarkdownRenderer } from '../MarkdownRenderer/MarkdownRenderer'
+import { lazy, Suspense, useMemo } from 'react'
+import { FullPageLoader } from '../FullPageLoader/FullPageLoader'
 
+const MDXRenderer = lazy(() => import('../MarkdownRenderer/MDX'))
 
 interface ErrorBannerProps extends React.HTMLAttributes<HTMLDivElement> {
     error?: FrappeError | null,
@@ -102,7 +103,7 @@ export const ErrorBanner = ({ error, overrideHeading, ...props }: ErrorBannerPro
 
     // TODO: Sometimes, error message has links which route to the ERPNext interface. We need to parse the link to route to the correct page in our interface
     // Links are of format <a href="{host_name}/app/{doctype}/{name}">LEAD-00001</a>
-
+    if (!error) return null
     return (
         <div className="bg-red-50 border-l-4 border-red-400 p-4">
             <div className="flex">
@@ -123,7 +124,10 @@ export const ErrorBanner = ({ error, overrideHeading, ...props }: ErrorBannerPro
                 </div>
                 <div className="ml-3">
                     <p className="text-sm text-red-700">
-                        {messages.map((m, i) => <MarkdownRenderer key={i} content={m.message} />)}
+                        <Suspense fallback={<FullPageLoader />}>
+                        {messages.map((m, i) =>
+                            <MDXRenderer key={i} mdxContent={m.message} />)}
+                        </Suspense>
                     </p>
                 </div>
             </div>

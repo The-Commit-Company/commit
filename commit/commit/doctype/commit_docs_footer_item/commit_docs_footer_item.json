@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-29 19:31:34.844227",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "parent_label",
+  "label",
+  "url",
+  "hide_on_footer"
+ ],
+ "fields": [
+  {
+   "fieldname": "parent_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Parent Label",
+   "reqd": 1
+  },
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label",
+   "reqd": 1
+  },
+  {
+   "fieldname": "url",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "URL",
+   "options": "URL",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "hide_on_footer",
+   "fieldtype": "Check",
+   "label": "Hide on Footer"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-29 19:32:27.468415",
+ "modified_by": "Administrator",
+ "module": "commit",
+ "name": "Commit Docs Footer Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

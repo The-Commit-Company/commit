@@ -18,10 +18,9 @@ import ReactFlow, {
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { PostgresTable, PostgresRelationship, TableNodeData } from '@/types/Table'
-import { CgMaximizeAlt } from 'react-icons/cg'
-import { TbArrowsMinimize } from 'react-icons/tb'
 import { TableNode } from './TableNode'
 import { TableDrawer } from '../TableDrawer/TableDrawer'
+import { Maximize2, Minimize2 } from 'lucide-react'
 
 // ReactFlow is scaling everything by the factor of 2
 export const NODE_WIDTH = 320
@@ -351,8 +350,8 @@ const TablesGraph: FC<{
                 >
                     <Controls showFitView={false}>
                         <ControlButton onClick={toggleFullScreen}>
-                            {!fullscreenOn && <CgMaximizeAlt />}
-                            {fullscreenOn && <TbArrowsMinimize />}
+                            {!fullscreenOn && <Minimize2 size={14} />}
+                            {fullscreenOn && <Maximize2 size={14} />}
                         </ControlButton>
                     </Controls>
                     <div className="absolute top-0 right-0 p-2 pr-16 m-1 bg-white z-10 flex flex-col gap-2 rounded-lg shadow-lg">

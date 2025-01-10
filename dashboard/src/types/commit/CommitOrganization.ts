@@ -1,7 +1,7 @@
 
 export interface CommitOrganization{
-	creation: string
 	name: string
+	creation: string
 	modified: string
 	owner: string
 	modified_by: string

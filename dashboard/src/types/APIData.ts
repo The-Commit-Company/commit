@@ -13,6 +13,12 @@ export interface APIData {
     block_start: number
     block_end: number
     documentation?: string
+    last_updated: string
+    is_published: boolean
+    published_on: string
+    published_by: string
+    publish_id: string
+    published_route: string
 }
 
 export interface Argument {

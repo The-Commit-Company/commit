@@ -3,6 +3,13 @@ from commit.commit.code_analysis.apis import find_all_occurrences_of_whitelist
 
 @frappe.whitelist()
 def get_installed_apps():
+    '''
+        Get all installed apps
+        1. Get the installed applications from the Installed Applications doctype
+        2. Get the app hooks for each app
+        3. Get the app description, publisher, logo, version and git branch
+        4. Return the updated apps
+    '''
     install_app_doc = frappe.get_cached_doc('Installed Applications')
     install_apps = install_app_doc.get('installed_applications')
     updated_apps = []
@@ -18,7 +25,7 @@ def get_installed_apps():
         if app_publisher is not None:
             app_publisher = app_publisher[0]
         
-        app_logo_url = app_hooks.get('app_logo_url')
+        app_logo_url = app_hooks.get('app_logo_url') or app_hooks.get('app_logo')
         if app_logo_url is not None:
             app_logo_url = app_logo_url[0]
         

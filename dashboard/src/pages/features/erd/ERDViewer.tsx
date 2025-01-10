@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AppModuleData } from "@/types/CommitProjectBranch"
 import { Dialog, Transition } from "@headlessui/react"
-import { XMarkIcon } from "@heroicons/react/20/solid"
 import { useFrappeGetCall } from "frappe-react-sdk"
 import { Fragment, useEffect, useMemo, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -14,18 +13,18 @@ import { ERDForDoctypes } from "./ERDForDoctypes"
 import { Dialog as Dialog2 } from "@/components/ui/dialog"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { DoctypeListPopover, ViewERDAppList } from "./meta/ERDDoctypeAndAppModal"
-import { BsDownload } from "react-icons/bs"
 import { toPng } from 'html-to-image'
+import { Download, X } from "lucide-react"
 
-export const ERDViewer = () => {
+const ERDViewer = () => {
 
     const [open, setOpen] = useState(true)
 
     const location = useLocation()
 
-    const { apps } = location.state as { apps: string[] }
+    const { apps } = location.state as { apps: string[] } || {}
 
-    const [selectedApps, setSelectedApps] = useState<string[]>(apps)
+    const [selectedApps, setSelectedApps] = useState<string[]>(apps ?? [])
 
     const [erdDoctypes, setERDDocTypes] = useState<{ doctype: string, project_branch: string }[]>([])
 
@@ -39,14 +38,20 @@ export const ERDViewer = () => {
 
     }, [])
 
+    useEffect(() => {
+        if (!apps) {
+            setOpen(true)
+        }
+    }, [apps])
+
     const flowRef = useRef(null)
 
     return (
         <div className="h-screen">
             <Header text="ERD Viewer" />
             <div className="border-r border-gray-200">
-                <div className="fixed bottom-4 flex flex-row gap-1 left-[50%] -translate-x-[50%] z-50" hidden={open}>
-                    <Button onClick={() => setOpen(!open)}>
+                <div className="fixed bottom-4 flex flex-row gap-2 left-[50%] -translate-x-[50%] z-40" hidden={open}>
+                    <Button onClick={() => setOpen(!open)} className="w-max sm:w-max">
                         Select DocTypes ({erdDoctypes.length})
                     </Button>
                     <Button variant={'outline'} onClick={() => {
@@ -64,7 +69,7 @@ export const ERDViewer = () => {
                         });
                     }}>
                         <div className="flex items-center gap-2">
-                            <BsDownload /> Download
+                            <Download size={16} /> Download
                         </div>
                     </Button>
                 </div>
@@ -113,11 +118,17 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
         setOpenDialog(false)
     }
 
+    useEffect(() => {
+        if (apps.length === 0) {
+            setOpenDialog(true)
+        }
+    }, [])
+
 
     return (
         <>
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                <Dialog as="div" className="relative z-50" onClose={setOpen}>
                 <div className="fixed inset-0" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
@@ -145,7 +156,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                                             </PopoverTrigger> : null}
                                                             <DoctypeListPopover doctypes={doctype} setDoctypes={setDocType} />
                                                         </Popover>
-                                                        {apps.length ? <Button variant={'outline'} onClick={() => setOpenDialog(true)} className="h-6 px-2">{apps.length} Apps</Button> : null}
+                                                        <Button variant={'outline'} onClick={() => setOpenDialog(true)} className="h-6 px-2">{apps.length} Apps</Button>
 
                                                 </Dialog.Title>
                                                 <div className="ml-3 flex h-7 items-center">
@@ -156,7 +167,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                                     >
                                                         <span className="absolute -inset-2.5" />
                                                         <span className="sr-only">Close panel</span>
-                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                            <X className="h-4 w-4" aria-hidden="true" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -166,7 +177,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                         </div>
 
                                     </div>
-                                    <div className="sticky bottom-0 items-center justify-end p-4 flex w-full bg-white border-t">
+                                        <div className="fixed bottom-0 items-center w-[480px] justify-end p-4 flex bg-white border-t">
                                         <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
                                     </div>
                                 </Dialog.Panel>
@@ -277,3 +288,5 @@ export const ModuleList = ({ apps, doctype, setDocType }: { apps: string[], doct
     return null
 
 }
+
+export default ERDViewer

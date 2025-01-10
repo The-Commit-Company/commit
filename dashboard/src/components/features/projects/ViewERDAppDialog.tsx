@@ -6,6 +6,7 @@ import { ProjectData, ProjectWithBranch } from "./Projects"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CommitProjectBranch } from "@/types/commit/CommitProjectBranch"
+import { Label } from "@/components/ui/label"
 
 export const ViewERDDialogContent = ({ data }: { data: ProjectData[] }) => {
 
@@ -23,8 +24,8 @@ export const ViewERDDialogContent = ({ data }: { data: ProjectData[] }) => {
     }
 
     return (
-        <DialogContent className="p-4 px-6">
-            <DialogHeader>
+        <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
+            <DialogHeader className="text-left">
                 <DialogTitle>Select Apps</DialogTitle>
                 <DialogDescription>
                     Select the apps to view ERD
@@ -60,8 +61,9 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
     return (
         <li className="w-full h-auto hover:shadow-sm px-2">
             <div className="flex items-center justify-between py-2 w-full">
-                <div className="flex space-x-3 items-center">
+                <Label htmlFor={`${project.display_name}`} className="flex items-center space-x-3">
                     <Checkbox
+                        id={`${project.display_name}`}
                             checked={apps.includes(branch)}
                             className="border-gray-300 text-gray-600 shadow-sm"
                             onCheckedChange={(checked) => {
@@ -72,8 +74,8 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
                                 }
                             }}
                         />
-                    <h1 className="text-lg font-medium tracking-normal">{project.display_name}</h1>
-                </div>
+                    <h1 className="text-[16px] font-medium tracking-normal cursor-pointer">{project.display_name}</h1>
+                </Label>
                 <Select
                     onValueChange={(value) => setBranch(value)}
                     defaultValue={project.branches[0]?.name}

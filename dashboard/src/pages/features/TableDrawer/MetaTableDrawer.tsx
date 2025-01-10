@@ -30,13 +30,18 @@ export const MetaTableDrawer = ({ doctype, isOpen, onClose }: Props) => {
 
     const doctypeMeta = data?.message
     return (
-        <div data-state={isOpen ? 'open' : 'closed'} className="fixed z-50 grid h-full w-3/5 top-0 right-0 gap-4 border bg-background p-6 py-4 shadow-lg data-[state=open]:block data-[state=closed]:hidden">
+        <div
+            data-state={isOpen ? 'open' : 'closed'}
+            className={`fixed z-50 grid gap-4 border bg-background p-6 py-4 shadow-lg transition-transform duration-500 ease-in-out
+            sm:h-full sm:w-[60vw] sm:top-0 sm:right-0 ${isOpen ? 'sm:translate-x-0' : 'sm:translate-x-full'}
+            w-full h-[70vh] bottom-0 ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
+        >
             {error && <div>{error.message}</div>}
             {isLoading && <FullPageLoader />}
             {doctypeMeta && <div className="flex h-full flex-col overflow-y-scroll">
                 <div className='flex flex-col space-y-1.5 text-center sm:text-left'>
                     <div className='flex justify-between'>
-                        <div className='font-semibold px-2 tracking-tight text-2xl'>
+                        <div className='font-semibold text-left px-2 tracking-tight text-2xl'>
 
                             <div className='pr-2'>{doctypeMeta.name}</div>
 
@@ -61,7 +66,7 @@ export const MetaTableDrawer = ({ doctype, isOpen, onClose }: Props) => {
                             <XMarkIcon className="h-5 w-5 m-1" aria-hidden="true" />
                         </button>
                     </div>
-                    <div className='text-sm text-muted-foreground'>
+                    <div className='flex flex-col gap-1 text-sm text-left text-muted-foreground'>
                         {/* class="text-sm text-muted-foreground" */}
                         {doctypeMeta.description && <div>
                             <p className="text-sm text-gray-500 px-2">{doctypeMeta.description}</p>
