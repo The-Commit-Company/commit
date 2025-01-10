@@ -17,7 +17,10 @@ export const Renderer = ({ data, setEdit }: { data: PageData, setEdit: React.Dis
 
     const { ID } = useParams();
 
-    const { data: docsDetail, } = useGetCommitDocsDetails(ID ?? '');
+    const { data: docsDetail } = useGetCommitDocsDetails(ID ?? '');
+    if (!docsDetail) {
+        return null
+    }
 
     const { next, prev } = findNextPrev(docsDetail.sidebar_items, data.doc.route);
 
