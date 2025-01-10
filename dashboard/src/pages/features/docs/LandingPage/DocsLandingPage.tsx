@@ -29,7 +29,7 @@ const DocsLandingPage = () => {
         <div className="m-10 h-full relative">
           <div className="absolute inset-0 z-30">
             <ShootingStars
-              className="h-[100vh]"
+              className="h-[60vh]"
               maxSpeed={10}
               minSpeed={8}
               starColor="rgb(59 130 246)"
@@ -39,9 +39,7 @@ const DocsLandingPage = () => {
               maxStars={2}
             />
           </div>
-          <div className="relative">
-            <HeroSection />
-          </div>
+          <HeroSection />
         </div>
         <div className="flex justify-center m-10">
           <div className="w-full pb-10">
