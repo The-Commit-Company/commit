@@ -101,22 +101,22 @@ const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: Do
 
     const badgeClass = classNames({
         'text-[10px] px-1 py-0': true,
-        'bg-blue-500': item.badge_color === 'blue',
-        'bg-red-500': item.badge_color === 'red',
-        'bg-green-500': item.badge_color === 'green',
-        'bg-yellow-500': item.badge_color === 'yellow',
-        'bg-purple-500': item.badge_color === 'purple',
-        'bg-pink-500': item.badge_color === 'pink',
-        'bg-indigo-500': item.badge_color === 'indigo',
-        'bg-cyan-500': item.badge_color === 'cyan',
-        'bg-teal-500': item.badge_color === 'teal',
-        'bg-lime-500': item.badge_color === 'lime',
-        'bg-orange-500': item.badge_color === 'orange',
-        'bg-blue-gray-500': item.badge_color === 'blue-gray',
-        'bg-gray-500': item.badge_color === 'gray',
-        'bg-true-gray-500': item.badge_color === 'true-gray',
-        'bg-warm-gray-500': item.badge_color === 'warm-gray',
-        'bg-cool-gray-500': item.badge_color === 'cool-gray',
+        'bg-blue-500 hover:bg-blue-600': item.badge_color === 'blue',
+        'bg-red-500 hover:bg-red-600': item.badge_color === 'red',
+        'bg-green-500 hover:bg-green-600': item.badge_color === 'green',
+        'bg-yellow-500 hover:bg-yellow-600': item.badge_color === 'yellow',
+        'bg-purple-500 hover:bg-purple-600': item.badge_color === 'purple',
+        'bg-pink-500 hover:bg-pink-600': item.badge_color === 'pink',
+        'bg-indigo-500 hover:bg-indigo-600': item.badge_color === 'indigo',
+        'bg-cyan-500 hover:bg-cyan-600': item.badge_color === 'cyan',
+        'bg-teal-500 hover:bg-teal-600': item.badge_color === 'teal',
+        'bg-lime-500 hover:bg-lime-600': item.badge_color === 'lime',
+        'bg-orange-500 hover:bg-orange-600': item.badge_color === 'orange',
+        'bg-blue-gray-500 hover:bg-blue-gray-600': item.badge_color === 'blue-gray',
+        'bg-gray-500 hover:bg-gray-600': item.badge_color === 'gray',
+        'bg-true-gray-500 hover:bg-true-gray-600': item.badge_color === 'true-gray',
+        'bg-warm-gray-500 hover:bg-warm-gray-600': item.badge_color === 'warm-gray',
+        'bg-cool-gray-500 hover:bg-cool-gray-600': item.badge_color === 'cool-gray',
     })
 
     return (
@@ -144,7 +144,10 @@ const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: Do
                         {item.title}
                         </div>
                 </a>}
-                {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span> : null}
+                <div className="flex flex-row gap-2 items-center">
+                    {item.published === 0 && <Badge className="px-1 py-0 bg-orange-500 hover:bg-orange-600">Draft</Badge>}
+                    {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span> : null}
+                </div>
             </div>
         </div>
     )

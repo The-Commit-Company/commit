@@ -10,7 +10,8 @@ export interface DocsSidebarItem {
     icon?: string
     parent_name?: string
     is_group_page?: boolean
-    group_items?: DocsSidebarItem[]
+    group_items?: DocsSidebarItem[],
+    published: 0 | 1
 }
 
 export interface DocsNavbarItem {
