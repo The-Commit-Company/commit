@@ -98,7 +98,12 @@ def get_commit_docs_page(name):
 	'''
 		Get the Commit Docs Page
 	'''
+	user = frappe.session.user
+	
 	doc = frappe.get_doc('Commit Docs Page', name).as_dict()
+
+	if user == "Guest" and not doc.allow_guest and not doc.published:
+		frappe.throw("You are not allowed to view this page")
 
 	# Get the content as HTML
 	html = frappe.utils.md_to_html(doc.content)
