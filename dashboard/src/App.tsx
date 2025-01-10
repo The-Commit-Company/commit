@@ -2,7 +2,6 @@ import { FrappeProvider } from 'frappe-react-sdk'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { FullPageLoader } from './components/common/FullPageLoader/FullPageLoader'
-import DocsLandingPage from './pages/features/docs/LandingPage/DocsLandingPage'
 
 const ERDViewer = lazy(async () => import('./pages/features/erd/ERDViewer'))
 const Overview = lazy(async () => import('./pages/overview/Overview'))
@@ -12,6 +11,7 @@ const CreateERD = lazy(async () => import('./pages/features/erd/meta/CreateERDFo
 const ViewDocs = lazy(async () => import('./pages/features/docs/ViewDocs'))
 const PageNotFound = lazy(async () => import('./components/common/PageNotFound/PageNotFound'))
 const DocsPage = lazy(async () => import('./pages/features/docs/DocsPage'))
+const DocsLandingPage = lazy(async () => import('./pages/features/docs/LandingPage/DocsLandingPage'))
 
 function App() {
 

@@ -1,17 +1,19 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 import { CommitDocs } from "@/types/commit/CommitDocs";
-import { useFrappeGetDocList } from "frappe-react-sdk";
+import { useFrappeGetCall } from "frappe-react-sdk";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
 import { ShootingStars } from "./ShootingStars";
 import HeroSection from "./HeroSection";
 import DocsList from "./DocsList";
 
 const DocsLandingPage = () => {
-  const { data, error, isLoading } = useFrappeGetDocList<CommitDocs>(
-    "Commit Docs",
-    {
-      fields: ["header", "light_mode_logo", "route", "published", "description"],
-    }
+
+  const { data, error, isLoading } = useFrappeGetCall<{ message: CommitDocs[] }>(
+    'commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_list', {}, undefined, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    revalidateOnReconnect: false,
+  }
   );
 
   if (error) {
@@ -21,11 +23,11 @@ const DocsLandingPage = () => {
   if (isLoading) {
     return <FullPageLoader />;
   }
-  if (data) {
+  if (data && data?.message) {
     return (
       <div>
         <div className="m-10 h-full relative">
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-30">
             <ShootingStars
               className="h-[100vh]"
               maxSpeed={10}
@@ -37,13 +39,13 @@ const DocsLandingPage = () => {
               maxStars={2}
             />
           </div>
-          <div className="relative z-10">
+          <div className="relative">
             <HeroSection />
           </div>
         </div>
         <div className="flex justify-center m-10">
           <div className="w-full pb-10">
-            <DocsList data={data} />
+            <DocsList data={data?.message} />
           </div>
         </div>
       </div>

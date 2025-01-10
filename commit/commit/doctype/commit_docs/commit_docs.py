@@ -338,3 +338,20 @@ def get_first_page_route(route:str):
 	
 	else:
 		return frappe.throw('Commit Docs Not Found')
+
+@frappe.whitelist(allow_guest=True)
+def get_commit_docs_list():
+	'''
+	Get the List of Commit Docs
+	'''
+	user = frappe.session.user
+	filters = {}
+	if user == "Guest":
+		filters['published'] = 1
+
+	commit_docs_list = frappe.get_all('Commit Docs',
+		filters=filters,
+		fields=["header", "light_mode_logo", "route", "published", "description"],
+	)
+
+	return commit_docs_list

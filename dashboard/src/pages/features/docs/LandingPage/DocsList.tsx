@@ -1,9 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button";
 import { CommitDocs } from "@/types/commit/CommitDocs"
+import { ArrowUpRight } from "lucide-react";
 import { useMemo } from "react"
-import { MdArrowOutward } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 
 const DocsList = ({ data }: { data: CommitDocs[] }) => {
     return (
@@ -23,8 +21,6 @@ const DocCard = ({ data }: { data: CommitDocs }) => {
         return data.header[0].toUpperCase()
     }, [data])
 
-    const navigate = useNavigate()
-
     return (
         <div className="p-4 font-title_font border-l-[1.5px] ">
             <div className="flex justify-between items-center">
@@ -43,7 +39,7 @@ const DocCard = ({ data }: { data: CommitDocs }) => {
                         aria-label="redirect"
                         className="inline-flex items-center p-1 hover:bg-slate-100 rounded-md"
                     >
-                        <MdArrowOutward className="h-5 w-5" />
+                        <ArrowUpRight className="h-5 w-5" />
                     </a>
                 </div>
                 {data.published == 1 && <div className="flex-none rounded-full bg-emerald-500/20 p-1.5">
