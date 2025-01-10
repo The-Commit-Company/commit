@@ -209,26 +209,30 @@ const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: Do
 
 const SidebarSkeleton = () => {
     return (
-        <div className="py-6 px-8 animate-pulse">
-            {/* Header Skeleton */}
-            <div className="flex items-center gap-4 mb-8">
-                <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            </div>
-            {/* Sidebar Groups Skeleton */}
-            {[...Array(5)].map((_, groupIndex) => (
-                <div key={groupIndex} className="flex flex-col gap-1 mt-6 lg:mt-4">
-                    <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer">
-                        <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                        <span className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded"></span>
-                    </div>
-                    <ul>
-                        {[...Array(3 + Math.floor(Math.random() * 2))].map((_, itemIndex) => (
-                            <li key={itemIndex} className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></li>
-                        ))}
-                    </ul>
+        <div className="sticky top-0 h-screen overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+            <div className="py-6 px-8 animate-pulse">
+                {/* Header Skeleton */}
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
                 </div>
-            ))}
+                {/* Sidebar Groups Skeleton */}
+                {[...Array(5)].map((_, groupIndex) => (
+                    <div key={groupIndex} className="flex flex-col gap-1 mt-6 lg:mt-4">
+                        <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer">
+                            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                            <span className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded"></span>
+                        </div>
+                        <ul>
+                            {[...Array(3 + Math.floor(Math.random() * 2))].map((_, itemIndex) => (
+                                <div key={itemIndex} className="group flex items-center py-1.5 cursor-pointer text-sm font-medium focus:outline-primary dark:focus:outline-primary-light space-x-3 border-l border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/20 text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300">
+                                    <li className="h-4 w-32 ml-4 py-1 bg-gray-200 dark:bg-gray-700 rounded mb-2"></li>
+                                </div>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

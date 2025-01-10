@@ -1,18 +1,16 @@
 import { FrappeProvider } from 'frappe-react-sdk'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
-import { FullPageLoader } from './components/common/FullPageLoader/FullPageLoader'
+import PageNotFound from './components/common/PageNotFound/PageNotFound'
+import APIViewerContainer from './pages/features/api_viewer/APIViewer'
+import AppAPIViewerContainer from './pages/features/api_viewer/AppAPIViewer'
+import DocsPage from './pages/features/docs/DocsPage'
+import DocsLandingPage from './pages/features/docs/LandingPage/DocsLandingPage'
+import PageContent from './pages/features/docs/PageContent'
+import ViewDocs from './pages/features/docs/ViewDocs'
+import ERDViewer from './pages/features/erd/ERDViewer'
+import CreateERD from './pages/features/erd/meta/CreateERDForMeta'
+import Overview from './pages/overview/Overview'
 
-const ERDViewer = lazy(async () => import('./pages/features/erd/ERDViewer'))
-const Overview = lazy(async () => import('./pages/overview/Overview'))
-const APIViewerContainer = lazy(async () => import('./pages/features/api_viewer/APIViewer'))
-const AppAPIViewerContainer = lazy(async () => import('./pages/features/api_viewer/AppAPIViewer'))
-const CreateERD = lazy(async () => import('./pages/features/erd/meta/CreateERDForMeta'))
-const ViewDocs = lazy(async () => import('./pages/features/docs/ViewDocs'))
-const PageNotFound = lazy(async () => import('./components/common/PageNotFound/PageNotFound'))
-const DocsPage = lazy(async () => import('./pages/features/docs/DocsPage'))
-const DocsLandingPage = lazy(async () => import('./pages/features/docs/LandingPage/DocsLandingPage'))
-const PageContent = lazy(async () => import('./pages/features/docs/PageContent'))
 
 function App() {
 
@@ -29,7 +27,6 @@ function App() {
   return (
     <FrappeProvider socketPort={import.meta.env.VITE_SOCKET_PORT ?? undefined} siteName={getSiteName()}>
       <BrowserRouter basename={import.meta.env.VITE_BASE_PATH}>
-        <Suspense fallback={<FullPageLoader />}>
         {/* <UserProvider> */}
           <Routes>
             {/** Public Routes */}
@@ -51,8 +48,7 @@ function App() {
               <Route path=':pageID' element={<PageContent />} />
             </Route>
             <Route path='*' element={<PageNotFound />} />
-          </Routes>
-        </Suspense>
+        </Routes>
         {/* </UserProvider> */}
       </BrowserRouter>
     </FrappeProvider>

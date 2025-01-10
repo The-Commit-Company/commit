@@ -26,7 +26,6 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
                         ID={ID}
                     />
                 </aside>
-
                 {/* Main Content */}
                 <main className="flex-1 w-full h-full">
                     <div id="content-container" className="pb-10">
