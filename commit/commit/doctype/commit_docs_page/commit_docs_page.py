@@ -92,3 +92,59 @@ def publish_documentation(project_branch, endpoint, viewer_type, docs_name, pare
 		'commit_docs_page': commit_docs_page.name,
 		'commit_docs': commit_docs.name
 	}
+
+@frappe.whitelist(allow_guest=True)
+def get_commit_docs_page(name):
+	'''
+		Get the Commit Docs Page
+	'''
+	user = frappe.session.user
+	
+	doc = frappe.get_doc('Commit Docs Page', name).as_dict()
+
+	if user == "Guest" and not doc.allow_guest and not doc.published:
+		frappe.throw("You are not allowed to view this page")
+
+	# Get the content as HTML
+	html = frappe.utils.md_to_html(doc.content)
+
+	# Calculate the Table of Contents
+	toc_obj = calculate_toc_object(html)
+
+	return {
+		'doc': doc,
+		'toc_obj': toc_obj
+	}
+
+
+def calculate_toc_object(html):
+    from bs4 import BeautifulSoup
+    import re
+
+    soup = BeautifulSoup(html, "html.parser")
+    headings = soup.find_all(["h2", "h3", "h4", "h5", "h6"])
+
+    toc = {}
+
+    def add_to_toc(toc, level, heading_id, title):
+        if level == 2:
+            toc[heading_id] = {"name": title, "children": {}}
+        else:
+            parent_level = level - 1
+            parent = toc
+            while parent_level > 2:
+                if not parent:
+                    break
+                parent = next(iter(parent.values()))["children"]
+                parent_level -= 1
+            if parent:
+                parent[next(iter(parent.keys()))]["children"][heading_id] = {"name": title, "children": {}}
+
+    for heading in headings:
+        title = heading.get_text().strip()
+        heading_id = re.sub(r"[^\u00C0-\u1FFF\u2C00-\uD7FF\w\- ]", "", title).replace(" ", "-").lower()
+        heading["id"] = heading_id
+        level = int(heading.name[1])
+        add_to_toc(toc, level, heading_id, title)
+
+    return toc

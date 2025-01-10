@@ -10,7 +10,8 @@ export interface DocsSidebarItem {
     icon?: string
     parent_name?: string
     is_group_page?: boolean
-    group_items?: DocsSidebarItem[]
+    group_items?: DocsSidebarItem[],
+    published: 0 | 1
 }
 
 export interface DocsNavbarItem {
@@ -33,4 +34,5 @@ export interface Docs {
     sidebar_items: Record<string, DocsSidebarItem[]>
     navbar_items: Record<string, DocsNavbarItem>
     footer_items: Record<string, DocsFooterItem[]>
+    route_map: Record<string, string>
 }

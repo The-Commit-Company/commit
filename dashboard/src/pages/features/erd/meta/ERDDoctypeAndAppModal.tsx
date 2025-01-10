@@ -67,8 +67,9 @@ export const ViewERDAppList = ({ apps, setApps, onClose }: { apps: string[], set
 
     const { data, error, isLoading } = useFrappeGetCall<{ message: ProjectData[] }>('commit.api.commit_project.commit_project.get_project_list_with_branches', {}, 'get_project_list_with_branches', {
         keepPreviousData: true,
-        revalidateOnFocus: true,
         revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
     })
 
     const onViewERD = () => {

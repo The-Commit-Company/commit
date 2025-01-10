@@ -1,7 +1,8 @@
 import { FrappeError } from 'frappe-react-sdk'
-import { useMemo } from 'react'
-import { MarkdownRenderer } from '../MarkdownRenderer/MarkdownRenderer'
+import { lazy, Suspense, useMemo } from 'react'
+import { FullPageLoader } from '../FullPageLoader/FullPageLoader'
 
+const MDXRenderer = lazy(() => import('../MarkdownRenderer/MDX'))
 
 interface ErrorBannerProps extends React.HTMLAttributes<HTMLDivElement> {
     error?: FrappeError | null,
@@ -123,7 +124,10 @@ export const ErrorBanner = ({ error, overrideHeading, ...props }: ErrorBannerPro
                 </div>
                 <div className="ml-3">
                     <p className="text-sm text-red-700">
-                        {messages.map((m, i) => <MarkdownRenderer key={i} content={m.message} />)}
+                        <Suspense fallback={<FullPageLoader />}>
+                        {messages.map((m, i) =>
+                            <MDXRenderer key={i} mdxContent={m.message} />)}
+                        </Suspense>
                     </p>
                 </div>
             </div>

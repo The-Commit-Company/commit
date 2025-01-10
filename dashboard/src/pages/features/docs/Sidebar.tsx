@@ -3,82 +3,178 @@ import { DocsSidebarItem } from "./docs";
 import DynamicIcon from "@/components/common/DynamicIconImport/IconComponent";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
+import classNames from "classnames";
+import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
 
-export const Sidebar = ({ commit_docs, sidebar_items, selectedEndpoint, setSelectedEndpoint }: { commit_docs: Omit<CommitDocs, 'sidebar' | 'navbar_items' | 'footer'>, sidebar_items: Record<string, DocsSidebarItem[]>, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void }) => {
+export const Sidebar = ({ ID }: { ID: string }) => {
 
-    return (
-        <div className="flex flex-col w-full h-full p-2">
-            <div className="flex flex-row items-center gap-4 p-4">
-                {commit_docs.light_mode_logo && <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />}
-                {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
+    const { data, isLoading } = useGetCommitDocsDetails(ID);
+
+    if (data) {
+        const commit_docs: CommitDocs = data.commit_docs;
+        const sidebar_items = data.sidebar_items;
+        return (
+            <div className="sticky top-0 h-screen overflow-y-auto border-r border-gray-200 dark:border-gray-700">
+                <div className="py-6 px-8">
+                    {/* Header */}
+                    <div className="flex items-center gap-4 mb-8">
+                        {commit_docs.light_mode_logo && (
+                            <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />
+                        )}
+                        {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
+                        {commit_docs.published == 0 && (
+                            <Badge className="px-1 py-0 bg-orange-500">
+                                Draft
+                            </Badge>
+                        )}
+                    </div>
+                    {/* Sidebar Items */}
+                    {Object.keys(sidebar_items).map((key) => (
+                        <SidebarGroup
+                            key={key}
+                            groupName={key}
+                            items={sidebar_items[key]}
+
+                        />
+                    ))}
+                </div>
             </div>
-            <div className="flex flex-col overflow-y-auto gap-3">
-                {Object.keys(sidebar_items).map((key) => (
-                    <SidebarGroup key={key} groupName={key} items={sidebar_items[key]} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} />
-                ))}
-            </div>
-        </div>
-    )
-}
+        );
+    }
+    if (isLoading) {
+        return <SidebarSkeleton />;
+    }
+};
 
-const SidebarGroup = ({ groupName, items, selectedEndpoint, setSelectedEndpoint }: { groupName: string, items: DocsSidebarItem[], selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void }) => {
+const SidebarGroup = ({ groupName, items }: { groupName: string, items: DocsSidebarItem[] }) => {
     const [isExpanded, setIsExpanded] = useState(true);
 
     return (
-        <div className="flex flex-col gap-1">
-            <div className="flex justify-between items-center text-sm font-semibold p-2 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-                <span>{groupName}</span>
-                <span>{isExpanded ? <MdKeyboardArrowDown className={'h-6'} /> : <MdKeyboardArrowRight className={'h-6'} />}</span>
+        <div className="flex flex-col gap-1 mt-6 lg:mt-4">
+            <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="mb-2 font-semibold text-gray-900 dark:text-gray-200">{groupName}</div>
+                <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span>
             </div>
-            {isExpanded && items.map((item) => (
-                <SidebarItem item={item} key={item.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} />
-            ))}
+            {isExpanded && items.length > 0 && (
+                <ul>
+                    {items.map((item) => (
+                        <SidebarItem item={item} key={item.route} />
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }
 
-const SidebarItem = ({ item, selectedEndpoint, setSelectedEndpoint, className, level = 1 }: { item: DocsSidebarItem, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void, className?: string, level?: number }) => {
+const SidebarItem = ({ item, className, level = 1 }: { item: DocsSidebarItem, className?: string, level?: number }) => {
 
     if (item.is_group_page && item.group_items?.length) {
         const [isExpanded, setIsExpanded] = useState(false);
         return (
-            <div className="flex flex-col gap-1">
-                <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
-                {isExpanded && item.group_items.map((groupItem) => (
-                    <SidebarItem item={groupItem} key={groupItem.route} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={`pl-${6 + (2 * (level - 1))}`} level={level + 1} />
-                ))}
-            </div>
+            <li>
+                <SidebarTitle item={item} className={className} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+                {isExpanded && item.group_items.length &&
+                    <ul>
+                        {item.group_items.map((groupItem) => (
+                            <SidebarItem item={groupItem} key={groupItem.route} className={`pl-${6 + (2 * (level))}`} level={level + 1} />
+                        ))}
+                    </ul>
+                }
+            </li>
         )
     }
 
     return (
-        <SidebarTitle item={item} selectedEndpoint={selectedEndpoint} setSelectedEndpoint={setSelectedEndpoint} className={className} />
+        <li>
+            <SidebarTitle item={item} className={className} />
+        </li>
     )
 }
 
-const SidebarTitle = ({ item, selectedEndpoint, setSelectedEndpoint, className, isExpanded, setIsExpanded }: { item: DocsSidebarItem, selectedEndpoint: string, setSelectedEndpoint: (selectedEndpoint: string) => void, className?: string, isExpanded?: boolean, setIsExpanded?: (isExpanded: boolean) => void }) => {
+const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: DocsSidebarItem, className?: string, isExpanded?: boolean, setIsExpanded?: (isExpanded: boolean) => void }) => {
 
-    const isSelected = item.route === selectedEndpoint;
+    const { pageID, ID } = useParams();
+    const isSelected = item.route === pageID;
+
+    const badgeClass = classNames({
+        'text-[10px] px-1 py-0': true,
+        'bg-blue-500 hover:bg-blue-600': item.badge_color === 'blue',
+        'bg-red-500 hover:bg-red-600': item.badge_color === 'red',
+        'bg-green-500 hover:bg-green-600': item.badge_color === 'green',
+        'bg-yellow-500 hover:bg-yellow-600': item.badge_color === 'yellow',
+        'bg-purple-500 hover:bg-purple-600': item.badge_color === 'purple',
+        'bg-pink-500 hover:bg-pink-600': item.badge_color === 'pink',
+        'bg-indigo-500 hover:bg-indigo-600': item.badge_color === 'indigo',
+        'bg-cyan-500 hover:bg-cyan-600': item.badge_color === 'cyan',
+        'bg-teal-500 hover:bg-teal-600': item.badge_color === 'teal',
+        'bg-lime-500 hover:bg-lime-600': item.badge_color === 'lime',
+        'bg-orange-500 hover:bg-orange-600': item.badge_color === 'orange',
+        'bg-blue-gray-500 hover:bg-blue-gray-600': item.badge_color === 'blue-gray',
+        'bg-gray-500 hover:bg-gray-600': item.badge_color === 'gray',
+        'bg-true-gray-500 hover:bg-true-gray-600': item.badge_color === 'true-gray',
+        'bg-warm-gray-500 hover:bg-warm-gray-600': item.badge_color === 'warm-gray',
+        'bg-cool-gray-500 hover:bg-cool-gray-600': item.badge_color === 'cool-gray',
+    })
 
     return (
         <div
-            className={`flex items-center px-4 py-2 gap-2 cursor-pointer text-sm rounded-md transition-colors
-                        ${isSelected ? "bg-blue-50 text-blue-500 font-medium" : "text-[--foreground]"}
-                        hover:bg-gray-100 ${className}`}
-            onClick={item.is_group_page ? () => setIsExpanded && setIsExpanded(!isExpanded) : () => setSelectedEndpoint(item.route)}
+            className={cn(
+                `group flex items-center py-1.5 cursor-pointer text-sm font-medium focus:outline-primary dark:focus:outline-primary-light space-x-3  border-l border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/20 text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300`,
+                isSelected ? 'border-blue-600 dark:border-primary-light text-blue-600 dark:text-primary-light' : '',
+                className
+            )}
+            onClick={item.is_group_page ? () => setIsExpanded && setIsExpanded(!isExpanded) : () => { }}
         >
-            <div className="flex justify-between items-center w-full">
-                <div className="flex flex-row gap-2">
-                    {item.icon && <DynamicIcon icon={item.icon} size="18px" className={isSelected ? "text-blue-800" : "text-gray-500"} />}
-                    {item.badge && <Badge className={`${item.badge_color ? `bg-${item.badge_color} hover:bg-${item.badge_color}` : 'bg-blue-500 hover:bg-blue-500'} text-[10px] px-1 py-0 `}
-                    >{item.badge}</Badge>}
+            <div className="flex justify-between items-center w-full ml-4 py-1">
+                {item.is_group_page ? <div className="flex items-center gap-2">
+                    {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
+                    {item.badge && <Badge
+                        className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
                     <div className="">
                         {item.title}
                     </div>
+                </div> : <a className="flex flex-row gap-2 items-center" href={`../${ID}/${item.route}`}>
+                    {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
+                    {item.badge && <Badge
+                        className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}
+                    <div className="">
+                        {item.title}
+                        </div>
+                </a>}
+                <div className="flex flex-row gap-2 items-center">
+                    {item.published === 0 && <Badge className="px-1 py-0 bg-orange-500 hover:bg-orange-600">Draft</Badge>}
+                    {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span> : null}
                 </div>
-                {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <MdKeyboardArrowDown className={'h-6'} /> : <MdKeyboardArrowRight className={'h-6'} />}</span> : null}
             </div>
         </div>
     )
 }
+
+const SidebarSkeleton = () => {
+    return (
+        <div className="py-6 px-8 animate-pulse">
+            {/* Header Skeleton */}
+            <div className="flex items-center gap-4 mb-8">
+                <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            </div>
+            {/* Sidebar Groups Skeleton */}
+            {[...Array(5)].map((_, groupIndex) => (
+                <div key={groupIndex} className="flex flex-col gap-1 mt-6 lg:mt-4">
+                    <div className="flex justify-between items-center text-sm font-semibold py-2 cursor-pointer">
+                        <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                        <span className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded"></span>
+                    </div>
+                    <ul>
+                        {[...Array(3 + Math.floor(Math.random() * 2))].map((_, itemIndex) => (
+                            <li key={itemIndex} className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+        </div>
+    );
+};

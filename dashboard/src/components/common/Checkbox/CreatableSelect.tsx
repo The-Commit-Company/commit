@@ -13,10 +13,9 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MdAdd, MdCheck } from 'react-icons/md';
-import { LuChevronsUpDown } from 'react-icons/lu';
 import { Input } from '@/components/ui/input';
 import { Controller, UseControllerProps, useFormContext } from 'react-hook-form';
+import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 
 export type ComboboxOptions = {
     value: string;
@@ -76,7 +75,7 @@ export const CreatableSelect = ({ options, selected, className, label, mode = 's
                         ) : (
                             `Select ${label ?? 'Item'}`
                         )}
-                        <LuChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                        <ChevronsUpDown size={16} className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className='w-72 max-w-sm p-0'>
@@ -111,7 +110,7 @@ export const CreatableSelect = ({ options, selected, className, label, mode = 's
                                                 }
                                             }}
                                         >
-                                            <MdCheck
+                                            <Check size={16} 
                                                 className={cn(
                                                     'mr-2 h-4 w-4',
                                                     selected.includes(option.value)
@@ -146,7 +145,7 @@ export const CreatableSelect = ({ options, selected, className, label, mode = 's
                                 onClick={() => setIsCreating(true)}
                             >
                                 {`Add ${label ?? 'Item'}`}
-                                <MdAdd className="ml-2 h-4 w-4" />
+                                    <Plus size={16} className="ml-2 h-4 w-4" />
                             </Button>
                         )}
                     </Command>
@@ -218,7 +217,7 @@ export const FormCreatableSelect = ({
                                 ) : (
                                     `Select ${label ?? 'Item'}`
                                 )}
-                                <LuChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                <ChevronsUpDown size={16} className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-72 max-w-sm p-0">
@@ -246,7 +245,7 @@ export const FormCreatableSelect = ({
                                                         }
                                                     }}
                                                 >
-                                                    <MdCheck
+                                                    <Check size={16} 
                                                         className={cn(
                                                             'mr-2 h-4 w-4',
                                                             value.includes(option.value) ? 'opacity-100' : 'opacity-0'
@@ -283,7 +282,7 @@ export const FormCreatableSelect = ({
                                         onClick={() => setIsCreating(true)}
                                     >
                                         {`Add ${label ?? 'Item'}`}
-                                        <MdAdd className="ml-2 h-4 w-4" />
+                                            <Plus size={16} className="ml-2 h-4 w-4" />
                                     </Button>
                                 )}
                             </Command>

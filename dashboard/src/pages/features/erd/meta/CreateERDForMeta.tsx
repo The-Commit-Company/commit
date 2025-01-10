@@ -2,7 +2,6 @@ import { Header } from "@/components/common/Header"
 import { Button } from "@/components/ui/button"
 import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useEffect, useRef, useState } from "react"
-import { XMarkIcon } from "@heroicons/react/20/solid"
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner"
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Input } from "@/components/ui/input"
@@ -13,10 +12,10 @@ import { useDebounce } from "@/hooks/useDebounce"
 import { ERDForMetaDoctypes } from "./ERDForMetaDoctype"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { DoctypeListPopoverForMeta } from "./ERDDoctypeAndAppModal"
-import { BsDownload } from "react-icons/bs"
 import { toPng } from 'html-to-image'
+import { Download, X } from "lucide-react"
 
-export const CreateERD = () => {
+const CreateERD = () => {
     const [open, setOpen] = useState(true)
 
     const [erdDoctypes, setERDDocTypes] = useState<string[]>([])
@@ -55,7 +54,7 @@ export const CreateERD = () => {
                         });
                     }}>
                         <div className="flex items-center gap-2">
-                            <BsDownload /> Download
+                            <Download size={14} /> Download
                         </div>
                     </Button>
                 </div>
@@ -134,7 +133,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
                                                     >
                                                         <span className="absolute -inset-2.5" />
                                                         <span className="sr-only">Close panel</span>
-                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                                        <X className="h-4 w-4" aria-hidden="true" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -222,3 +221,5 @@ export const ModuleList = ({ doctype, setDocType }: { doctype: string[], setDocT
     return null
 
 }
+
+export default CreateERD

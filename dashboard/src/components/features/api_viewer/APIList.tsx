@@ -4,10 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { AiOutlineBranches } from "react-icons/ai"
-import { GoPackage } from "react-icons/go"
 import { CommandContent } from "../commands/CommandsContent"
-import { HiOutlineCommandLine } from "react-icons/hi2";
+import { Box, GitBranch, SquareTerminal } from "lucide-react"
 
 export interface APIListProps {
     apiList: APIData[]
@@ -19,7 +17,7 @@ export interface APIListProps {
     listRef?: React.RefObject<HTMLDivElement>
 }
 
-export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder, listRef }: APIListProps) => {
+const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder, listRef }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
 
@@ -53,19 +51,19 @@ export const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, s
             <div className="flex flex-row space-x-4 justify-between">
                 <div className="flex space-x-2 items-center">
                     <div className="flex flex-wrap items-center space-x-1">
-                        <GoPackage />
+                        <Box size={14} />
                         <p className="truncate text-md text-gray-700">{app_name}</p>
                     </div>
                     <div className="w-px h-4 bg-gray-200" />
                     <div className="flex flex-wrap items-center space-x-1">
-                        <AiOutlineBranches />
+                        <GitBranch size={14} />
                         <p>{branch_name}</p>
                     </div>
                 </div>
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
-                            <HiOutlineCommandLine className="h-4 w-4 mr-2" />
+                            <SquareTerminal className="h-4 w-4 mr-2" />
                             Commands
                         </Button>
                     </DialogTrigger>
@@ -162,3 +160,5 @@ export const ListView = ({ list, setSelectedEndpoint, selectedEndpoint, searchQu
         </div>
     )
 }
+
+export default APIList

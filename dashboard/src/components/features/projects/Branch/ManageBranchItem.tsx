@@ -3,8 +3,6 @@ import { toast } from '@/components/ui/use-toast';
 import { convertFrappeTimestampToTimeAgo } from '@/components/utils/dateconversion';
 import { CommitProjectBranch } from '@/types/commit/CommitProjectBranch';
 import { useFrappeDeleteDoc, useFrappePostCall, useFrappeUpdateDoc } from 'frappe-react-sdk';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { IoMdSync } from 'react-icons/io';
 import { ProjectData } from '../Projects';
 import { KeyedMutator } from 'swr';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -12,8 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { EllipsisVertical, RefreshCcw, Trash } from 'lucide-react';
 
 const ManageBranchItem = ({ branch, mutate }: { branch: CommitProjectBranch, mutate: KeyedMutator<{ message: ProjectData[]; }> }) => {
     const { call, loading: syncLoading, reset: callReset } = useFrappePostCall<{ message: any }>('commit.commit.doctype.commit_project_branch.commit_project_branch.fetch_repo');
@@ -134,7 +132,7 @@ const SyncButton = ({ loading, onSync }: { loading: boolean, onSync: () => void 
         disabled={loading}
         aria-label="Sync branch"
     >
-        <IoMdSync className={loading ? 'animate-spin' : ''} />
+        <RefreshCcw size={12} className={loading ? 'animate-spin' : ''} />
         Fetch latest code
     </Button>
 );
@@ -201,7 +199,7 @@ const DeleteButton = ({ loading, onDelete }: { loading: boolean, onDelete: () =>
         disabled={loading}
         aria-label="Delete branch"
     >
-        <AiOutlineDelete />
+        <Trash size={12} />
     </Button>
 );
 
@@ -224,16 +222,16 @@ const ActionDropdown = ({
                 size="sm"
                 aria-label="Actions"
             >
-                <HiOutlineDotsVertical />
+                <EllipsisVertical size={12} />
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className='mr-8'>
             <DropdownMenuItem onClick={onSync} disabled={syncLoading}>
-                <IoMdSync className={syncLoading ? 'animate-spin mr-2' : 'mr-2'} />
+                <RefreshCcw size={12} className={syncLoading ? 'animate-spin mr-2' : 'mr-2'} />
                 Fetch latest code
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onDelete} disabled={deleteLoading}>
-                <AiOutlineDelete className="mr-2" />
+                <Trash size={12} className="mr-2" />
                 Delete branch
             </DropdownMenuItem>
         </DropdownMenuContent>

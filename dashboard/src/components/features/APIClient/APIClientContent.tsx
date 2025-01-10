@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Argument } from "@/types/APIData"
 import { FrappeConfig, FrappeContext } from "frappe-react-sdk"
+import { ChevronDown, Plus } from "lucide-react"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { FaCaretDown } from "react-icons/fa"
-import { IoAdd } from "react-icons/io5";
 
 
 export interface APIClientContentProps {
@@ -18,7 +17,7 @@ export interface APIClientContentProps {
     open: boolean
 }
 
-export const APIClientContent = ({ endpoint, open, parameters }: APIClientContentProps) => {
+const APIClientContent = ({ endpoint, open, parameters }: APIClientContentProps) => {
 
     const [requestType, setRequestType] = useState<"GET" | "POST">('GET')
 
@@ -138,10 +137,7 @@ export const APIClientContent = ({ endpoint, open, parameters }: APIClientConten
             return obj
         }
         else {
-            return Object.keys(data)?.filter((key) => !(key.includes('key') || key.includes('value'))).reduce((acc, key) => {
-                acc[key] = data[key]
-                return acc
-            }, {} as Record<string, string>)
+            return data
         }
     }
 
@@ -164,7 +160,7 @@ export const APIClientContent = ({ endpoint, open, parameters }: APIClientConten
                                         className="rounded-r-none w-[12ch]"
                                     >
                                         {requestType}
-                                        <FaCaretDown className="ml-2" />
+                                            <ChevronDown size={16} className="ml-2" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="ml-11">
@@ -196,7 +192,7 @@ export const APIClientContent = ({ endpoint, open, parameters }: APIClientConten
                                                 className="w-[14ch]"
                                             >
                                                 {paramsType === 'params' ? 'Params' : 'Form Data'}
-                                                <FaCaretDown className="ml-2" />
+                                                <ChevronDown size={16} className="ml-2" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent className="ml-11">
@@ -256,7 +252,7 @@ export const APIClientContent = ({ endpoint, open, parameters }: APIClientConten
                                         <Button size={'sm'} onClick={() => {
                                             setValue(`key-${Object.keys(data).length}`, '')
                                             setValue(`value-${Object.keys(data).length}`, '')
-                                        }} variant="outline"><IoAdd className="mr-2 h-4 w-4" />Add Param</Button>
+                                        }} variant="outline"><Plus className="mr-2 h-4 w-4" />Add Param</Button>
                                     </div>}
                                 </div>
                             </div>
@@ -282,3 +278,5 @@ export const APIClientContent = ({ endpoint, open, parameters }: APIClientConten
         </FormProvider>
     )
 }
+
+export default APIClientContent

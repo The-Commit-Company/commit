@@ -3,9 +3,9 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ViewERDDialogContent } from "./ViewERDAppDialog";
 import { ProjectData } from "./Projects";
-import { MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import erd from '../../../assets/erd.svg'
+import { ChevronRight } from "lucide-react";
 
 export const ViewERDButton = ({ data }: { data: ProjectData[] }) => {
     return (
@@ -26,9 +26,7 @@ export const ViewERDButton = ({ data }: { data: ProjectData[] }) => {
                                 className="rounded-full px-4 pr-2 py-2 shadow-md"
                             >
                                 Get Started
-                                <MdKeyboardArrowRight className="ml-2 mr-0 p-0" style={{
-                                    fontSize: '1rem'
-                                }} />
+                                <ChevronRight size={14} className="ml-2 mr-0 p-0" />
                             </Button>
                         </DialogTrigger>
                         <ViewERDDialogContent data={data} />
@@ -67,9 +65,7 @@ export const ViewERDButtonForSiteApps = () => {
                         }}
                     >
                         Get Started
-                        <MdKeyboardArrowRight className="ml-2 mr-0 p-0" style={{
-                            fontSize: '1rem'
-                        }} />
+                        <ChevronRight size={14} className="ml-2 mr-0 p-0" />
                     </Button>
                 </CardFooter>
             </div>

@@ -1,11 +1,12 @@
+import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader"
 import { Header } from "@/components/common/Header"
-import { YourApps } from "@/components/features/meta_apps/YourApps"
-import { Projects } from "@/components/features/projects/Projects"
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
 import { isSystemAppAvailable } from "@/utils/roles"
+import { lazy, Suspense } from "react"
 
-
-export const Overview = () => {
+const Projects = lazy(() => import('@/components/features/projects/Projects'))
+const YourApps = lazy(() => import('@/components/features/meta_apps/YourApps'))
+const Overview = () => {
     const areAppsAvailable = isSystemAppAvailable()
 
     return (
@@ -17,12 +18,19 @@ export const Overview = () => {
                     <TabsTrigger value="your-apps">Site Apps</TabsTrigger>
                 </TabsList>
                 <TabsContent value="projects">
-                    <Projects />
+                    <Suspense fallback={<FullPageLoader />}>
+                        <Projects />
+                    </Suspense>
                 </TabsContent>
                 <TabsContent value="your-apps">
-                    <YourApps />
+                    <Suspense fallback={<FullPageLoader />}>
+                        <YourApps />
+                    </Suspense>
                 </TabsContent>
-            </Tabs> : <Projects />}
+            </Tabs> : <Suspense fallback={<FullPageLoader />}>
+                <Projects />
+            </Suspense>}
         </div>
     )
 }
+export default Overview

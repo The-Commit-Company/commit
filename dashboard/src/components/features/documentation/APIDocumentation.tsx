@@ -4,14 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { APIData } from "@/types/APIData";
 import { FrappeConfig, FrappeContext, useFrappePostCall } from "frappe-react-sdk";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { MdOutlineRocketLaunch } from "react-icons/md";
-import MDEditor from '@uiw/react-md-editor';
-import { FiEdit, FiExternalLink, FiSave } from "react-icons/fi";
+import { lazy, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { isSystemManager } from "@/utils/roles";
-import { IoMdClose } from "react-icons/io";
 import { convertFrappeTimestampToTimeAgo } from "@/components/utils/dateconversion";
-import { AiOutlineGlobal } from "react-icons/ai";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -20,13 +15,16 @@ import { Input } from "@/components/ui/input";
 import { AsyncDropdown } from "@/components/common/AsyncDropdown/AsyncDropdown";
 import { Check } from "@/components/common/Checkbox/Check";
 import { FormCreatableSelect } from "@/components/common/Checkbox/CreatableSelect";
+import { ExternalLink, Globe, Rocket, Save, SquarePen, X } from "lucide-react";
+
+const MDEditor = lazy(() => import('@uiw/react-md-editor'));
 
 export interface DocumentationResponse {
     function_name: string,
     path: string,
     documentation: string
 }
-export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, endPoint, viewerType, mutate }: { apiData: APIData, project_branch: string, file_path: string, endPoint: string, viewerType: string, mutate: () => void }) => {
+const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, endPoint, viewerType, mutate }: { apiData: APIData, project_branch: string, file_path: string, endPoint: string, viewerType: string, mutate: () => void }) => {
 
     const renderContent = () => {
         // return string by type checking
@@ -101,17 +99,19 @@ export const APIDocumentationOfSiteApp = ({ apiData, project_branch, file_path, 
                     </div>
                     {isCreateAccess && <AllButton generateDocumentation={generateDocumentation} loading={loading} edit={edit} setEdit={setEdit} SaveEditButton={SaveEditButton} renderContent={renderContent} setDocumentation={setDocumentation} setOpen={setOpen} data={apiData} />}
                 </div> : (isCreateAccess && <AllButton generateDocumentation={generateDocumentation} loading={loading} edit={edit} setEdit={setEdit} SaveEditButton={SaveEditButton} renderContent={renderContent} setDocumentation={setDocumentation} setOpen={setOpen} data={apiData} />)}
-                <MDEditor
-                    value={documentation}
-                    preview={previewMode ?? 'preview'}
-                    hideToolbar={!edit || !isCreateAccess}
-                    data-color-mode="light"
-                    onChange={(value) => onDocumentationChange(value ?? '')}
-                    style={{
-                        minHeight: (apiData?.last_updated || isCreateAccess) ? 'calc(100vh - 22rem)' : 'calc(100vh - 19rem)',
-                        overflowY: 'auto', margin: 8, padding: 4
-                    }}
-                />
+                <Suspense fallback={<SpinnerLoader />}>
+                    <MDEditor
+                        value={documentation}
+                        preview={previewMode ?? 'preview'}
+                        hideToolbar={!edit || !isCreateAccess}
+                        data-color-mode="light"
+                        onChange={(value) => onDocumentationChange(value ?? '')}
+                        style={{
+                            minHeight: (apiData?.last_updated || isCreateAccess) ? 'calc(100vh - 22rem)' : 'calc(100vh - 19rem)',
+                            overflowY: 'auto', margin: 8, padding: 4
+                        }}
+                    />
+                </Suspense>
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <PublishDocumentationDialog open={open} setOpen={setOpen} project_branch={project_branch} endPoint={endPoint} viewerType={viewerType} mutate={mutate} documentation={documentation ?? ''} />
@@ -130,10 +130,10 @@ export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveE
                         <TooltipTrigger asChild>
                             <div>
                                 {data?.is_published ? <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => window.open(`/docs/${data?.published_route}`, '_blank')}>
-                                    <FiExternalLink className="h-4 w-4" />
+                                    <ExternalLink className="h-4 w-4" />
                                 </Button>
                                     : <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={() => setOpen(true)} disabled={loading || !data?.documentation} >
-                                    <AiOutlineGlobal className="h-4 w-4" />
+                                        <Globe className="h-4 w-4" />
                                     </Button>}
                             </div>
                         </TooltipTrigger>
@@ -147,7 +147,7 @@ export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveE
                         <TooltipTrigger asChild>
                             <Button size={'icon'} variant={'outline'} className="h-8 w-8" onClick={generateDocumentation} disabled={loading}>
                                 {loading ? <SpinnerLoader style={{ marginRight: 0 }} /> :
-                                    <MdOutlineRocketLaunch className="h-4 w-4" />}
+                                    <Rocket className="h-4 w-4" />}
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="mr-6">
@@ -159,13 +159,13 @@ export const AllButton = ({ generateDocumentation, loading, edit, setEdit, SaveE
                     setEdit(false)
                     setDocumentation(renderContent())
                 }}>
-                    <IoMdClose className="h-4 w-4" />
+                    <X className="h-4 w-4" />
                 </Button>}
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button size={'icon'} className="h-8 w-8" onClick={SaveEditButton}>
-                                {edit ? <FiSave className="h-4 w-4" /> : <FiEdit className="h-4 w-4" />}
+                                {edit ? <Save className="h-4 w-4" /> : <SquarePen className="h-4 w-4" />}
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="mr-4">
@@ -305,3 +305,5 @@ export const PublishDocumentationDialog = ({ open, setOpen, project_branch, endP
         </DialogContent>
     )
 }
+
+export default APIDocumentationOfSiteApp;

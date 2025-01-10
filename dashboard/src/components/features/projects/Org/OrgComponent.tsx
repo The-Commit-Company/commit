@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { isSystemManager } from "@/utils/roles";
-import { AiOutlineDelete } from "react-icons/ai";
 import { KeyedMutator } from "swr";
 import { ProjectData } from "../Projects";
 import DeleteOrgModal from "./DeleteOrgModal";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { ProjectCard } from "../Projects/ProjectCard";
+import ProjectCard from "../Projects/ProjectCard";
+import { Trash } from "lucide-react";
 
 
 interface OrgComponentProps {
@@ -23,7 +23,7 @@ export const OrgComponent = ({ org, mutate }: OrgComponentProps) => {
                 {isCreateAccess && <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button size="icon" variant="outline" className="h-7 w-7">
-                            <AiOutlineDelete />
+                            <Trash size={12} />
                         </Button>
                     </AlertDialogTrigger>
                     <DeleteOrgModal org={org} mutate={mutate} />
@@ -32,7 +32,12 @@ export const OrgComponent = ({ org, mutate }: OrgComponentProps) => {
             <div className="pl-4">
                 {org.projects.map((project) => {
                     return (
-                        <ProjectCard project={project} key={project.name} mutate={mutate} />
+                        <ProjectCard
+                            project={project}
+                            githubOrg={org.github_org}
+                            orgName={org.organization_name}
+                            key={project.name}
+                            mutate={mutate} />
                     )
                 }
                 )}

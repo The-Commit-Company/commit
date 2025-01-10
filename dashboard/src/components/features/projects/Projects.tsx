@@ -7,6 +7,7 @@ import { AddMenuButton } from "./AddMenuButton";
 import { APIExplorer } from "./APIExplorer";
 import ProjectCard from "./Projects/ProjectCard";
 import { ViewERDButton } from "./ViewERDButton";
+import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 
 
 export interface ProjectWithBranch extends CommitProject {
@@ -20,7 +21,7 @@ export interface ProjectData extends CommitProjectBranch {
     name: string;
     about: string;
 }
-export const Projects = () => {
+const Projects = () => {
     const isCreateAccess = isSystemManager();
 
     const { data, error, isLoading, mutate } = useFrappeGetCall<{
@@ -31,13 +32,14 @@ export const Projects = () => {
         "get_project_list_with_branches",
         {
             keepPreviousData: true,
-            revalidateOnFocus: true,
             revalidateIfStale: false,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
         }
     );
 
     if (error) {
-        return <div>Error</div>;
+        return <ErrorBanner error={error} />;
     }
 
     if (isLoading) {
@@ -77,3 +79,5 @@ export const Projects = () => {
         );
     }
 };
+
+export default Projects;
