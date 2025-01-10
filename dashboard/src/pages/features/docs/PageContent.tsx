@@ -25,22 +25,12 @@ export interface TocObj {
     [key: string]: TocItem;
 };
 
-export const PageContent = () => {
+const PageContent = () => {
 
     const { pageID } = useParams();
 
-    if (pageID) {
-        return (
-            <PageContentFetch selectedEndpoint={pageID} />
-        )
-    }
-    return null;
-}
-
-const PageContentFetch = ({ selectedEndpoint }: { selectedEndpoint: string }) => {
-
     const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: PageData; }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page", {
-        name: selectedEndpoint
+        name: pageID
     }, undefined, {
         revalidateOnFocus: false,
         revalidateIfStale: false,
@@ -68,3 +58,5 @@ const PageContentFetch = ({ selectedEndpoint }: { selectedEndpoint: string }) =>
         )
     }
 }
+
+export default PageContent

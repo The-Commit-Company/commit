@@ -47,7 +47,6 @@
     "@uiw/react-md-editor": "^4.0.4",
     "cal-sans": "^1.0.1",
     "class-variance-authority": "^0.6.1",
-    "classnames": "^2.5.1",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
     "downshift": "^9.0.6",

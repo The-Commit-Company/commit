@@ -252,7 +252,7 @@ def get_sidebar_items(sidebar):
                     'parent_name': commit_docs_page.name,
                     'is_group_page': True,
                     'group_items': nested_group_items,
-					"published":group_commit_docs_page.published
+                    'idx': group_commit_docs_page.idx
                 })
             else:
                 # If it's a regular Docs Page, add it directly
@@ -265,12 +265,12 @@ def get_sidebar_items(sidebar):
                     'badge_color': group_commit_docs_page.badge_color,
                     'icon': group_commit_docs_page.icon,
                     'parent_name': commit_docs_page.name,
-					"published":group_commit_docs_page.published
+                    'idx': group_commit_docs_page.idx
                 })
-        return group_items
+        return sorted(group_items, key=lambda x: x['idx'])
 
     sidebar_obj = {}
-    for sidebar_item in sidebar:
+    for sidebar_item in sorted(sidebar, key=lambda x: x.idx):
         if sidebar_item.hide_on_sidebar:
             continue
 
@@ -298,7 +298,7 @@ def get_sidebar_items(sidebar):
             'group_name': sidebar_item.parent_label,
             'is_group_page': is_group_page,
             'group_items': group_items if is_group_page else None,
-			'published': commit_docs_page.published
+            'idx': commit_docs_page.idx
         }
 
         # Add sidebar entry to the parent label
@@ -307,8 +307,11 @@ def get_sidebar_items(sidebar):
         else:
             sidebar_obj[sidebar_item.parent_label].append(sidebar_entry)
 
-    return sidebar_obj
+    # Sort each group in the sidebar_obj by idx
+    for key in sidebar_obj:
+        sidebar_obj[key] = sorted(sidebar_obj[key], key=lambda x: x['idx'])
 
+    return sidebar_obj
 
 @frappe.whitelist(allow_guest=True)
 def get_first_page_route(route:str):

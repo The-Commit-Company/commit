@@ -12,6 +12,7 @@ const ViewDocs = lazy(async () => import('./pages/features/docs/ViewDocs'))
 const PageNotFound = lazy(async () => import('./components/common/PageNotFound/PageNotFound'))
 const DocsPage = lazy(async () => import('./pages/features/docs/DocsPage'))
 const DocsLandingPage = lazy(async () => import('./pages/features/docs/LandingPage/DocsLandingPage'))
+const PageContent = lazy(async () => import('./pages/features/docs/PageContent'))
 
 function App() {
 
@@ -45,8 +46,10 @@ function App() {
             <Route path='/meta-erd/:ID' element={<ERDViewer />} />
             <Route path='/meta-erd/create' element={<CreateERD />} />
             <Route path='/docs' element={<DocsLandingPage />} />
-            <Route path='/docs/:ID' element={<DocsPage />} />
-            <Route path='/docs/:ID/:pageID' element={<ViewDocs />} />
+            <Route path='/docs/:ID' element={<ViewDocs />} >
+              <Route index element={<DocsPage />} />
+              <Route path=':pageID' element={<PageContent />} />
+            </Route>
             <Route path='*' element={<PageNotFound />} />
           </Routes>
         </Suspense>

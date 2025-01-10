@@ -100,7 +100,7 @@ def get_commit_docs_page(name):
 	'''
 	user = frappe.session.user
 	
-	doc = frappe.get_cached_doc('Commit Docs Page', name).as_dict()
+	doc = frappe.get_cached_doc('Commit Docs Page', name)
 
 	if user == "Guest" and not doc.allow_guest and not doc.published:
 		frappe.throw("You are not allowed to view this page")

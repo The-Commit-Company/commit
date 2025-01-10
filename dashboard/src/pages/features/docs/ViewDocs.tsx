@@ -1,10 +1,7 @@
-import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
-import { useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
-import { PageContent } from "./PageContent";
-import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
 
 const ViewDocs = () => {
     const { ID } = useParams();
@@ -16,8 +13,6 @@ const ViewDocs = () => {
 };
 
 const ViewDocsDetails = ({ ID }: { ID: string }) => {
-
-    const { error } = useGetCommitDocsDetails(ID);
 
     return (
         <div className="relative antialiased">
@@ -35,8 +30,7 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
                 {/* Main Content */}
                 <main className="flex-1 w-full h-full">
                     <div id="content-container" className="pb-10">
-                        {error && <ErrorBanner error={error} />}
-                        <PageContent />
+                        <Outlet />
                     </div>
                 </main>
             </div>

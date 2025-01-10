@@ -3,11 +3,6 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 
-
-function classNames(...classes: any[]) {
-    return classes.filter(Boolean).join(' ')
-}
-
 export const Navbar = ({ navigation }: { navigation: { name: string, content: JSX.Element }[] }) => {
     return (
         <Disclosure as="header" className="bg-white shadow">
