@@ -13,15 +13,17 @@ export interface CommitDocsPage{
 	idx?: number
 	/**	Title : Data	*/
 	title: string
+	/**	Commit Docs : Link - Commit Docs	*/
+	commit_docs: string
 	/**	Route : Data	*/
 	route: string
+	/**	Icon : Data - "Supports only icons from the lucid-react library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar."
+	*/
+	icon?: string
 	/**	Published : Check	*/
 	published?: 0 | 1
 	/**	Allow Guest : Check	*/
 	allow_guest?: 0 | 1
-	/**	Icon : Data - "Supports only icons from the lucid-react library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar."
-	*/
-	icon?: string
 	/**	Badge : Data - This is badge field, eg: GET , POST etc.	*/
 	badge?: string
 	/**	Badge Color : Data - Add Tailwind colours like red, green, blue, yellow, purple, pink, indigo, cyan, teal, lime, orange, gray etc.	*/

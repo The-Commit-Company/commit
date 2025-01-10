@@ -36,7 +36,7 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
                 <main className="flex-1 w-full h-full">
                     <div id="content-container" className="pb-10">
                         {error && <ErrorBanner error={error} />}
-                        <PageContent ID={ID} />
+                        <PageContent />
                     </div>
                 </main>
             </div>

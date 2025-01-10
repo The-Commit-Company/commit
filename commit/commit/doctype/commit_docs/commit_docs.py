@@ -109,11 +109,9 @@ def get_commit_docs_details(route:str):
 
 
 def parse_commit_docs(commit_docs):
-	# Maintain route_map from the sidebar where key is the route and value is the name of the page
-	route_map = {}
 
 	# Get the Sidebar Items
-	sidebar_items, route_map = get_sidebar_items(commit_docs.sidebar,route_map)
+	sidebar_items = get_sidebar_items(commit_docs.sidebar)
 
 	# Get the Footer Items
 	footer_items = get_footer_items(commit_docs.footer)
@@ -131,7 +129,6 @@ def parse_commit_docs(commit_docs):
 		'sidebar_items': sidebar_items,
 		'footer_items': footer_items,
 		'navbar_items': navbar_items,
-		'route_map': route_map
 	}
 
 def get_footer_items(footer):
@@ -218,7 +215,7 @@ def get_navbar_items(navbar):
 
 	return navbar_obj
 
-def get_sidebar_items(sidebar, route_map):
+def get_sidebar_items(sidebar):
     '''
     Get the Sidebar Items with support for nested Group Pages.
     '''
@@ -270,8 +267,6 @@ def get_sidebar_items(sidebar, route_map):
                     'parent_name': commit_docs_page.name,
 					"published":group_commit_docs_page.published
                 })
-                # Add route to route_map
-                route_map[group_commit_docs_page.route] = group_commit_docs_page.name
         return group_items
 
     sidebar_obj = {}
@@ -312,11 +307,7 @@ def get_sidebar_items(sidebar, route_map):
         else:
             sidebar_obj[sidebar_item.parent_label].append(sidebar_entry)
 
-        # Add route to route_map if it's not a group page
-        if not is_group_page:
-            route_map[commit_docs_page.route] = commit_docs_page.name
-
-    return sidebar_obj, route_map
+    return sidebar_obj
 
 
 @frappe.whitelist(allow_guest=True)

@@ -10,7 +10,7 @@ class CommitDocsPage(Document):
 	
 	def before_insert(self):
 		# Set the route for the page based on the title
-		self.route = self.title.lower().replace(' ', '-')
+		self.route = f'{self.commit_docs.lower().replace(" ", "-")}-{self.title.lower().replace(" ", "-")}'
 
 @frappe.whitelist(methods=['POST'])
 def publish_documentation(project_branch, endpoint, viewer_type, docs_name, parent_label, title, published, allow_guest, content):
@@ -100,7 +100,7 @@ def get_commit_docs_page(name):
 	'''
 	user = frappe.session.user
 	
-	doc = frappe.get_doc('Commit Docs Page', name).as_dict()
+	doc = frappe.get_cached_doc('Commit Docs Page', name).as_dict()
 
 	if user == "Guest" and not doc.allow_guest and not doc.published:
 		frappe.throw("You are not allowed to view this page")

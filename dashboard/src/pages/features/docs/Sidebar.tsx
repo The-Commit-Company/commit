@@ -136,7 +136,7 @@ const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: Do
                     <div className="">
                         {item.title}
                     </div>
-                </div> : <a className="flex flex-row gap-2 items-center" href={`../${ID}/${item.route}`}>
+                </div> : <a className="flex flex-row gap-2 w-full items-center" href={`../${ID}/${item.route}`}>
                     {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
                     {item.badge && <Badge
                         className={cn(badgeClass, 'text-[10px] px-1 py-0')}>{item.badge}</Badge>}

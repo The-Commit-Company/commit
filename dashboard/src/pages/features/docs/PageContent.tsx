@@ -5,7 +5,6 @@ import { useFrappeGetCall } from "frappe-react-sdk";
 import { useState } from "react";
 import { Renderer } from "./Renderer";
 import { EditorComponent } from "./EditorComponent";
-import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
 import { useParams } from "react-router-dom";
 
 export interface PageData {
@@ -26,25 +25,22 @@ export interface TocObj {
     [key: string]: TocItem;
 };
 
-export const PageContent = ({ ID }: { ID: string }) => {
-
-    const { data } = useGetCommitDocsDetails(ID);
+export const PageContent = () => {
 
     const { pageID } = useParams();
 
-    if (data && pageID) {
+    if (pageID) {
         return (
-            <PageContentFetch selectedEndpoint={pageID} route_map={data.route_map} />
+            <PageContentFetch selectedEndpoint={pageID} />
         )
     }
     return null;
 }
 
-const PageContentFetch = ({ selectedEndpoint, route_map }: { selectedEndpoint: string, route_map: Record<string, string> }) => {
-    const selectedEndpointRoute = route_map[selectedEndpoint];
+const PageContentFetch = ({ selectedEndpoint }: { selectedEndpoint: string }) => {
 
     const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: PageData; }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page", {
-        name: selectedEndpointRoute
+        name: selectedEndpoint
     }, undefined, {
         revalidateOnFocus: false,
         revalidateIfStale: false,

@@ -34,5 +34,4 @@ export interface Docs {
     sidebar_items: Record<string, DocsSidebarItem[]>
     navbar_items: Record<string, DocsNavbarItem>
     footer_items: Record<string, DocsFooterItem[]>
-    route_map: Record<string, string>
 }
