@@ -88,19 +88,21 @@ def get_commit_docs_details(route:str):
 		# 4. Get The Sidebar Items for the Commit Docs
 		# 5. Return the Sidebar Items
 	'''
-
+	user = frappe.session.user
 	# Check if the Commit Docs Document Exists
 	if frappe.db.exists('Commit Docs',{'route':route}):
 
-		# Check if the document is published
-		if frappe.db.get_value('Commit Docs',{'route':route},'published'):
-			# Get the Commit Docs Document
+		if user == "Guest":
+			if frappe.db.get_value('Commit Docs',{'route':route},'published'):
+				commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
+
+				return parse_commit_docs(commit_docs)
+			else:
+				return frappe.throw('Docs Not Published')
+		else:
 			commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
 
 			return parse_commit_docs(commit_docs)
-			
-		else:
-			return frappe.throw('Docs Not Published')
 		
 	else:
 		return frappe.throw('Docs Not Found')
@@ -231,7 +233,7 @@ def get_sidebar_items(sidebar, route_map):
 
             # Check permissions and publication status
             permitted = group_commit_docs_page.allow_guest or frappe.session.user != 'Guest'
-            published = group_commit_docs_page.published
+            published = group_commit_docs_page.published or frappe.session.user != 'Guest'
 
             if not permitted or not published:
                 continue
@@ -252,7 +254,8 @@ def get_sidebar_items(sidebar, route_map):
                     'icon': group_commit_docs_page.icon,
                     'parent_name': commit_docs_page.name,
                     'is_group_page': True,
-                    'group_items': nested_group_items
+                    'group_items': nested_group_items,
+					"published":group_commit_docs_page.published
                 })
             else:
                 # If it's a regular Docs Page, add it directly
@@ -264,7 +267,8 @@ def get_sidebar_items(sidebar, route_map):
                     'badge': group_commit_docs_page.badge,
                     'badge_color': group_commit_docs_page.badge_color,
                     'icon': group_commit_docs_page.icon,
-                    'parent_name': commit_docs_page.name
+                    'parent_name': commit_docs_page.name,
+					"published":group_commit_docs_page.published
                 })
                 # Add route to route_map
                 route_map[group_commit_docs_page.route] = group_commit_docs_page.name
@@ -278,7 +282,7 @@ def get_sidebar_items(sidebar, route_map):
         commit_docs_page = frappe.get_doc('Commit Docs Page', sidebar_item.docs_page)
 
         permitted = commit_docs_page.allow_guest or frappe.session.user != 'Guest'
-        published = commit_docs_page.published
+        published = commit_docs_page.published or frappe.session.user != 'Guest'
         is_group_page = commit_docs_page.is_group_page
 
         if not permitted or not published:
@@ -298,7 +302,8 @@ def get_sidebar_items(sidebar, route_map):
             'icon': commit_docs_page.icon,
             'group_name': sidebar_item.parent_label,
             'is_group_page': is_group_page,
-            'group_items': group_items if is_group_page else None
+            'group_items': group_items if is_group_page else None,
+			'published': commit_docs_page.published
         }
 
         # Add sidebar entry to the parent label
