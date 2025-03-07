@@ -5,7 +5,9 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "show_system_apps"
+  "show_system_apps",
+  "commit_docs_header",
+  "commit_docs_description"
  ],
  "fields": [
   {
@@ -13,12 +15,22 @@
    "fieldname": "show_system_apps",
    "fieldtype": "Check",
    "label": "Show System Apps"
+  },
+  {
+   "fieldname": "commit_docs_header",
+   "fieldtype": "Data",
+   "label": "Commit Docs Header"
+  },
+  {
+   "fieldname": "commit_docs_description",
+   "fieldtype": "Small Text",
+   "label": "Commit Docs Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-15 14:36:45.392360",
+ "modified": "2025-03-07 15:05:50.354759",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Settings",

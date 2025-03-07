@@ -32,8 +32,11 @@ def get_boot():
     commit_settings = frappe.get_single("Commit Settings")
 
     show_system_apps = commit_settings.show_system_apps
+
     
     boot["show_system_apps"] = show_system_apps
+    boot["commit_docs_header"] = commit_settings.commit_docs_header
+    boot["commit_docs_description"] = commit_settings.commit_docs_description
     boot["get_installed_apps"] = get_installed_apps()
     boot["get_all_commit_docs_detail"] = get_all_commit_docs_detail()
 
