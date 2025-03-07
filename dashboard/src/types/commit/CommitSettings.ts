@@ -12,4 +12,8 @@ export interface CommitSettings{
 	idx?: number
 	/**	Show System Apps : Check	*/
 	show_system_apps?: 0 | 1
+	/**	Commit Docs Header : Data	*/
+	commit_docs_header?: string
+	/**	Commit Docs Description : Small Text	*/
+	commit_docs_description?: string
 }
