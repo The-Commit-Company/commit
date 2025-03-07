@@ -13,5 +13,7 @@ export const getCommitDocsHeaderAndDescription = () => {
     const header = window.frappe?.boot?.commit_docs_header ?? ''
     // @ts-expect-error
     const description = window.frappe?.boot?.commit_docs_description ?? ''
-    return { header, description }
+    // @ts-expect-error
+    const image = window.frappe?.boot?.commit_docs_header_image_url ?? ''
+    return { header, description, image }
 }

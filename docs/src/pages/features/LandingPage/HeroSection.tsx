@@ -3,7 +3,7 @@ import  DocsDoodle  from '../../../assets/Docs.svg'
 
 const HeroSection = () => {
 
-    const {header,description} = getCommitDocsHeaderAndDescription()
+    const { header, description, image } = getCommitDocsHeaderAndDescription()
 
     const defaultHeader = `Boring docs? Not on our watch!`
     const defaultDescription = `Meet <span className="font-bold">Commit Docs</span>, built with Frappe Framework, it is the modern standard for public-facing documentation. Beautiful out of the box, easy to maintain, and <span className="text-gray-500">Open Source ✨</span>.`
@@ -17,7 +17,7 @@ const HeroSection = () => {
             </div>
             <div className="w-full md:w-1/2 p-4 md:p-8">
                     <img
-                        src={DocsDoodle}
+                    src={image ? image : DocsDoodle}
                         alt="ManDoodle."
                         className="w-full h-auto max-h-96 md:max-h-[250px] sm:max-h-[200px] lg:max-h-[300px]
                         object-contain"
