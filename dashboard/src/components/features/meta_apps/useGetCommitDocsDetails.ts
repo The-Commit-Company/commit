@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useFrappeGetCall } from 'frappe-react-sdk';
 import { Docs } from '@/pages/features/docs/docs';
+import { CommitDocs } from '@/types/commit/CommitDocs';
 
 export const useGetCommitDocsDetails = (ID: string) => {
     // First, check if the data is already available in window.frappe.boot
@@ -30,6 +31,37 @@ export const useGetCommitDocsDetails = (ID: string) => {
 
     // Return the data from boot if available, otherwise from the API call
     const data = bootCommitDocsDetails || apiCommitDocsDetails?.message;
+
+    return { data, error, isLoading };
+};
+
+export const useGetCommitDocsList = () => {
+
+    // First check if the data is already available in window.frappe.boot
+    const bootCommitDocsList = useMemo(() => {
+        // @ts-expect-error
+        return window?.frappe?.boot?.get_commit_docs_list || null;
+    }, []);
+
+    // Use the API call hook with conditional fetching
+    const {
+        data: apiCommitDocsList,
+        error,
+        isLoading,
+    } = useFrappeGetCall<{ message: CommitDocs[] }>(
+        'commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_list',
+        {},
+        bootCommitDocsList === null ? 'get_commit_docs_list' : null,
+        {
+            // Only fetch if boot data is not available
+            revalidateOnFocus: false,
+            revalidateIfStale: false,
+            revalidateOnReconnect: false,
+        }
+    );
+
+    // Return the data from boot if available, otherwise from the API call
+    const data: CommitDocs[] = bootCommitDocsList || apiCommitDocsList?.message;
 
     return { data, error, isLoading };
 };

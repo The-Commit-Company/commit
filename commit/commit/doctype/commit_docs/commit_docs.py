@@ -345,7 +345,7 @@ def get_commit_docs_list():
 
 	commit_docs_list = frappe.get_all('Commit Docs',
 		filters=filters,
-		fields=["header", "light_mode_logo", "route", "published", "description"],
+		fields=["header", "light_mode_logo", "route", "published", "description","name"],
 	)
 
 	return commit_docs_list
