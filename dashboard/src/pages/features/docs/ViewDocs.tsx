@@ -1,7 +1,6 @@
 import { Outlet, useParams } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
-import { Navbar } from "./Navbar";
-import { Footer } from "./Footer";
+import { useState } from "react";
 
 const ViewDocs = () => {
     const { ID } = useParams();
@@ -13,30 +12,23 @@ const ViewDocs = () => {
 };
 
 const ViewDocsDetails = ({ ID }: { ID: string }) => {
-
+    const [isCollapsed, setIsCollapsed] = useState(false);
     return (
         <div className="relative antialiased">
-            <div className="z-20 fixed lg:sticky top-0 w-full">
-                <Navbar ID={ID} />
-            </div>
             <div className="flex flex-col lg:flex-row min-h-screen">
-                {/* Sidebar */}
-                <aside className="hidden lg:block lg:w-[20rem] z-30 -mt-16">
-                    <Sidebar
-                        ID={ID}
-                    />
-                </aside>
-                {/* Main Content */}
-                <main className="flex-1 w-full h-full">
-                    <div id="content-container" className="pb-10">
-                        <Outlet />
+                <Sidebar ID={ID} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+                <div className={`relative mt-[60px] lg:mt-0 px-6 lg:px-12 pt-8 mb-6 ${isCollapsed ? 'lg:ml-16' : 'lg:ml-40'}`}>
+                    <div className="mx-auto max-w-6xl">
+                        <main>
+                            <div id="content-container" className="pb-10">
+                                <Outlet />
+                            </div>
+                        </main>
                     </div>
-                </main>
+                </div>
             </div>
-            <Footer ID={ID} />
         </div>
     );
-    // }
 };
 
 export default ViewDocs;
