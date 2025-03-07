@@ -201,4 +201,4 @@ app_license = "MIT"
 # ]
 fixtures = [{"doctype": "Server Script", "filters": [["module" , "in" , ("commit" )]]}]
 
-website_route_rules = [{'from_route': '/commit/<path:app_path>', 'to_route': 'commit'}]
+website_route_rules = [{'from_route': '/docs/<path:app_path>', 'to_route': 'commit-docs'}, {'from_route': '/commit/<path:app_path>', 'to_route': 'commit'}]
