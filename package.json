@@ -6,8 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cd dashboard && yarn dev",
-    "build": "cd dashboard && yarn build",
-    "postinstall": "cd dashboard && yarn install"
+    "build": "cd dashboard && yarn build && cd ../docs && yarn build",
+    "postinstall": "yarn install-commit &&  yarn install-docs",
+    "install-commit": "cd dashboard && yarn install",
+    "install-docs": "cd docs && yarn install"
   },
   "keywords": [],
   "author": "",
