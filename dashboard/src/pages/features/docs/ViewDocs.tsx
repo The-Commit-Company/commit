@@ -17,12 +17,10 @@ const ViewDocsDetails = ({ ID }: { ID: string }) => {
         <div className="relative antialiased">
             <div className="flex flex-col lg:flex-row min-h-screen">
                 <Sidebar ID={ID} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-                <div className={`relative mt-[60px] lg:mt-0 px-6 lg:px-12 pt-8 mb-6 ${isCollapsed ? 'lg:ml-16' : 'lg:ml-40'}`}>
-                    <div className="mx-auto max-w-6xl">
+                <div className={`relative mt-[60px] lg:mt-0 px-6 lg:px-12 pt-8 mb-6 w-full ${isCollapsed ? 'lg:ml-16' : 'lg:ml-60'}`}>
+                    <div className="mx-auto max-w-6xl ">
                         <main>
-                            <div id="content-container" className="pb-10">
-                                <Outlet />
-                            </div>
+                            <Outlet />
                         </main>
                     </div>
                 </div>
