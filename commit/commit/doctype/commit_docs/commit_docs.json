@@ -16,6 +16,7 @@
   "logo_section",
   "light_mode_logo",
   "night_mode_logo",
+  "preview_image",
   "navbar_tab",
   "navbar_items",
   "footer_tab",
@@ -166,11 +167,16 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
+  },
+  {
+   "fieldname": "preview_image",
+   "fieldtype": "Attach Image",
+   "label": "Preview Image"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-07 22:34:40.239467",
+ "modified": "2025-03-09 17:03:26.838375",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs",

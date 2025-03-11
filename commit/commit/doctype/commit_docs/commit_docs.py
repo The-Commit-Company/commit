@@ -3,8 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
-
-
+from commit.api.preview import save_preview_screenshot
+from commit.api.convert_to_webp import save_webp_image
 class CommitDocs(Document):
 
 	def before_insert(self):
@@ -24,6 +24,24 @@ class CommitDocs(Document):
 			if primary_button_count > 1:
 				frappe.throw('Only One Primary Button is Allowed')
 				break
+	def before_save(self):
+		# This is to save the preview image of the first page of the commit docs
+		# This is done to show the preview image in the commit docs dashboard
+		# This is done using the async function to capture the screenshot
+		# The function is called using the frappe.enqueue method
+		if self.sidebar:
+			first = self.sidebar[0].docs_page
+			domain = frappe.utils.get_url()
+			if first:
+				docs_url = f'{domain}/commit-docs/{self.route}/{first}'
+				frappe.enqueue(method=save_preview_screenshot, url=docs_url,doctype=self.doctype,docname=self.name,field='preview_image')
+		
+		old_doc = self.get_doc_before_save()
+		if old_doc:
+			if old_doc.light_mode_logo != self.light_mode_logo:
+				frappe.enqueue(method=save_webp_image,doctype=self.doctype,docname=self.name,image_field='light_mode_logo')
+			if old_doc.night_mode_logo != self.night_mode_logo:
+				frappe.enqueue(method=save_webp_image,doctype=self.doctype,docname=self.name,image_field='dark_mode_logo')
 
 
 @frappe.whitelist()
