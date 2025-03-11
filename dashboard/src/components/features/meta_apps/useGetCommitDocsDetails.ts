@@ -48,6 +48,7 @@ export const useGetCommitDocsList = () => {
         data: apiCommitDocsList,
         error,
         isLoading,
+        mutate
     } = useFrappeGetCall<{ message: CommitDocs[] }>(
         'commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_list',
         {},
@@ -63,5 +64,5 @@ export const useGetCommitDocsList = () => {
     // Return the data from boot if available, otherwise from the API call
     const data: CommitDocs[] = bootCommitDocsList || apiCommitDocsList?.message;
 
-    return { data, error, isLoading };
+    return { data, error, isLoading, mutate };
 };

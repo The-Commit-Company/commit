@@ -80,10 +80,10 @@ export const FileDrop = ({ files, onFileChange, maxFiles = 1, uploading, accept,
             {(maxFiles === undefined || files.length < maxFiles) && (
                 <div className={`flex justify-center items-center rounded-lg h-28 ${uploading ? 'hidden' : 'flex'} ${error ? 'border-red-500 border-dashed' : 'border-gray-500 border-dashed'} border`} {...getRootProps()} onClick={() => { }} {...props}>
                     <input type="file" {...getInputProps()} />
-                    <div className="flex flex-col items-center space-y-2">
+                    <div className="flex flex-col items-center space-y-2 px-8">
                         <p className="text-sm">Drag 'n' drop your files here.</p>
                         <div className="flex space-x-4 items-center justify-center">
-                            <button {...getRootProps()} className="flex items-center space-x-2 text-sm bg-transparent border-none">
+                            <button {...getRootProps()} className="flex items-center space-x-2 text-sm bg-transparent border border-gray rounded-md px-4 py-2">
                                 <MonitorSmartphone size={16} />
                                 <span>My Device</span>
                                 <input type="file" {...getInputProps()} />

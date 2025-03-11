@@ -2,7 +2,7 @@ import { Accept } from "react-dropzone"
 import { useState } from "react"
 import { FrappeError, useFrappeFileUpload, useFrappePostCall } from "frappe-react-sdk"
 import { File } from "@/types/Core/File"
-import { Dialog, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { CustomFile } from "./ImageUploader"
 import { ErrorBanner } from "../ErrorBanner/ErrorBanner"
 import { Button } from "@/components/ui/button"
@@ -20,13 +20,14 @@ export interface DocumentUploadModalProps {
     accept?: Accept,
     maxFileSize?: number
     maxFiles?: number
+    isPrivate?: boolean
 }
 
-export const DocumentUploadModal = ({ open, onClose, onUpdate, doctype, docname, fieldname = 'image', accept, maxFileSize = 10000000, maxFiles = 10, ...props }: DocumentUploadModalProps) => {
+export const DocumentUploadModal = ({ open, onClose, onUpdate, doctype, docname, fieldname = 'image', accept, maxFileSize = 10000000, maxFiles = 10, isPrivate = true, ...props }: DocumentUploadModalProps) => {
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent>
+            <DialogContent className="p-6 w-[90vw] sm:max-w-xl overflow-hidden">
                 <UploadModalContent
                     doctype={doctype}
                     docname={docname}
@@ -36,6 +37,7 @@ export const DocumentUploadModal = ({ open, onClose, onUpdate, doctype, docname,
                     maxFiles={maxFiles}
                     onClose={onClose}
                     onUpload={onUpdate}
+                    isPrivate={isPrivate}
                     {...props}
                 />
             </DialogContent>
@@ -52,10 +54,11 @@ interface UploadModalContentProps {
     maxFileSize?: number,
     maxFiles?: number
     onClose: () => void,
-    onUpload?: (files: File[]) => void
+    onUpload?: (files: File[]) => void,
+    isPrivate?: boolean
 }
 
-const UploadModalContent = ({ doctype, docname, fieldname, maxFiles, accept, maxFileSize, onClose, onUpload, ...props }: UploadModalContentProps) => {
+const UploadModalContent = ({ doctype, docname, fieldname, maxFiles, accept, maxFileSize, onClose, onUpload, isPrivate = true, ...props }: UploadModalContentProps) => {
 
     const [files, setFiles] = useState<CustomFile[]>([])
 
@@ -76,7 +79,7 @@ const UploadModalContent = ({ doctype, docname, fieldname, maxFiles, accept, max
                     doctype: doctype,
                     docname: docname,
                     fieldname: fieldname,
-                    isPrivate: true,
+                    isPrivate: isPrivate 
                 }).then(res => res)
                     .catch((e) => {
                         const serverMessage = JSON.parse(JSON.parse(e._server_messages)[0])
@@ -117,7 +120,11 @@ const UploadModalContent = ({ doctype, docname, fieldname, maxFiles, accept, max
 
     return (
         <>
-            <DialogHeader>Upload</DialogHeader>
+            <DialogHeader>
+                <DialogTitle>
+                    Upload
+                </DialogTitle>
+            </DialogHeader>
             <div>
                 {fileErrors.length ? fileErrors?.map((e: any, index) => <ErrorBanner error={e} key={index} />)
                     : <FileDrop
@@ -132,7 +139,7 @@ const UploadModalContent = ({ doctype, docname, fieldname, maxFiles, accept, max
             </div>
             <DialogFooter>
                 {fileErrors.length > 0 && <Button variant={'ghost'} onClick={resetFilesAndErrors}>Reset</Button>}
-                <Button onClick={uploadFiles} disabled={attachingLink || loading || (files.length === 0) || (fileErrors.length > 0)}>
+                <Button onClick={uploadFiles} type="button" disabled={attachingLink || loading || (files.length === 0) || (fileErrors.length > 0)}>
                     {loading ? <div className="flex gap-2 items-center">
                         <SpinnerLoader />
                         Uploading
