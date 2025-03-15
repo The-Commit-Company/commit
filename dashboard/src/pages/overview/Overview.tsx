@@ -11,12 +11,13 @@ const Overview = () => {
     const areAppsAvailable = isSystemAppAvailable()
     const isCreateAccess = isSystemManager();
 
-
+    // if both arer false then count 1 if any one is true then count 2 if both are true then count 3
+    const gridCount = areAppsAvailable + isCreateAccess + 1
     return (
         <div className="h-screen flex flex-col gap-2 space-x-2">
             <Header />
             <Tabs defaultValue="projects" className="h-full px-2">
-                <TabsList className="grid grid-cols-3 w-fit gap-8">
+                <TabsList className={`grid grid-cols-${gridCount} w-fit gap-8`}>
                     <TabsTrigger value="projects" className="px-8">Projects</TabsTrigger>
                     {areAppsAvailable && <TabsTrigger value="your-apps" className="px-8">Site Apps</TabsTrigger>}
                     {isCreateAccess && <TabsTrigger value="docs" className="px-8">Docs</TabsTrigger>}
