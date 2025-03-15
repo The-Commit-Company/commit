@@ -3,12 +3,13 @@ import { useFrappeGetCall } from 'frappe-react-sdk';
 import { Docs } from '@/pages/features/docs/docs';
 import { CommitDocs } from '@/types/commit/CommitDocs';
 
-export const useGetCommitDocsDetails = (ID: string) => {
+export const useGetCommitDocsDetails = (ID: string, dashboard: boolean = false) => {
     // First, check if the data is already available in window.frappe.boot
     const bootCommitDocsDetails: Docs = useMemo(() => {
+        // Dashboard True ,means will display latest data on User Docs Dashboard
         // @ts-expect-error
-        return window?.frappe?.boot?.get_all_commit_docs_detail?.[ID] || null;
-    }, [ID]);
+        return dashboard ? null : window?.frappe?.boot?.get_all_commit_docs_detail?.[ID] || null;
+    }, [ID, dashboard]);
 
     // Use the API call hook with conditional fetching
     const {
