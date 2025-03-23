@@ -22,7 +22,15 @@ const SidebarItems: SidebarItem[] = [
 export const Sidebar = ({ ID, isCollapsed, setIsCollapsed }: { ID: string, isCollapsed: boolean, setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { data } = useGetCommitDocsDetails(ID, true);
     const location = useLocation();
-    const last = location.pathname.split('/').filter(Boolean).pop();
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    const secondLastSegment = pathSegments[pathSegments.length - 2];
+
+    const isActive = (route: string) => {
+        if (route === "editor") {
+            return secondLastSegment === route || pathSegments.includes(route);
+        }
+        return pathSegments.includes(route);
+    };
 
     const selectedClassName = "text-blue-600 dark:text-blue-500 bg-blue-600/10 dark:bg-blue-500/10";
     const notSelectedClassName = "text-gray-700 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700/10";
@@ -51,7 +59,7 @@ export const Sidebar = ({ ID, isCollapsed, setIsCollapsed }: { ID: string, isCol
                 <nav className="flex flex-col mt-4 gap-1">
                     {SidebarItems.map((item) => (
                         <Link key={item.route} to={`./${item.route}`}>
-                            <div className={`flex items-center gap-2 rounded-lg px-2 h-8 text-sm leading-5 transition-all duration-300 ${last === item.route ? selectedClassName : notSelectedClassName}`}>
+                            <div className={`flex items-center gap-2 rounded-lg px-2 h-8 text-sm leading-5 transition-all duration-300 ${isActive(item.route) ? selectedClassName : notSelectedClassName}`}>
                                 <span className="flex-shrink-0">{item.icon}</span>
                                 <motion.span
                                     initial={{ opacity: isCollapsed ? 0 : 1, x: isCollapsed ? -20 : 0 }}

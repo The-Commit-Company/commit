@@ -25,7 +25,7 @@ const MainPage = ({ ID }: { ID: string }) => {
 
         if (hours >= 0 && hours < 12) {
             return "Good Morning";
-        } else if (hours >= 12 && hours < 17) {
+        } else if (hours >= 12 && hours < 18) {
             return "Good Afternoon";
         } else {
             return "Good Evening";
@@ -34,7 +34,7 @@ const MainPage = ({ ID }: { ID: string }) => {
 
     const currentUser = () => {
         // @ts-ignore
-        return window?.frappe?.boot?.user?.name;
+        return `${window?.frappe?.boot?.user?.first_name || ''} ${window?.frappe?.boot?.user?.last_name || ''}`;
     };
 
     if (data) {
