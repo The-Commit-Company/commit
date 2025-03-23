@@ -3,11 +3,12 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import PageNotFound from './components/common/PageNotFound/PageNotFound'
 import APIViewerContainer from './pages/features/api_viewer/APIViewer'
 import AppAPIViewerContainer from './pages/features/api_viewer/AppAPIViewer'
-import PageContent from './pages/features/docs/PageContent'
 import ViewDocs from './pages/features/docs/ViewDocs'
 import ERDViewer from './pages/features/erd/ERDViewer'
 import CreateERD from './pages/features/erd/meta/CreateERDForMeta'
 import Overview from './pages/overview/Overview'
+import { DocsMainPage } from './components/features/documentation/DocsMainPage'
+import { PageTable } from './pages/features/docs/DocsEditor/PageTable'
 
 
 function App() {
@@ -42,14 +43,16 @@ function App() {
           <Route path='/meta-erd/create' element={<CreateERD />} />
           <Route path='/docs' element={<Navigate to={'/'} />} />
           <Route path='/docs/:ID' element={<ViewDocs />} >
-            <Route index element={<>Hello</>} />
-            <Route path='overview' element={<PageContent />} />
-            <Route path='editor' element={<PageContent />} />
-            <Route path='sidebar' element={<PageContent />} />
-            <Route path='navbar' element={<PageContent />} />
-            <Route path='footer' element={<PageContent />} />
-            <Route path='settings' element={<PageContent />} />
-            {/* <Route path=':pageID' element={<PageContent />} /> */}
+            <Route index element={<Navigate to={'overview'} />} />
+            <Route path='overview' element={<DocsMainPage />} />
+            <Route path='editor' element={<PageTable />}>
+              {/* Add nested dynamic route inside editor */}
+              <Route path=':pageID' element={<PageTable />} />
+            </Route>
+            <Route path='sidebar' element={<></>} />
+            <Route path='navbar' element={<></>} />
+            <Route path='footer' element={<></>} />
+            <Route path='settings' element={<></>} />
           </Route>
           <Route path='*' element={<PageNotFound />} />
         </Routes>
