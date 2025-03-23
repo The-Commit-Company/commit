@@ -159,3 +159,22 @@ def calculate_toc_object(html):
         add_to_toc(toc, level, heading_id, title)
 
     return toc
+
+@frappe.whitelist()
+def get_commit_docs_page_list(commit_doc):
+	'''
+		Get the list of Commit Docs Page
+	'''
+	user_info = {}
+	users = []
+	page = frappe.get_all('Commit Docs Page', filters={'commit_docs': commit_doc}, fields=['*'], order_by='creation desc')
+	for p in page:
+		users.append(p.owner)
+		users.append(p.modified_by)
+	users = list(set(users))
+	frappe.utils.add_user_info(users, user_info)
+
+	return {
+		'pages': page,
+		'user_info': user_info
+	}
