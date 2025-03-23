@@ -178,3 +178,29 @@ def get_commit_docs_page_list(commit_doc):
 		'pages': page,
 		'user_info': user_info
 	}
+
+@frappe.whitelist()
+def create_commit_docs_page(data):
+	'''
+		Create a new Commit Docs Page
+	'''
+	if isinstance(data, str):
+		data = json.loads(data)
+	
+	# create a new Commit Docs Page
+	commit_docs_page = frappe.get_doc({
+		'doctype': 'Commit Docs Page',
+		'title': data.get('title'),
+		'commit_docs': data.get('commit_docs'),
+	})
+
+	commit_docs_page.insert()
+	
+	if data.get('sidebar_label'):
+		commit_doc = frappe.get_doc('Commit Docs', data.get('commit_docs'))
+		commit_doc.append('sidebar', {
+			'parent_label': data.get('sidebar_label'),
+			'docs_page': commit_docs_page.name
+		})
+		commit_doc.save()
+	return commit_docs_page

@@ -11,6 +11,8 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import PageContent from "../PageContent";
 import { web_url } from "@/config/socket";
+import CreateCommitDocsPage from "./CreateDocs";
+import { Dialog } from "@/components/ui/dialog";
 
 export interface UserInfo {
     email: string,
@@ -58,13 +60,19 @@ const DocsTable = ({ ID }: { ID: string }) => {
 const CommitDocsPageList = ({ commit_doc ,route}: { commit_doc: string ,route:string}) => {
     const [searchTerm, setSearchTerm] = useState("");
 
-    const { data, error, isLoading } = useFrappeGetCall<{ message: ReportProps }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page_list", {
+    const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: ReportProps }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page_list", {
         commit_doc: commit_doc
     }, undefined, {
         revalidateOnFocus: false,
         revalidateIfStale: false,
         revalidateOnReconnect: false
     })
+
+    const [open, setOpen] = useState(false);
+
+    const onClose = () => {
+        setOpen(false);
+    };
 
     if (error) {
         return <ErrorBanner error={error} />
@@ -97,6 +105,7 @@ const CommitDocsPageList = ({ commit_doc ,route}: { commit_doc: string ,route:st
                         <button
                             type="button"
                             className="rounded-md flex items-center bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 focus:outline-none"
+                            onClick={() => setOpen(true)}
                         >
                             Add
                             <Plus className="h-4 w-4 ml-2" />
@@ -169,6 +178,9 @@ const CommitDocsPageList = ({ commit_doc ,route}: { commit_doc: string ,route:st
                         </div>
                     </div>
                 </div>
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <CreateCommitDocsPage commit_docs={commit_doc} mutate={mutate} open={open} onClose={onClose} />
+                </Dialog>
             </div>
         )
     }
