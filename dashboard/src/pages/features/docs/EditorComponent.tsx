@@ -7,78 +7,130 @@ import { CommitDocsPage } from '@/types/commit/CommitDocsPage';
 import { removeFrappeFields } from '@/utils/removeFrappeFields';
 import { Editor } from '@milkdown/kit/core';
 import { FrappeDoc, useFrappeUpdateDoc } from 'frappe-react-sdk';
-import { lazy, useState, Suspense } from 'react';
+import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getMarkdown } from '@milkdown/utils';
+import { Link, useNavigate } from 'react-router-dom';
+import { ChevronLeft, ExternalLink } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useGetCommitDocsDetails } from '@/components/features/meta_apps/useGetCommitDocsDetails';
+import { web_url } from '@/config/socket';
+import MarkdownEditor from '@/components/common/MarkdownEditor/MarkdownEditor';
 
-const MarkdownEditor = lazy(() => import('@/components/common/MarkdownEditor/MarkdownEditor'));
-
-
-export const EditorComponent = ({ data, setEdit, mutate }: { data: CommitDocsPage, setEdit: React.Dispatch<React.SetStateAction<boolean>>, mutate: VoidFunction }) => {
+export const EditorComponent = ({ data, mutate, ID }: { data: CommitDocsPage, mutate: VoidFunction, ID: string }) => {
     const [crepeInstance, setCrepeInstance] = useState<Promise<Editor> | null>(null);
+    const [activeTab, setActiveTab] = useState<'editor' | 'settings'>('editor'); // Track active tab
+
+    const { data: commitDoc } = useGetCommitDocsDetails(ID, true);
 
     const methods = useForm<CommitDocsPage>({
         defaultValues: {
             ...removeFrappeFields(data as FrappeDoc<CommitDocsPage>)
         }
-    })
-    const { updateDoc, error, loading } = useFrappeUpdateDoc<CommitDocsPage>()
+    });
+
+    const { updateDoc, error, loading } = useFrappeUpdateDoc<CommitDocsPage>();
+    const { toast } = useToast();
+    const navigate = useNavigate();
 
     const handleGetMarkdown = async () => {
-        if (crepeInstance) {
-            const markdownContent = await crepeInstance.then((editor) => {
-                return editor.action(getMarkdown());
-            })
-            return markdownContent;
+        if (activeTab !== 'editor' || !crepeInstance) {
+            // Editor is not active or not initialized
+            return data.content;
         }
-        return ''
+
+        try {
+            const editor = await crepeInstance;
+            const markdownContent = getMarkdown ? editor.action(getMarkdown()) : null;
+            return markdownContent;
+        } catch (e) {
+            console.warn('Error getting markdown from editor:', e);
+            return data.content;
+        }
     };
 
-    const { toast } = useToast();
-
-    const onSubmit = async (data: CommitDocsPage) => {
-        const markdownContent = await handleGetMarkdown();
-        updateDoc("Commit Docs Page", data.name, {
-            ...data,
+    const onSubmit = async (formData: CommitDocsPage) => {
+        const markdownContent = await handleGetMarkdown() ?? formData.content;
+        updateDoc("Commit Docs Page", formData.name, {
+            ...formData,
             content: markdownContent,
         }).then(() => {
-            mutate()
+            mutate();
             toast({
                 description: "Page Updated Successfully",
                 duration: 1500
-            })
-        }).then(() => {
-            setEdit(false)
-        })
-    }
+            });
+        });
+    };
+
     return (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-                <div className="flex flex-col w-full py-6 px-16 h-full pt-40 lg:pt-2">
-                    <div className="flex flex-row w-full  justify-end gap-2 pt-4">
-                        <Button onClick={() => setEdit(false)}
-                            variant={'ghost'}
-                            size={'sm'}
-                        >Cancel</Button>
+                <div className="flex flex-col gap-2 w-full h-full">
+                    <div className="flex flex-row w-full justify-between gap-2">
                         <Button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold"
+                            className='flex gap-1 text-sm px-0 text-blue-500 hover:text-blue-600 hover:underline'
                             size={'sm'}
-                            onClick={methods.handleSubmit(onSubmit)}
-                        >Save</Button>
+                            onClick={() => navigate(-1)}
+                            variant={'link'}
+                        >
+                            <ChevronLeft className="h-5 w-5" />
+                            Back
+                        </Button>
+                        <div className='flex gap-4 items-center'>
+                            <Link to={`${web_url}/commit-docs/${commitDoc?.commit_docs?.route}/${data?.route}`} target="_blank" className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+                                <ExternalLink className="h-4 w-4" />
+                            </Link>
+                            <Button
+                                type="submit"
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold"
+                                size={'sm'}
+                                onClick={methods.handleSubmit(onSubmit)}
+                            >
+                                Save
+                            </Button>
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-4 w-full py-6 ">
+                    <div className='flex gap-2 items-center px-2'>
+                        <h2 className="inline-block text-lg font-medium leading-7 text-gray-800 dark:text-white">
+                            {data?.title}
+                        </h2>
+                        <div>
+                            {data.published ? (
+                                <span className="inline-flex items-center p-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
+                                    Live
+                                </span>
+                            ) : (
+                                <span className="inline-flex items-center p-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">
+                                    Draft
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-4 w-full py-2">
                         {error && <ErrorBanner error={error} />}
                         {loading && <FullPageLoader />}
-                        <DocsPageForm />
-                        <div className="flex flex-col gap-4 pl-24 pr-4 py-4 border border-gray-200 rounded-lg min-h-[60vh] shadow-sm bg-white">
-                            <Suspense fallback={<FullPageLoader />}>
-                                <MarkdownEditor value={data?.content ?? ''} setCrepeInstance={setCrepeInstance} />
-                            </Suspense>
-                        </div>
+                        <Tabs
+                            value={activeTab}
+                            onValueChange={(val) => setActiveTab(val as 'editor' | 'settings')}
+                            className="h-full"
+                        >
+                            <TabsList className={`grid grid-cols-2 w-fit gap-8`}>
+                                <TabsTrigger value="editor" className="px-8">Editor</TabsTrigger>
+                                <TabsTrigger value="settings" className="px-8">Settings</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="editor">
+                                <div className="flex overflow-auto flex-col gap-4 pl-24 pr-8 mt-4 pt-4 border border-gray-200 rounded-lg h-[76vh] shadow-sm bg-white">
+                                    <MarkdownEditor value={data?.content ?? ''} setCrepeInstance={setCrepeInstance} />
+                                </div>
+                            </TabsContent>
+                            <TabsContent value="settings">
+                                <DocsPageForm />
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </div>
             </form>
         </FormProvider>
-    )
-}
+    );
+};
