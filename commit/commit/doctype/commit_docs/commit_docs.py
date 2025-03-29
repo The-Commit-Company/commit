@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from commit.api.preview import save_preview_screenshot
 from commit.api.convert_to_webp import save_webp_image
+import json
 class CommitDocs(Document):
 
 	def before_insert(self):
@@ -288,7 +289,7 @@ def get_sidebar_items(sidebar):
         return sorted(group_items, key=lambda x: x['idx'])
 
     sidebar_obj = {}
-    for sidebar_item in sorted(sidebar, key=lambda x: x.idx):
+    for sidebar_item in sidebar:  # Preserve the original order of the sidebar
         if sidebar_item.hide_on_sidebar:
             continue
 
@@ -324,10 +325,6 @@ def get_sidebar_items(sidebar):
             sidebar_obj[sidebar_item.parent_label] = [sidebar_entry]
         else:
             sidebar_obj[sidebar_item.parent_label].append(sidebar_entry)
-
-    # Sort each group in the sidebar_obj by idx
-    for key in sidebar_obj:
-        sidebar_obj[key] = sorted(sidebar_obj[key], key=lambda x: x['idx'])
 
     return sidebar_obj
 
@@ -367,3 +364,55 @@ def get_commit_docs_list():
 	)
 
 	return commit_docs_list
+
+@frappe.whitelist(methods=["POST"])
+def manage_sidebar(commit_doc:str,parent_labels,docs_page):
+	'''
+		This is to modify the sidebar items of the commit docs
+		@param commit_doc: The Commit Docs ID
+		@param parent_labels: The Parent Labels of the Sidebar List
+		@param docs_page: List of Object having docs page and parent label
+
+		# 1. Get the Commit Docs Document
+		# 2. Loop Over the Parent Labels
+		# 3. Look for the Parent Label in docs_page List of Object
+		# 4. for loop on that filtered list append the docs_page and parent label to the sidebar
+		# 5. Save the Sidebar Items
+	'''
+	
+	# Get the Commit Docs Document
+	doc = frappe.get_doc('Commit Docs',commit_doc)
+
+	# Loop Over the Parent Labels
+	if isinstance(parent_labels, str):
+		parent_labels = json.loads(parent_labels)
+	
+	if isinstance(docs_page, str):
+		docs_page = json.loads(docs_page)
+
+	doc.sidebar = []
+	for parent_label in parent_labels:
+		# Filter the docs_page List of Object
+		filtered_docs_page = [item for item in docs_page if item.get('columnId') == parent_label]
+
+		# Check if there are any duplicate docs_page
+		duplicate = set()
+		for item in filtered_docs_page:
+			if item.get('id') in duplicate:
+				frappe.throw(f'You have Duplicate Docs Page {item.get("id")} in Same Parent Label {parent_label}')
+			duplicate.add(item.get('id'))
+		
+		# sort by index field
+		filtered_docs_page = sorted(filtered_docs_page, key=lambda x: x.get('index', 0))
+
+		# Loop Over the Filtered List
+		for item in filtered_docs_page:
+			# Append the docs_page and parent label to the sidebar
+			doc.append('sidebar',{
+				'parent_label': parent_label,
+				'docs_page': item.get('id'),
+			})
+	
+	doc.save()
+
+	return doc
