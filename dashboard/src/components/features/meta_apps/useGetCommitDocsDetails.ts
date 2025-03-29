@@ -15,7 +15,8 @@ export const useGetCommitDocsDetails = (ID: string, dashboard: boolean = false) 
     const {
         data: apiCommitDocsDetails,
         error,
-        isLoading
+        isLoading,
+        mutate
     } = useFrappeGetCall<{ message: Docs }>(
         'commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_details',
         {
@@ -33,7 +34,7 @@ export const useGetCommitDocsDetails = (ID: string, dashboard: boolean = false) 
     // Return the data from boot if available, otherwise from the API call
     const data = bootCommitDocsDetails || apiCommitDocsDetails?.message;
 
-    return { data, error, isLoading };
+    return { data, error, isLoading, mutate };
 };
 
 export const useGetCommitDocsList = () => {
