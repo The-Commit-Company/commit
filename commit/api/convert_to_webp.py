@@ -5,7 +5,6 @@ import requests
 from PIL import Image
 from frappe.core.doctype.file.file import get_local_image
 from frappe.model.document import Document
-
 import os
 
 @frappe.whitelist()
@@ -48,7 +47,7 @@ def convert_to_webp(image_url: str | None = None, file_doc: Document | None = No
 	def handle_image_from_url(image_url):
 		image_url = unquote(image_url)
 		response = requests.get(image_url)
-		image = Image.open(BytesIO(response.content))
+		image = Image.open(io.BytesIO(response.content))
 		filename = image_url.split("/")[-1]
 		extn = get_extension(filename)
 		if can_convert_image(extn):
