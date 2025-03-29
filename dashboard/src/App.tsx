@@ -9,6 +9,7 @@ import CreateERD from './pages/features/erd/meta/CreateERDForMeta'
 import Overview from './pages/overview/Overview'
 import { DocsMainPage } from './components/features/documentation/DocsMainPage'
 import { PageTable } from './pages/features/docs/DocsEditor/PageTable'
+import { Sidebar } from './components/features/Sidebar/DashboardSidebar'
 
 
 function App() {
@@ -49,7 +50,7 @@ function App() {
               {/* Add nested dynamic route inside editor */}
               <Route path=':pageID' element={<PageTable />} />
             </Route>
-            <Route path='sidebar' element={<></>} />
+            <Route path='sidebar' element={<Sidebar />} />
             <Route path='navbar' element={<></>} />
             <Route path='footer' element={<></>} />
             <Route path='settings' element={<></>} />
