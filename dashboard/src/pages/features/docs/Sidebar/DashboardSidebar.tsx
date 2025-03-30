@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useGetCommitDocsDetails } from '../../../../components/features/meta_apps/useGetCommitDocsDetails';
 import { ErrorBanner } from '@/components/common/ErrorBanner/ErrorBanner';
 import { FullPageLoader } from '@/components/common/FullPageLoader/FullPageLoader';
-import { KanbanBoard } from '../../../../components/features/Sidebar/KanbanBoard';
+import { SidebarBoard } from '../../../../components/features/Sidebar/SidebarBoard';
 import { useMemo } from 'react';
 
 export const Sidebar = () => {
@@ -40,7 +40,7 @@ const SidebarDetails = ({ ID }: { ID: string }) => {
 
     if (data) {
         return (
-            <KanbanBoard
+            <SidebarBoard
                 defaultCols={defaultCols}
                 initialTasks={initialTasks}
                 mutate={mutate}

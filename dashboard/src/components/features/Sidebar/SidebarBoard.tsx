@@ -23,7 +23,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { ErrorBanner } from '@/components/common/ErrorBanner/ErrorBanner';
 import { SpinnerLoader } from '@/components/common/FullPageLoader/SpinnerLoader';
 
-export function KanbanBoard({
+export function SidebarBoard({
   defaultCols,
   initialTasks,
   mutate,
