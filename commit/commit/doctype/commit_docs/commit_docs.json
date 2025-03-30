@@ -28,6 +28,7 @@
   "github",
   "raven",
   "telegram",
+  "discord",
   "section_break_gawv",
   "footer"
  ],
@@ -172,11 +173,17 @@
    "fieldname": "preview_image",
    "fieldtype": "Attach Image",
    "label": "Preview Image"
+  },
+  {
+   "description": "Add Discord URl",
+   "fieldname": "discord",
+   "fieldtype": "Data",
+   "label": "Discord"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-09 17:03:26.838375",
+ "modified": "2025-03-30 12:43:40.306104",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs",
@@ -196,6 +203,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []

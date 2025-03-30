@@ -47,6 +47,8 @@ export interface CommitDocs{
 	raven?: string
 	/**	Telegram : Data - Add Telegram URL	*/
 	telegram?: string
+	/**	Discord : Data - Add Discord URl	*/
+	discord?: string
 	/**	Footer : Table - Commit Docs Footer Item	*/
 	footer?: CommitDocsFooterItem[]
 }
