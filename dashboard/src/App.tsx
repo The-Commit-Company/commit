@@ -10,6 +10,7 @@ import Overview from './pages/overview/Overview'
 import { DocsMainPage } from './components/features/documentation/DocsMainPage'
 import { PageTable } from './pages/features/docs/DocsEditor/PageTable'
 import { Sidebar } from './components/features/Sidebar/DashboardSidebar'
+import { DocsSettings } from './pages/features/docs/Settings/DocsSettings'
 
 
 function App() {
@@ -53,7 +54,7 @@ function App() {
             <Route path='sidebar' element={<Sidebar />} />
             <Route path='navbar' element={<></>} />
             <Route path='footer' element={<></>} />
-            <Route path='settings' element={<></>} />
+            <Route path='settings' element={<DocsSettings />} />
           </Route>
           <Route path='*' element={<PageNotFound />} />
         </Routes>
