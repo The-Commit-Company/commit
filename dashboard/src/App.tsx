@@ -9,7 +9,7 @@ import CreateERD from './pages/features/erd/meta/CreateERDForMeta'
 import Overview from './pages/overview/Overview'
 import { DocsMainPage } from './components/features/documentation/DocsMainPage'
 import { PageTable } from './pages/features/docs/DocsEditor/PageTable'
-import { Sidebar } from './components/features/Sidebar/DashboardSidebar'
+import { Sidebar } from './pages/features/docs/Sidebar/DashboardSidebar'
 import { DocsSettings } from './pages/features/docs/Settings/DocsSettings'
 
 

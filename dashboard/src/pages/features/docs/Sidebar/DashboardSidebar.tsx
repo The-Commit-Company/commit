@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
-import { useGetCommitDocsDetails } from '../meta_apps/useGetCommitDocsDetails';
+import { useGetCommitDocsDetails } from '../../../../components/features/meta_apps/useGetCommitDocsDetails';
 import { ErrorBanner } from '@/components/common/ErrorBanner/ErrorBanner';
 import { FullPageLoader } from '@/components/common/FullPageLoader/FullPageLoader';
-import { KanbanBoard } from './KanbanBoard';
+import { KanbanBoard } from '../../../../components/features/Sidebar/KanbanBoard';
 import { useMemo } from 'react';
 
 export const Sidebar = () => {
