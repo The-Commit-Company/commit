@@ -147,6 +147,21 @@ export function KanbanBoard({
     setOpen(false);
   }
 
+  const handleUpdateColumnTitle = (id: UniqueIdentifier, newTitle: string) => {
+    setParentLabels((prev) =>
+      prev.map((col) => (col.id === id ? { ...col, title: newTitle, id: newTitle } : col))
+    );
+
+    // Update the tasks associated with the column
+    setDocsPage((prevTasks) =>
+      prevTasks.map((task) =>
+        task.columnId === id ? { ...task, columnId: newTitle } : task
+      )
+    );
+    // set modified to true
+    setIsModified(true);
+  };
+
   const { call, error, loading } = useFrappePostCall('commit.commit.doctype.commit_docs.commit_docs.manage_sidebar')
 
   const { toast } = useToast();
@@ -155,7 +170,7 @@ export function KanbanBoard({
     // Save the columns and tasks to the database or perform any other action
 
     const sequenceParentLabels = parentLabels.map((col) => col.id);
-    const pagesWithIndex = docsPage.map((task,index) => ({
+    const pagesWithIndex = docsPage.map((task, index) => ({
       ...task,
       index: index,
     }));
@@ -180,15 +195,15 @@ export function KanbanBoard({
   function onDragOver(event: DragOverEvent) {
     const { active, over } = event;
     if (!over) return;
-  
+
     const activeType = activeItem?.type;
-  
+
     if (activeType === 'task') {
       const activeTaskIndex = docsPage.findIndex((t) => t.id === active.id);
       if (activeTaskIndex === -1) return;
-  
+
       const activeTask = docsPage[activeTaskIndex];
-  
+
       // Check if the task is hovering over a different board
       const overColumn = parentLabels.find((col) => col.id === over.id);
       if (overColumn && activeTask.columnId !== overColumn.id) {
@@ -266,6 +281,7 @@ export function KanbanBoard({
                   handleDeleteColumn={handleDeleteColumn}
                   handleAddTask={handleAddTask}
                   commitDocs={commitDocs}
+                  handleUpdateColumnTitle={handleUpdateColumnTitle}
                 />
               ))}
             </SortableContext>
@@ -285,6 +301,7 @@ export function KanbanBoard({
                   handleDeleteColumn={handleDeleteColumn}
                   handleAddTask={handleAddTask}
                   commitDocs={commitDocs}
+                    handleUpdateColumnTitle={handleUpdateColumnTitle}
                 />
               )
             ) : null}

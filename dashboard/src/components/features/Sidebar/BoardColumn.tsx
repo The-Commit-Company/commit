@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Label } from "@/components/ui/label";
 import { AsyncDropdownWithoutForm } from "@/components/common/AsyncDropdown/AsyncDropdown";
 import { FrappeConfig, FrappeContext } from "frappe-react-sdk";
+import { Input } from "@/components/ui/input";
 
 export interface Column {
   id: UniqueIdentifier;
@@ -34,9 +35,10 @@ interface BoardColumnProps {
   handleDeleteColumn: (id: UniqueIdentifier) => void; // 👈 Added delete function
   handleAddTask: (task: Task) => void; // 👈 Added add function
   commitDocs: string
+  handleUpdateColumnTitle: (id: UniqueIdentifier, title: string) => void; // 👈 Added update function
 }
 
-export function BoardColumn({ column, index, tasks, isOverlay, handleDeleteTask, handleDeleteColumn, handleAddTask, commitDocs }: BoardColumnProps) {
+export function BoardColumn({ column, index, tasks, isOverlay, handleDeleteTask, handleDeleteColumn, handleAddTask, commitDocs, handleUpdateColumnTitle }: BoardColumnProps) {
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
@@ -89,6 +91,16 @@ export function BoardColumn({ column, index, tasks, isOverlay, handleDeleteTask,
     }
   }, [title, column.id, call, handleAddTask, setTitle, setOpen]);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState(column.title);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    if (newTitle.trim() !== "" && newTitle !== column.title) {
+      handleUpdateColumnTitle(column.id, newTitle);
+    }
+  };
+
   return (
     <Card
       ref={setNodeRef}
@@ -97,9 +109,25 @@ export function BoardColumn({ column, index, tasks, isOverlay, handleDeleteTask,
     >
       {/* Sticky Header */}
       <CardHeader className="p-2 px-4 font-semibold border-b flex flex-row items-center justify-between bg-white z-10 sticky top-0 rounded-t-lg">
-        <span className="text-sm text-primary/80">
+        <span className="text-sm text-primary/80 flex flex-row items-center gap-1">
           <span className="font-semibold">{index + 1}. </span>
+          {isEditing ? (
+            <Input
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={(e) => e.key === "Enter" && handleBlur()}
+              autoFocus
+              className="border-none shadow-none h-4 bg-transparent p-1 :focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:border-none"
+            />
+          ) : (
+            <h3
+              className="font-semibold cursor-pointer p-1"
+              onDoubleClick={() => setIsEditing(true)}
+            >
           {column.title}
+            </h3>
+          )}
         </span>
 
         <div className="flex items-center gap-1">
