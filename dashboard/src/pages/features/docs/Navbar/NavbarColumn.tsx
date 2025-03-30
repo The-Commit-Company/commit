@@ -275,55 +275,67 @@ export function NavbarColumn({
                     </ScrollArea>
                 )}
                 {column.type === 'Button' && (
-                    <CardContent className="flex flex-col gap-2 p-0 bg-zinc-100 dark:bg-white/[0.04]">
-                        <div className="p-4 flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="button-label">Label</Label>
+                    <CardContent className="flex flex-col gap-2 p-0 overflow-y-auto bg-zinc-100 dark:bg-white/[0.04]">
+                        <div className="px-4 py-2 flex flex-col gap-3">
+                            <div className="flex flex-col gap-1">
+                                <Label htmlFor="button-label" className='text-xs'>Label</Label>
                                 <Input
                                     id="button-label"
                                     value={column.label}
+                                    className='h-8'
                                     onChange={(e) => handleUpdateColumn(column.id, { ...column, label: e.target.value })}
                                     placeholder="Enter button label"
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-2">
-                                <Label htmlFor="button-url">URL</Label>
+                            <div className="flex flex-col gap-1">
+                                <Label htmlFor="button-url" className='text-xs'>URL</Label>
                                 <Input
                                     id="button-url"
                                     value={column.url || ''}
+                                    className='h-8'
                                     onChange={(e) => handleUpdateColumn(column.id, { ...column, url: e.target.value })}
                                     placeholder="Enter button URL"
                                 />
                             </div>
+                            <div className="flex flex-col gap-1">
+                                <Label htmlFor="button-icon" className='text-xs'>Icon</Label>
+                                <Input
+                                    id="button-icon"
+                                    value={column.icon || ''}
+                                    className='h-8'
+                                    onChange={(e) => handleUpdateColumn(column.id, { ...column, icon: e.target.value })}
+                                    placeholder="Enter icon name"
+                                />
+                            </div>
 
-                            <div className="flex flex-row items-center gap-2">
+                            <div className="flex flex-row items-center gap-1">
                                 <Checkbox
                                     checked={column.open_in_new_tab ? true: false}
                                     onCheckedChange={(checked) =>
                                         handleUpdateColumn(column.id, { ...column, open_in_new_tab: checked ? true: false })
                                     }
                                 />
-                                <Label htmlFor="open-in-new-tab">Open in new tab</Label>
+                                <Label htmlFor="open-in-new-tab" className='text-xs'>Open in new tab</Label>
                             </div>
 
-                            <div className="flex flex-row items-center gap-2">
+                            <div className="flex flex-row items-center gap-1">
                                 <Checkbox
                                     checked={column.is_primary_button ? true : false}
                                     onCheckedChange={(checked) =>
                                         handleUpdateColumn(column.id, { ...column, is_primary_button: checked ? true : false })
                                     }
                                 />
-                                <Label htmlFor="is-primary-button">Primary Button</Label>
+                                <Label htmlFor="is-primary-button" className='text-xs'>Primary Button</Label>
                             </div>
 
-                            <div className="flex flex-row items-center gap-2">
+                            <div className="flex flex-row items-center gap-1">
                                 <Checkbox checked={column.hide_on_sidebar ? true : false}
                                     onCheckedChange={(checked) =>
                                         handleUpdateColumn(column.id, { ...column, hide_on_sidebar: checked ? true : false })
                                     }
                                 />
-                                <Label htmlFor="hide-on-sidebar">Hide on Sidebar</Label>
+                                <Label htmlFor="hide-on-sidebar" className='text-xs'>Hide on Sidebar</Label>
                             </div>
                         </div>
                     </CardContent>

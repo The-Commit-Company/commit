@@ -65,7 +65,7 @@ export function NavbarTaskCard({ task, onDelete, handleUpdateTask }: { task: Nav
                         <Button
                             variant="link"
                             size="icon"
-                            className="text-primary/80 h-6 w-6 m-0 mr-1"
+                            className="text-primary/80 h-6 w-6 m-0"
                             onClick={() => setIsEditing(!isEditing)}
                         >
                             {isEditing ? (
@@ -74,7 +74,7 @@ export function NavbarTaskCard({ task, onDelete, handleUpdateTask }: { task: Nav
                                 <ChevronDown className="h-4 w-4" />
                             )}
                         </Button>
-                        <span className="text-sm text-primary/80 pl-2">{task.label}</span>
+                        <span className="text-sm text-primary/80">{task.label}</span>
                     </div>
                     <div className="flex items-center !my-0 gap-2">
                         {/* Drag Handle */}
