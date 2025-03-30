@@ -98,7 +98,7 @@ def get_all_commit_docs_detail():
 
 
 @frappe.whitelist(allow_guest=True)
-def get_commit_docs_details(route:str):
+def get_commit_docs_details(route:str,show_hidden_items:bool=False):
 	'''
 		Get the Commit Docs Details
 		# 1. Get the Commit Docs Document from the route
@@ -121,22 +121,22 @@ def get_commit_docs_details(route:str):
 		else:
 			commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
 
-			return parse_commit_docs(commit_docs)
+			return parse_commit_docs(commit_docs,show_hidden_items)
 		
 	else:
 		return frappe.throw('Docs Not Found')
 
 
-def parse_commit_docs(commit_docs):
+def parse_commit_docs(commit_docs,show_hidden_items:bool=False):
 
 	# Get the Sidebar Items
-	sidebar_items = get_sidebar_items(commit_docs.sidebar)
+	sidebar_items = get_sidebar_items(commit_docs.sidebar,show_hidden_items)
 
 	# Get the Footer Items
-	footer_items = get_footer_items(commit_docs.footer)
+	footer_items = get_footer_items(commit_docs.footer,show_hidden_items)
 
 	# Get the Navbar Items
-	navbar_items = get_navbar_items(commit_docs.navbar_items)
+	navbar_items = get_navbar_items(commit_docs.navbar_items,show_hidden_items)
 	
 	# remove the sidebar from the commit_docs as it is not needed
 	commit_docs.pop('sidebar')
@@ -150,7 +150,7 @@ def parse_commit_docs(commit_docs):
 		'navbar_items': navbar_items,
 	}
 
-def get_footer_items(footer):
+def get_footer_items(footer,show_hidden_items:bool=False):
 	'''
 		Get the Footer Items
 		# 1. Loop Over the Footer Items Which have Parent Label URL and Label
@@ -159,7 +159,8 @@ def get_footer_items(footer):
 	'''
 	footer_obj = {}
 	for footer_item in footer:
-		if footer_item.hide_on_footer:
+		if footer_item.hide_on_footer and not show_hidden_items:
+			# If the footer item is hidden and show_hidden_items is False, skip it
 			continue
 
 		if footer_item.parent_label not in footer_obj:
@@ -177,7 +178,7 @@ def get_footer_items(footer):
 	
 	return footer_obj
 
-def get_navbar_items(navbar):
+def get_navbar_items(navbar,show_hidden_items:bool=False):
 	'''
 		Get the Navbar Items
 		# 1. Loop Over the Navbar Items Which have Label, Parent Label, URL
@@ -189,7 +190,7 @@ def get_navbar_items(navbar):
 	navbar_obj = {}
 	parent_labels = []
 	for navbar_item in navbar:
-		if navbar_item.hide_on_navbar:
+		if navbar_item.hide_on_navbar and not show_hidden_items:
 			continue
 		
 		
@@ -234,7 +235,7 @@ def get_navbar_items(navbar):
 
 	return navbar_obj
 
-def get_sidebar_items(sidebar):
+def get_sidebar_items(sidebar,show_hidden_items:bool=False):
     '''
     Get the Sidebar Items with support for nested Group Pages.
     '''
@@ -290,7 +291,7 @@ def get_sidebar_items(sidebar):
 
     sidebar_obj = {}
     for sidebar_item in sidebar:  # Preserve the original order of the sidebar
-        if sidebar_item.hide_on_sidebar:
+        if sidebar_item.hide_on_sidebar and not show_hidden_items:
             continue
 
         commit_docs_page = frappe.get_doc('Commit Docs Page', sidebar_item.docs_page)

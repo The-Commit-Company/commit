@@ -11,6 +11,7 @@ import { DocsMainPage } from './components/features/documentation/DocsMainPage'
 import { PageTable } from './pages/features/docs/DocsEditor/PageTable'
 import { Sidebar } from './pages/features/docs/Sidebar/DashboardSidebar'
 import { DocsSettings } from './pages/features/docs/Settings/DocsSettings'
+import { DashboardNavbar } from './pages/features/docs/Navbar/DashboardNavbar'
 
 
 function App() {
@@ -52,7 +53,7 @@ function App() {
               <Route path=':pageID' element={<PageTable />} />
             </Route>
             <Route path='sidebar' element={<Sidebar />} />
-            <Route path='navbar' element={<></>} />
+            <Route path='navbar' element={<DashboardNavbar />} />
             <Route path='footer' element={<></>} />
             <Route path='settings' element={<DocsSettings />} />
           </Route>

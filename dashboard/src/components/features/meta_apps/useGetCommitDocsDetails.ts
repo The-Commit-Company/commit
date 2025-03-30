@@ -21,6 +21,7 @@ export const useGetCommitDocsDetails = (ID: string, dashboard: boolean = false) 
         'commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_details',
         {
             route: ID,
+            show_hidden_items: dashboard
         },
         bootCommitDocsDetails === null ? 'get_commit_docs_details' : null,
         {
