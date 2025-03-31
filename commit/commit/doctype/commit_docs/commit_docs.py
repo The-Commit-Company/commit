@@ -482,3 +482,52 @@ def manage_navbar(commit_doc:str, navbar_items, sub_navbar_items=None):
 	doc.save()
 
 	return doc
+
+@frappe.whitelist(methods=["POST"])
+def manage_footer(commit_doc:str, footer_columns, footer_items):
+	'''
+		This is to modify the footer items of the commit docs
+		@param commit_doc: The Commit Docs ID
+		@param footer_columns: The Footer Columns List of Parent Label
+		@param footer_items: The Footer Items List of Object having label, url, hide_on_footer, columnId,id
+
+		# 1. Get the Commit Docs Document
+		# 2. Loop Over the Footer Columns
+		# 3. Search for the Parent Label in the Footer Items
+		# 4. Loop over the filtered list and append the footer items to the footer
+		# 5. Save the Footer Items
+	'''
+
+	doc = frappe.get_doc('Commit Docs',commit_doc)
+	if isinstance(footer_columns, str):
+		footer_columns = json.loads(footer_columns)
+
+	if isinstance(footer_items, str):
+		footer_items = json.loads(footer_items)
+
+	doc.footer = []
+	for parent_label in footer_columns:
+		# Filter the footer_items List of Object
+		filtered_footer_items = [item for item in footer_items if item.get('columnId') == parent_label]
+		
+		# Check if there are any duplicate footer_items
+		duplicate = set()
+		for item in filtered_footer_items:
+			if item.get('id') in duplicate:
+				frappe.throw(f'You have Duplicate Footer Item {item.get("id")} in Same Parent Label {parent_label}')
+			duplicate.add(item.get('id'))
+		
+		# sort by index field
+		filtered_footer_items = sorted(filtered_footer_items, key=lambda x: x.get('index', 0))
+
+		for item in filtered_footer_items:
+			doc.append('footer',{
+				'label': item.get('label'),
+				'url': item.get('url'),
+				'hide_on_footer': item.get('hide_on_footer'),
+				'parent_label': parent_label,
+			})
+	
+	doc.save()
+
+	return doc
