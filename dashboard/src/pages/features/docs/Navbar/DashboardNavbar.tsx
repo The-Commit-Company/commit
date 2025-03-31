@@ -42,7 +42,7 @@ const NavbarDetails = ({ ID }: { ID: string }) => {
 
     if (data) {
         return (
-            <NavbarBoard defaultCols={defaultCols} initialTasks={initialTasks} mutate={mutate} />
+            <NavbarBoard defaultCols={defaultCols} initialTasks={initialTasks} mutate={mutate} commitDoc={data?.commit_docs}/>
         );
     }
     if (error) return <ErrorBanner error={error} />;

@@ -275,7 +275,7 @@ export function NavbarColumn({
                     </ScrollArea>
                 )}
                 {column.type === 'Button' && (
-                    <CardContent className="flex flex-col gap-2 p-0 overflow-y-auto bg-zinc-100 dark:bg-white/[0.04]">
+                    <CardContent className="flex flex-col gap-2 p-0 overflow-y-scroll bg-zinc-100 dark:bg-white/[0.04]">
                         <div className="px-4 py-2 flex flex-col gap-3">
                             <div className="flex flex-col gap-1">
                                 <Label htmlFor="button-label" className='text-xs'>Label</Label>
@@ -330,9 +330,9 @@ export function NavbarColumn({
                             </div>
 
                             <div className="flex flex-row items-center gap-1">
-                                <Checkbox checked={column.hide_on_sidebar ? true : false}
+                                <Checkbox checked={column.hide_on_navbar ? true : false}
                                     onCheckedChange={(checked) =>
-                                        handleUpdateColumn(column.id, { ...column, hide_on_sidebar: checked ? true : false })
+                                        handleUpdateColumn(column.id, { ...column, hide_on_navbar: checked ? true : false })
                                     }
                                 />
                                 <Label htmlFor="hide-on-sidebar" className='text-xs'>Hide on Sidebar</Label>

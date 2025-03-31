@@ -24,6 +24,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ErrorBanner } from '@/components/common/ErrorBanner/ErrorBanner';
+import { CommitDocs } from '@/types/commit/CommitDocs';
+import { useToast } from '@/components/ui/use-toast';
 
 export interface NavbarColumnData {
     id: string;
@@ -33,17 +35,19 @@ export interface NavbarColumnData {
     icon?: string;
     open_in_new_tab?: boolean;
     is_primary_button?: boolean;
-    hide_on_sidebar?: boolean;
+    hide_on_navbar?: boolean;
 }
 
 export function NavbarBoard({
     defaultCols,
     initialTasks,
     mutate,
+    commitDoc
 }: {
     defaultCols: NavbarColumnData[];
     initialTasks: NavbarTask[];
     mutate: VoidFunction;
+        commitDoc: CommitDocs
 }) {
     const [columns, setColumns] = useState<NavbarColumnData[]>(defaultCols);
     const [tasks, setTasks] = useState<NavbarTask[]>(initialTasks);
@@ -63,19 +67,36 @@ export function NavbarBoard({
         setTasks(initialTasks);
     }, [initialTasks]);
 
-    const { call, error, loading } = useFrappePostCall('commit.commit.doctype.commit_docs.commit_docs.manage_sidebar')
+    const { call, error, loading } = useFrappePostCall('commit.commit.doctype.commit_docs.commit_docs.manage_navbar')
 
     const [open, setOpen] = useState(false);
 
     const handleClose = () => {
         setOpen(false);
     }
-
+    const { toast } = useToast();
     const handleSave = () => {
         // Save the columns and tasks to the database or perform any other action
-        mutate();
-        setIsModified(false);
-    };
+        // Add index to the columns and tasks
+        const updatedColumns = columns.map((col, index) => ({ ...col, index }));
+        const updatedTasks = tasks.map((task, index) => ({ ...task, index }));
+
+        call({
+            commit_doc: commitDoc.name,
+            navbar_items: JSON.stringify(updatedColumns),
+            sub_navbar_items: JSON.stringify(updatedTasks)
+        }).then((res: any) => {
+            if (res.message) {
+                mutate();
+                setIsModified(false);
+                toast({
+                    description: "Navbar structure updated successfully",
+                    duration: 1500,
+                });
+
+            }
+        })
+    }
 
     const handleDeleteTask = (taskId: UniqueIdentifier) => {
         // Remove the task from the tasks state
@@ -162,6 +183,10 @@ export function NavbarBoard({
         const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
         const overTaskIndex = tasks.findIndex((task) => task.id === over.id);
 
+        // Handle column drag-and-drop
+        const activeColumnIndex = columns.findIndex((col) => col.id === active.id);
+        const overColumnIndex = columns.findIndex((col) => col.id === over.id);
+
         if (activeTaskIndex !== -1 && overTaskIndex !== -1) {
             // Rearrange tasks
             const updatedTasks = [...tasks];
@@ -173,6 +198,19 @@ export function NavbarBoard({
             setIsModified(true);
             return;
         }
+
+        if (activeColumnIndex !== -1 && overColumnIndex !== -1) {
+            // Rearrange columns
+            const updatedColumns = [...columns];
+            const [movedColumn] = updatedColumns.splice(activeColumnIndex, 1);
+            updatedColumns.splice(overColumnIndex, 0, movedColumn);
+
+            // Update state
+            setColumns(updatedColumns);
+            setIsModified(true);
+            return;
+        }
+
 
         // Handle if task moved to a different column
         const activeTask = tasks.find((task) => task.id === active.id);
@@ -186,6 +224,8 @@ export function NavbarBoard({
             );
             setIsModified(true);
         }
+
+
     };
 
 
@@ -412,8 +452,8 @@ const CreateNewParentLabel = ({ onColumnCreate, onClose, open }: CreateParentLab
                                 </Label>
                             </div>
                             <div className='flex flex-row gap-2'>
-                                <Checkbox checked={column?.hide_on_sidebar} onCheckedChange={(checked) => handleChange('hide_on_sidebar', checked)} />
-                                <Label htmlFor={"hide_on_sidebar"} >
+                                <Checkbox checked={column?.hide_on_navbar} onCheckedChange={(checked) => handleChange('hide_on_navbar', checked)} />
+                                <Label htmlFor={"hide_on_navbar"} >
                                     Hide on Sidebar
                                 </Label>
                             </div>

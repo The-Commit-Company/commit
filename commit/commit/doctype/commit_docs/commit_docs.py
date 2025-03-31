@@ -167,13 +167,15 @@ def get_footer_items(footer,show_hidden_items:bool=False):
 			footer_obj[footer_item.parent_label] = [
 				{
 					'label': footer_item.label,
-					'url': footer_item.url
+					'url': footer_item.url,
+					'hide_on_footer': footer_item.hide_on_footer
 				}
 			]
 		else:
 			footer_obj[footer_item.parent_label].append({
 				'label': footer_item.label,
-				'url': footer_item.url
+				'url': footer_item.url,
+				'hide_on_footer': footer_item.hide_on_footer
 			})
 	
 	return footer_obj
@@ -207,7 +209,8 @@ def get_navbar_items(navbar,show_hidden_items:bool=False):
 						'icon': navbar_item.icon,
 						'open_in_new_tab': navbar_item.open_in_new_tab
 					}],
-					'is_primary_button': navbar_item.is_primary_button
+					'is_primary_button': navbar_item.is_primary_button,
+					'hide_on_navbar': navbar_item.hide_on_navbar
 				}
 			else:
 				navbar_obj[navbar_item.parent_label]['items'].append({
@@ -225,7 +228,8 @@ def get_navbar_items(navbar,show_hidden_items:bool=False):
 					'icon': navbar_item.icon,
 					'open_in_new_tab': navbar_item.open_in_new_tab,
 					'url': navbar_item.url,
-					'is_primary_button': navbar_item.is_primary_button
+					'is_primary_button': navbar_item.is_primary_button,
+					'hide_on_navbar': navbar_item.hide_on_navbar
 				}
 	
 	# Remove that Object whose type is Button and Key is in Parent Labels
@@ -318,7 +322,8 @@ def get_sidebar_items(sidebar,show_hidden_items:bool=False):
             'group_name': sidebar_item.parent_label,
             'is_group_page': is_group_page,
             'group_items': group_items if is_group_page else None,
-            'idx': commit_docs_page.idx
+            'idx': commit_docs_page.idx,
+			'hide_on_sidebar': sidebar_item.hide_on_sidebar
         }
 
         # Add sidebar entry to the parent label
@@ -414,6 +419,66 @@ def manage_sidebar(commit_doc:str,parent_labels,docs_page):
 				'docs_page': item.get('id'),
 			})
 	
+	doc.save()
+
+	return doc
+
+@frappe.whitelist(methods=["POST"])
+def manage_navbar(commit_doc:str, navbar_items, sub_navbar_items=None):
+	'''
+		This is to modify the navbar items of the commit docs
+		@param commit_doc: The Commit Docs ID
+		@param navbar_items: The Navbar Items List of Object having label, url, parent label, icon, open_in_new_tab
+
+		# 1. Get the Commit Docs Document
+		# 2. Loop Over the Navbar Items
+		# 3. Append the Navbar Items to the Navbar Items Table
+		# 4. Save the Navbar Items
+	'''
+
+	doc = frappe.get_doc('Commit Docs',commit_doc)
+
+	if isinstance(navbar_items, str):
+		navbar_items = json.loads(navbar_items)
+	
+	if isinstance(sub_navbar_items, str):
+		sub_navbar_items = json.loads(sub_navbar_items)
+
+	doc.navbar_items = []
+	# sort the navbar_items by index field
+	navbar_items = sorted(navbar_items, key=lambda x: x.get('index', 0))
+
+	for item in navbar_items:
+		if item.get('type') == "Menu":
+			doc.append('navbar_items',{
+				'label': item.get('label'),
+				'hide_on_navbar': item.get('hide_on_navbar'),
+			})
+			if sub_navbar_items:
+				# find the task in the sub_navbar_items where columnId is equal to item.get('label')
+				sub_items = [sub_item for sub_item in sub_navbar_items if sub_item.get('columnId') == item.get('label')]
+				# sort the sub_items by index field
+				sub_items = sorted(sub_items, key=lambda x: x.get('index', 0))
+				# Loop Over the Sub Items
+				for sub_item in sub_items:
+					doc.append('navbar_items',{
+						'label': sub_item.get('label'),
+						'url': sub_item.get('url'),
+						'icon': sub_item.get('icon'),
+						'open_in_new_tab': sub_item.get('open_in_new_tab'),
+						"parent_label": item.get('label'),
+					})
+		
+		else:
+			doc.append('navbar_items',{
+				'label': item.get('label'),
+				'url': item.get('url'),
+				'icon': item.get('icon'),
+				'open_in_new_tab': item.get('open_in_new_tab'),
+				'hide_on_navbar': item.get('hide_on_navbar'),
+				'is_primary_button': item.get('is_primary_button')
+			})
+
 	doc.save()
 
 	return doc
