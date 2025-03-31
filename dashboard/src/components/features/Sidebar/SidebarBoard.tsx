@@ -301,7 +301,7 @@ export function SidebarBoard({
                   handleDeleteColumn={handleDeleteColumn}
                   handleAddTask={handleAddTask}
                   commitDocs={commitDocs}
-                    handleUpdateColumnTitle={handleUpdateColumnTitle}
+                  handleUpdateColumnTitle={handleUpdateColumnTitle}
                 />
               )
             ) : null}

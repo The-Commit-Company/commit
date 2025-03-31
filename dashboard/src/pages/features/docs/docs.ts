@@ -22,11 +22,13 @@ export interface DocsNavbarItem {
     open_in_new_tab?: boolean
     items?: DocsNavbarItem[],
     is_primary_button?: boolean
+    hide_on_navbar?: boolean
 }
 
 export interface DocsFooterItem {
     label: string
     url: string
+    hide_on_footer?: boolean
 }
 
 export interface Docs {

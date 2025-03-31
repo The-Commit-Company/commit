@@ -12,6 +12,7 @@ import { PageTable } from './pages/features/docs/DocsEditor/PageTable'
 import { Sidebar } from './pages/features/docs/Sidebar/DashboardSidebar'
 import { DocsSettings } from './pages/features/docs/Settings/DocsSettings'
 import { DashboardNavbar } from './pages/features/docs/Navbar/DashboardNavbar'
+import { DashboardFooter } from './pages/features/docs/Footer/DashboardFooter'
 
 
 function App() {
@@ -54,7 +55,7 @@ function App() {
             </Route>
             <Route path='sidebar' element={<Sidebar />} />
             <Route path='navbar' element={<DashboardNavbar />} />
-            <Route path='footer' element={<></>} />
+            <Route path='footer' element={<DashboardFooter />} />
             <Route path='settings' element={<DocsSettings />} />
           </Route>
           <Route path='*' element={<PageNotFound />} />
