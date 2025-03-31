@@ -1,5 +1,5 @@
 import { FrappeError, useFrappePostCall } from 'frappe-react-sdk'
-import { lazy, PropsWithChildren, Suspense, useEffect, useRef } from 'react'
+import { PropsWithChildren, useEffect, useRef } from 'react'
 import { Filter, useFrappeGetCall } from "frappe-react-sdk";
 import { useCallback, useMemo, useState } from "react";
 import { RegisterOptions, useController, useFormContext } from "react-hook-form";
@@ -11,11 +11,7 @@ import { useGetDoctypeMeta } from '@/hooks/useGetDoctypeMeta';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getLinkTitleAtom, setLinkTitleAtom } from './LinkTitles';
 import { AsyncSpinnerLoader } from '../FullPageLoader/SpinnerLoader';
-import { getErrorMessages } from '../ErrorBanner/ErrorBanner';
-import { FullPageLoader } from '../FullPageLoader/FullPageLoader';
-
-
-const MDXRenderer = lazy(() => import('../MarkdownRenderer/MDX'))
+import { ErrorBanner, } from '../ErrorBanner/ErrorBanner';
 
 interface ResultItem {
     value: string,
@@ -474,9 +470,7 @@ const ErrorContainer = ({ error }: { error?: FrappeError }) => {
             <div className="absolute w-full z-10 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 rounded-b-md p-2"
                 style={{ boxShadow: '0px 8px 14px rgba(25, 39, 52, 0.08), 0px 2px 6px rgba(25, 39, 52, 0.04)' }}>
                 <p className="text-red-500 text-sm">
-                    <Suspense fallback={<FullPageLoader />}>
-                        {getErrorMessages(error).map(e => <MDXRenderer key={e.message} mdxContent={e.message} />)}
-                    </Suspense>
+                    <ErrorBanner error={error} />
                 </p>
             </div>
         );
