@@ -165,7 +165,7 @@ export function NavbarColumn({
                                 <Plus className="h-4 w-4" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto">
+                        <PopoverContent className="w-auto min-w-[300px]">
                             <div className="grid gap-4">
                                 <div className="space-y-2">
                                     <h4 className="font-medium leading-none">Add new</h4>
@@ -173,38 +173,42 @@ export function NavbarColumn({
                                         Add a new button under <b>{column.label}</b>
                                     </p>
                                 </div>
-                                <div className="grid gap-2">
-                                    <div className='flex flex-col gap-4'>
-                                        <div className='flex flex-col gap-2'>
+                                <div className="flex flex-col gap-4">
+                                    <div className='flex flex-col gap-0'>
+                                        <div className='flex flex-row gap-1 items-center'>
                                             <Label htmlFor={"label"} >
                                                 Label
                                             </Label>
-                                            <Input
-                                                id="label"
-                                                placeholder='Label'
-                                                value={newTask?.label}
-                                                onChange={(e) => handleChange('label', e.target.value)}
-                                            />
+                                            <span className="text-red-500">*</span>
                                         </div>
+                                        <Input
+                                            id="label"
+                                            placeholder='Label'
+                                            value={newTask?.label}
+                                            onChange={(e) => handleChange('label', e.target.value)}
+                                        />
+                                    </div>
 
-                                        <div className='flex flex-col gap-2'>
+                                    <div className='flex flex-col gap-0'>
+                                        <div className='flex flex-row gap-1 items-center'>
                                             <Label htmlFor={"url"} >
                                                 URL
                                             </Label>
-                                            <Input
-                                                id="url"
-                                                placeholder='URL'
-                                                value={newTask?.url}
-                                                onChange={(e) => handleChange('url', e.target.value)}
-                                            />
+                                            <span className="text-red-500">*</span>
                                         </div>
-                                        <div className='flex flex-row justify-between items-center'>
-                                            <div className='flex flex-row gap-2'>
-                                                <Checkbox checked={newTask?.open_in_new_tab} onCheckedChange={(checked) => handleChange('open_in_new_tab', checked)} />
-                                                <Label htmlFor={"open_in_new_tab"} >
-                                                    Open in new tab
-                                                </Label>
-                                            </div>
+                                        <Input
+                                            id="url"
+                                            placeholder='URL'
+                                            value={newTask?.url}
+                                            onChange={(e) => handleChange('url', e.target.value)}
+                                        />
+                                    </div>
+                                    <div className='flex flex-col gap-0'>
+                                        <div className='flex flex-row gap-2 items-center'>
+                                            <Checkbox checked={newTask?.open_in_new_tab} onCheckedChange={(checked) => handleChange('open_in_new_tab', checked)} />
+                                            <Label htmlFor={"open_in_new_tab"} >
+                                                Open in new tab
+                                            </Label>
                                         </div>
                                     </div>
                                 </div>
@@ -256,7 +260,7 @@ export function NavbarColumn({
                         <GripVertical className="h-4 w-4" />
                     </Button>
                 </div>
-            </CardHeader>
+            </CardHeader >
             <div className="flex-1 overflow-hidden relative">
                 {column.type === 'Menu' && (
                     <ScrollArea className="h-full overflow-y-auto p-2">
@@ -311,9 +315,9 @@ export function NavbarColumn({
 
                             <div className="flex flex-row items-center gap-1">
                                 <Checkbox
-                                    checked={column.open_in_new_tab ? true: false}
+                                    checked={column.open_in_new_tab ? true : false}
                                     onCheckedChange={(checked) =>
-                                        handleUpdateColumn(column.id, { ...column, open_in_new_tab: checked ? true: false })
+                                        handleUpdateColumn(column.id, { ...column, open_in_new_tab: checked ? true : false })
                                     }
                                 />
                                 <Label htmlFor="open-in-new-tab" className='text-xs'>Open in new tab</Label>
@@ -342,6 +346,6 @@ export function NavbarColumn({
                 )}
             </div>
 
-        </Card>
+        </Card >
     );
 }
