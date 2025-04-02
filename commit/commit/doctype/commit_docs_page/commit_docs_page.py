@@ -4,13 +4,24 @@
 import frappe
 from frappe.model.document import Document
 import json
-
+from commit.api.preview import save_preview_screenshot
 
 class CommitDocsPage(Document):
 	
 	def before_insert(self):
 		# Set the route for the page based on the title
 		self.route = f'{self.commit_docs.lower().replace(" ", "-")}-{self.title.lower().replace(" ", "-")}'
+	
+	def before_save(self):
+		# Check if this document is first item of commit docs sidebar child table
+		if self.commit_docs:
+			commit_docs = frappe.get_cached_doc('Commit Docs', self.commit_docs)
+			if commit_docs.sidebar:
+				first = commit_docs.sidebar[0]
+				if first.docs_page == self.name:
+					domain = frappe.utils.get_url()
+					docs_url = f'{domain}/commit-docs/{commit_docs.route}/{self.name}'
+					frappe.enqueue(method=save_preview_screenshot, url=docs_url,doctype="Commit Docs",docname=commit_docs.name,field='preview_image')
 
 @frappe.whitelist(methods=['POST'])
 def publish_documentation(project_branch, endpoint, viewer_type, docs_name, parent_label, title, published, allow_guest, content):
@@ -148,3 +159,48 @@ def calculate_toc_object(html):
         add_to_toc(toc, level, heading_id, title)
 
     return toc
+
+@frappe.whitelist()
+def get_commit_docs_page_list(commit_doc):
+	'''
+		Get the list of Commit Docs Page
+	'''
+	user_info = {}
+	users = []
+	page = frappe.get_all('Commit Docs Page', filters={'commit_docs': commit_doc}, fields=['*'], order_by='creation desc')
+	for p in page:
+		users.append(p.owner)
+		users.append(p.modified_by)
+	users = list(set(users))
+	frappe.utils.add_user_info(users, user_info)
+
+	return {
+		'pages': page,
+		'user_info': user_info
+	}
+
+@frappe.whitelist()
+def create_commit_docs_page(data):
+	'''
+		Create a new Commit Docs Page
+	'''
+	if isinstance(data, str):
+		data = json.loads(data)
+	
+	# create a new Commit Docs Page
+	commit_docs_page = frappe.get_doc({
+		'doctype': 'Commit Docs Page',
+		'title': data.get('title'),
+		'commit_docs': data.get('commit_docs'),
+	})
+
+	commit_docs_page.insert()
+	
+	if data.get('sidebar_label'):
+		commit_doc = frappe.get_doc('Commit Docs', data.get('commit_docs'))
+		commit_doc.append('sidebar', {
+			'parent_label': data.get('sidebar_label'),
+			'docs_page': commit_docs_page.name
+		})
+		commit_doc.save()
+	return commit_docs_page

@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CommitDocs } from "@/types/commit/CommitDocs"
 import { ArrowUpRight } from "lucide-react";
 import { useMemo } from "react"
+import { Link } from "react-router-dom";
 
 const DocsList = ({ data }: { data: CommitDocs[] }) => {
     return (
@@ -34,13 +35,13 @@ const DocCard = ({ data }: { data: CommitDocs }) => {
                     <div className="font-bold text-xl">
                         {data.header}
                     </div>
-                    <a
-                        href={`/${data.route}`}
+                    <Link
+                        to={`./${data.route}`}
                         aria-label="redirect"
                         className="inline-flex items-center p-1 hover:bg-slate-100 rounded-md"
                     >
                         <ArrowUpRight className="h-5 w-5" />
-                    </a>
+                    </Link>
                 </div>
                 {data.published == 1 && <div className="flex-none rounded-full bg-emerald-500/20 p-1.5">
                     <div className="size-1.5 rounded-full bg-emerald-500" />

@@ -1,11 +1,8 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
 import { CommitDocsPage } from "@/types/commit/CommitDocsPage";
-import { useFrappeGetCall } from "frappe-react-sdk";
-import { useState } from "react";
-import { Renderer } from "./Renderer";
+import { useFrappeGetDoc } from "frappe-react-sdk";
 import { EditorComponent } from "./EditorComponent";
-import { useParams } from "react-router-dom";
 
 export interface PageData {
     doc: CommitDocsPage
@@ -25,20 +22,15 @@ export interface TocObj {
     [key: string]: TocItem;
 };
 
-const PageContent = () => {
+const PageContent = ({ pageID, ID }: { pageID: string, ID: string }) => {
 
-    const { pageID } = useParams();
-
-    const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: PageData; }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page", {
-        name: pageID
-    }, undefined, {
+    const { data, error, isLoading, mutate } = useFrappeGetDoc<CommitDocsPage>("Commit Docs Page", pageID, undefined, {
         revalidateOnFocus: false,
         revalidateIfStale: false,
         revalidateOnReconnect: false,
         keepPreviousData: true
     });
 
-    const [edit, setEdit] = useState<boolean>(false);
 
     if (isLoading) {
         return <FullPageLoader />;
@@ -50,13 +42,10 @@ const PageContent = () => {
         </div>
     }
 
-    if (data && data?.message) {
-        return (
-            <>
-                {edit ? <EditorComponent data={data.message?.doc} setEdit={setEdit} mutate={mutate} key={data.message.doc.name} /> : <Renderer data={data.message} setEdit={setEdit} key={data.message.doc.name} />}
-            </>
-        )
+    if (data) {
+        return <EditorComponent data={data} mutate={mutate} ID={ID} key={data.name} />
     }
+    return null
 }
 
 export default PageContent

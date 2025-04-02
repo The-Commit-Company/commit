@@ -1,20 +1,13 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
-import { CommitDocs } from "@/types/commit/CommitDocs";
-import { useFrappeGetCall } from "frappe-react-sdk";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
 import { ShootingStars } from "./ShootingStars";
 import HeroSection from "./HeroSection";
 import DocsList from "./DocsList";
+import { useGetCommitDocsList } from "./useGetCommitDocsDetails";
 
 const DocsLandingPage = () => {
 
-  const { data, error, isLoading } = useFrappeGetCall<{ message: CommitDocs[] }>(
-    'commit.commit.doctype.commit_docs.commit_docs.get_commit_docs_list', {}, undefined, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
-    revalidateOnReconnect: false,
-  }
-  );
+  const { data, isLoading, error } = useGetCommitDocsList();
 
   if (error) {
     return <ErrorBanner error={error} />;
@@ -23,7 +16,7 @@ const DocsLandingPage = () => {
   if (isLoading) {
     return <FullPageLoader />;
   }
-  if (data && data?.message) {
+  if (data && data) {
     return (
       <div>
         <div className="m-10 h-full relative">
@@ -43,7 +36,7 @@ const DocsLandingPage = () => {
         </div>
         <div className="flex justify-center m-10">
           <div className="w-full pb-10">
-            <DocsList data={data?.message} />
+            <DocsList data={data} />
           </div>
         </div>
       </div>

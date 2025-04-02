@@ -3,8 +3,9 @@
 
 import frappe
 from frappe.model.document import Document
-
-
+from commit.api.preview import save_preview_screenshot
+from commit.api.convert_to_webp import save_webp_image
+import json
 class CommitDocs(Document):
 
 	def before_insert(self):
@@ -24,6 +25,24 @@ class CommitDocs(Document):
 			if primary_button_count > 1:
 				frappe.throw('Only One Primary Button is Allowed')
 				break
+	def before_save(self):
+		# This is to save the preview image of the first page of the commit docs
+		# This is done to show the preview image in the commit docs dashboard
+		# This is done using the async function to capture the screenshot
+		# The function is called using the frappe.enqueue method
+		if self.sidebar:
+			first = self.sidebar[0].docs_page
+			domain = frappe.utils.get_url()
+			if first:
+				docs_url = f'{domain}/commit-docs/{self.route}/{first}'
+				frappe.enqueue(method=save_preview_screenshot, url=docs_url,doctype=self.doctype,docname=self.name,field='preview_image')
+		
+		old_doc = self.get_doc_before_save()
+		if old_doc:
+			if old_doc.light_mode_logo != self.light_mode_logo:
+				frappe.enqueue(method=save_webp_image,doctype=self.doctype,docname=self.name,image_field='light_mode_logo')
+			if old_doc.night_mode_logo != self.night_mode_logo:
+				frappe.enqueue(method=save_webp_image,doctype=self.doctype,docname=self.name,image_field='dark_mode_logo')
 
 
 @frappe.whitelist()
@@ -79,7 +98,7 @@ def get_all_commit_docs_detail():
 
 
 @frappe.whitelist(allow_guest=True)
-def get_commit_docs_details(route:str):
+def get_commit_docs_details(route:str,show_hidden_items:bool=False):
 	'''
 		Get the Commit Docs Details
 		# 1. Get the Commit Docs Document from the route
@@ -102,22 +121,22 @@ def get_commit_docs_details(route:str):
 		else:
 			commit_docs = frappe.get_doc('Commit Docs',{'route':route}).as_dict()
 
-			return parse_commit_docs(commit_docs)
+			return parse_commit_docs(commit_docs,show_hidden_items)
 		
 	else:
 		return frappe.throw('Docs Not Found')
 
 
-def parse_commit_docs(commit_docs):
+def parse_commit_docs(commit_docs,show_hidden_items:bool=False):
 
 	# Get the Sidebar Items
-	sidebar_items = get_sidebar_items(commit_docs.sidebar)
+	sidebar_items = get_sidebar_items(commit_docs.sidebar,show_hidden_items)
 
 	# Get the Footer Items
-	footer_items = get_footer_items(commit_docs.footer)
+	footer_items = get_footer_items(commit_docs.footer,show_hidden_items)
 
 	# Get the Navbar Items
-	navbar_items = get_navbar_items(commit_docs.navbar_items)
+	navbar_items = get_navbar_items(commit_docs.navbar_items,show_hidden_items)
 	
 	# remove the sidebar from the commit_docs as it is not needed
 	commit_docs.pop('sidebar')
@@ -131,7 +150,7 @@ def parse_commit_docs(commit_docs):
 		'navbar_items': navbar_items,
 	}
 
-def get_footer_items(footer):
+def get_footer_items(footer,show_hidden_items:bool=False):
 	'''
 		Get the Footer Items
 		# 1. Loop Over the Footer Items Which have Parent Label URL and Label
@@ -140,25 +159,28 @@ def get_footer_items(footer):
 	'''
 	footer_obj = {}
 	for footer_item in footer:
-		if footer_item.hide_on_footer:
+		if footer_item.hide_on_footer and not show_hidden_items:
+			# If the footer item is hidden and show_hidden_items is False, skip it
 			continue
 
 		if footer_item.parent_label not in footer_obj:
 			footer_obj[footer_item.parent_label] = [
 				{
 					'label': footer_item.label,
-					'url': footer_item.url
+					'url': footer_item.url,
+					'hide_on_footer': footer_item.hide_on_footer
 				}
 			]
 		else:
 			footer_obj[footer_item.parent_label].append({
 				'label': footer_item.label,
-				'url': footer_item.url
+				'url': footer_item.url,
+				'hide_on_footer': footer_item.hide_on_footer
 			})
 	
 	return footer_obj
 
-def get_navbar_items(navbar):
+def get_navbar_items(navbar,show_hidden_items:bool=False):
 	'''
 		Get the Navbar Items
 		# 1. Loop Over the Navbar Items Which have Label, Parent Label, URL
@@ -170,7 +192,7 @@ def get_navbar_items(navbar):
 	navbar_obj = {}
 	parent_labels = []
 	for navbar_item in navbar:
-		if navbar_item.hide_on_navbar:
+		if navbar_item.hide_on_navbar and not show_hidden_items:
 			continue
 		
 		
@@ -187,7 +209,8 @@ def get_navbar_items(navbar):
 						'icon': navbar_item.icon,
 						'open_in_new_tab': navbar_item.open_in_new_tab
 					}],
-					'is_primary_button': navbar_item.is_primary_button
+					'is_primary_button': navbar_item.is_primary_button,
+					'hide_on_navbar': navbar_item.hide_on_navbar
 				}
 			else:
 				navbar_obj[navbar_item.parent_label]['items'].append({
@@ -205,7 +228,8 @@ def get_navbar_items(navbar):
 					'icon': navbar_item.icon,
 					'open_in_new_tab': navbar_item.open_in_new_tab,
 					'url': navbar_item.url,
-					'is_primary_button': navbar_item.is_primary_button
+					'is_primary_button': navbar_item.is_primary_button,
+					'hide_on_navbar': navbar_item.hide_on_navbar
 				}
 	
 	# Remove that Object whose type is Button and Key is in Parent Labels
@@ -215,7 +239,7 @@ def get_navbar_items(navbar):
 
 	return navbar_obj
 
-def get_sidebar_items(sidebar):
+def get_sidebar_items(sidebar,show_hidden_items:bool=False):
     '''
     Get the Sidebar Items with support for nested Group Pages.
     '''
@@ -270,8 +294,8 @@ def get_sidebar_items(sidebar):
         return sorted(group_items, key=lambda x: x['idx'])
 
     sidebar_obj = {}
-    for sidebar_item in sorted(sidebar, key=lambda x: x.idx):
-        if sidebar_item.hide_on_sidebar:
+    for sidebar_item in sidebar:  # Preserve the original order of the sidebar
+        if sidebar_item.hide_on_sidebar and not show_hidden_items:
             continue
 
         commit_docs_page = frappe.get_doc('Commit Docs Page', sidebar_item.docs_page)
@@ -298,7 +322,8 @@ def get_sidebar_items(sidebar):
             'group_name': sidebar_item.parent_label,
             'is_group_page': is_group_page,
             'group_items': group_items if is_group_page else None,
-            'idx': commit_docs_page.idx
+            'idx': commit_docs_page.idx,
+			'hide_on_sidebar': sidebar_item.hide_on_sidebar
         }
 
         # Add sidebar entry to the parent label
@@ -306,10 +331,6 @@ def get_sidebar_items(sidebar):
             sidebar_obj[sidebar_item.parent_label] = [sidebar_entry]
         else:
             sidebar_obj[sidebar_item.parent_label].append(sidebar_entry)
-
-    # Sort each group in the sidebar_obj by idx
-    for key in sidebar_obj:
-        sidebar_obj[key] = sorted(sidebar_obj[key], key=lambda x: x['idx'])
 
     return sidebar_obj
 
@@ -345,7 +366,168 @@ def get_commit_docs_list():
 
 	commit_docs_list = frappe.get_all('Commit Docs',
 		filters=filters,
-		fields=["header", "light_mode_logo", "route", "published", "description"],
+		fields=["header", "light_mode_logo", "route", "published", "description","name"],
 	)
 
 	return commit_docs_list
+
+@frappe.whitelist(methods=["POST"])
+def manage_sidebar(commit_doc:str,parent_labels,docs_page):
+	'''
+		This is to modify the sidebar items of the commit docs
+		@param commit_doc: The Commit Docs ID
+		@param parent_labels: The Parent Labels of the Sidebar List
+		@param docs_page: List of Object having docs page and parent label
+
+		# 1. Get the Commit Docs Document
+		# 2. Loop Over the Parent Labels
+		# 3. Look for the Parent Label in docs_page List of Object
+		# 4. for loop on that filtered list append the docs_page and parent label to the sidebar
+		# 5. Save the Sidebar Items
+	'''
+	
+	# Get the Commit Docs Document
+	doc = frappe.get_doc('Commit Docs',commit_doc)
+
+	# Loop Over the Parent Labels
+	if isinstance(parent_labels, str):
+		parent_labels = json.loads(parent_labels)
+	
+	if isinstance(docs_page, str):
+		docs_page = json.loads(docs_page)
+
+	doc.sidebar = []
+	for parent_label in parent_labels:
+		# Filter the docs_page List of Object
+		filtered_docs_page = [item for item in docs_page if item.get('columnId') == parent_label]
+
+		# Check if there are any duplicate docs_page
+		duplicate = set()
+		for item in filtered_docs_page:
+			if item.get('id') in duplicate:
+				frappe.throw(f'You have Duplicate Docs Page {item.get("id")} in Same Parent Label {parent_label}')
+			duplicate.add(item.get('id'))
+		
+		# sort by index field
+		filtered_docs_page = sorted(filtered_docs_page, key=lambda x: x.get('index', 0))
+
+		# Loop Over the Filtered List
+		for item in filtered_docs_page:
+			# Append the docs_page and parent label to the sidebar
+			doc.append('sidebar',{
+				'parent_label': parent_label,
+				'docs_page': item.get('id'),
+			})
+	
+	doc.save()
+
+	return doc
+
+@frappe.whitelist(methods=["POST"])
+def manage_navbar(commit_doc:str, navbar_items, sub_navbar_items=None):
+	'''
+		This is to modify the navbar items of the commit docs
+		@param commit_doc: The Commit Docs ID
+		@param navbar_items: The Navbar Items List of Object having label, url, parent label, icon, open_in_new_tab
+
+		# 1. Get the Commit Docs Document
+		# 2. Loop Over the Navbar Items
+		# 3. Append the Navbar Items to the Navbar Items Table
+		# 4. Save the Navbar Items
+	'''
+
+	doc = frappe.get_doc('Commit Docs',commit_doc)
+
+	if isinstance(navbar_items, str):
+		navbar_items = json.loads(navbar_items)
+	
+	if isinstance(sub_navbar_items, str):
+		sub_navbar_items = json.loads(sub_navbar_items)
+
+	doc.navbar_items = []
+	# sort the navbar_items by index field
+	navbar_items = sorted(navbar_items, key=lambda x: x.get('index', 0))
+
+	for item in navbar_items:
+		if item.get('type') == "Menu":
+			doc.append('navbar_items',{
+				'label': item.get('label'),
+				'hide_on_navbar': item.get('hide_on_navbar'),
+			})
+			if sub_navbar_items:
+				# find the task in the sub_navbar_items where columnId is equal to item.get('label')
+				sub_items = [sub_item for sub_item in sub_navbar_items if sub_item.get('columnId') == item.get('label')]
+				# sort the sub_items by index field
+				sub_items = sorted(sub_items, key=lambda x: x.get('index', 0))
+				# Loop Over the Sub Items
+				for sub_item in sub_items:
+					doc.append('navbar_items',{
+						'label': sub_item.get('label'),
+						'url': sub_item.get('url'),
+						'icon': sub_item.get('icon'),
+						'open_in_new_tab': sub_item.get('open_in_new_tab'),
+						"parent_label": item.get('label'),
+					})
+		
+		else:
+			doc.append('navbar_items',{
+				'label': item.get('label'),
+				'url': item.get('url'),
+				'icon': item.get('icon'),
+				'open_in_new_tab': item.get('open_in_new_tab'),
+				'hide_on_navbar': item.get('hide_on_navbar'),
+				'is_primary_button': item.get('is_primary_button')
+			})
+
+	doc.save()
+
+	return doc
+
+@frappe.whitelist(methods=["POST"])
+def manage_footer(commit_doc:str, footer_columns, footer_items):
+	'''
+		This is to modify the footer items of the commit docs
+		@param commit_doc: The Commit Docs ID
+		@param footer_columns: The Footer Columns List of Parent Label
+		@param footer_items: The Footer Items List of Object having label, url, hide_on_footer, columnId,id
+
+		# 1. Get the Commit Docs Document
+		# 2. Loop Over the Footer Columns
+		# 3. Search for the Parent Label in the Footer Items
+		# 4. Loop over the filtered list and append the footer items to the footer
+		# 5. Save the Footer Items
+	'''
+
+	doc = frappe.get_doc('Commit Docs',commit_doc)
+	if isinstance(footer_columns, str):
+		footer_columns = json.loads(footer_columns)
+
+	if isinstance(footer_items, str):
+		footer_items = json.loads(footer_items)
+
+	doc.footer = []
+	for parent_label in footer_columns:
+		# Filter the footer_items List of Object
+		filtered_footer_items = [item for item in footer_items if item.get('columnId') == parent_label]
+		
+		# Check if there are any duplicate footer_items
+		duplicate = set()
+		for item in filtered_footer_items:
+			if item.get('id') in duplicate:
+				frappe.throw(f'You have Duplicate Footer Item {item.get("id")} in Same Parent Label {parent_label}')
+			duplicate.add(item.get('id'))
+		
+		# sort by index field
+		filtered_footer_items = sorted(filtered_footer_items, key=lambda x: x.get('index', 0))
+
+		for item in filtered_footer_items:
+			doc.append('footer',{
+				'label': item.get('label'),
+				'url': item.get('url'),
+				'hide_on_footer': item.get('hide_on_footer'),
+				'parent_label': parent_label,
+			})
+	
+	doc.save()
+
+	return doc

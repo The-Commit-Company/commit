@@ -16,7 +16,7 @@ export interface CommitDocsPage{
 	/**	Commit Docs : Link - Commit Docs	*/
 	commit_docs: string
 	/**	Route : Data	*/
-	route: string
+	route?: string
 	/**	Icon : Data - "Supports only icons from the lucid-react library. Enter the icon name in the format 'libraryPrefix/IconName' (e.g., 'Fa/FaFileExcel') to display it beside the title in the sidebar."
 	*/
 	icon?: string

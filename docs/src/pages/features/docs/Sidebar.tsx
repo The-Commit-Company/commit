@@ -170,12 +170,12 @@ const SidebarTitle = ({ item, className, isExpanded, setIsExpanded }: { item: Do
         <div className="flex justify-between items-center w-full ml-4 py-1" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             <div className="flex items-center gap-2">
                 {item.icon && <DynamicIcon icon={item.icon} size={14} className={isSelected ? "text-blue-600" : "text-gray-500"} />}
-                {item.badge && <Badge className={cn('text-[10px] px-1 py-0', BADGE_COLOR)}>{item.badge}</Badge>}
                 <div className="">
                     {item.title}
                 </div>
             </div>
             <div className="flex flex-row gap-2 items-center">
+                {item.badge && <Badge className={cn('text-[10px] px-1 py-0', BADGE_COLOR)}>{item.badge}</Badge>}
                 {item.published === 0 && <Badge className="px-1 py-0 bg-orange-500 hover:bg-orange-600">Draft</Badge>}
                 {item.is_group_page && item.group_items?.length ? <span>{isExpanded ? <ChevronDown className={'h-4'} /> : <ChevronRight className={'h-4'} />}</span> : null}
             </div>

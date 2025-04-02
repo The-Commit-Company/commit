@@ -248,7 +248,7 @@ export const FormCreatableSelect = ({
                                                     <Check size={16} 
                                                         className={cn(
                                                             'mr-2 h-4 w-4',
-                                                            value.includes(option.value) ? 'opacity-100' : 'opacity-0'
+                                                            value?.includes(option.value) ? 'opacity-100' : 'opacity-0'
                                                         )}
                                                     />
                                                     {option.label}

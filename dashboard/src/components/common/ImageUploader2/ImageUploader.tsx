@@ -10,7 +10,7 @@ import { SpinnerLoader } from "../FullPageLoader/SpinnerLoader"
 import { DocumentUploadModal } from "./DocumentUploadModal"
 import { cn } from "@/lib/utils"
 import { useGetFilePreviewUrl } from "./FileDrop"
-import { Upload } from "lucide-react"
+import { Camera, Trash, Upload } from "lucide-react"
 
 /**
  * Custom File Type for FILE UPLOADER component; with 'fileID' for unique ID & 'preview' for blob URL.
@@ -120,18 +120,30 @@ export const ImageUploader = ({ file, doctype, docname, onUpdate, fieldname = 'i
                 <div className={`relative ${props.className} w-${boxSize} h-${boxSize} rounded-md`}>
                     <div className="image-container group">
                         {file ? (
-                            <ImagePreview file={file} size={boxSize} className="image group-hover:opacity-50" borderRadius={borderRadius} />
+                            <ImagePreview file={file} size={boxSize} className="image" borderRadius={borderRadius} />
                         ) : (
-                            <img src={defaultFile} className={`image w-${boxSize} h-${boxSize} object-cover rounded-${borderRadius} object-center group-hover:opacity-50`} alt={defaultFile} />
+                                <img src={defaultFile} className={`image w-${boxSize} h-${boxSize} object-cover rounded-${borderRadius} object-center rounded-2xl`} alt={defaultFile} />
                         )}
-                        <div className="edit-button absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:block hidden cursor-pointer">
-                            <div onClick={onOpen} className="py-0.5">
-                                <p className="text-sm underline">Change</p>
-                            </div>
-                            <div onClick={onDeleteOpen} className="py-0.5">
-                                <p className="text-sm underline text-red-500">Remove</p>
-                            </div>
-                        </div>
+                        <Button
+                            size={'icon'}
+                            // variant={'ghost'}
+                            className="absolute -right-2 -bottom-1 bg-blue-500 hover:bg-blue-700 rounded-md shadow-md h-6 w-6"
+                            onClick={onOpen}
+                        >
+                            <Camera className="h-3 w-3" />
+                        </Button>
+
+                        {/* Delete Button */}
+                        {file || defaultFile ? (
+                            <Button
+                                size={'icon'}
+                                variant={'ghost'}
+                                className="absolute bg-zinc-100 -right-2 bottom-6 rounded-md shadow-md h-6 w-6"
+                                onClick={onDeleteOpen}
+                            >
+                                <Trash className="h-3 w-3 text-red-500" />
+                            </Button>
+                        ) : null}
                     </div>
                 </div> : updatingDoc ? <div className={cn(`w-${boxSize} h-${boxSize} rounded-md border border-dashed border-gray-400 flex items-center justify-center cursor-not-allowed`, props.className)}>
                     <SpinnerLoader />
@@ -155,7 +167,7 @@ export const ImagePreview = ({ file, size, borderRadius = "50%", ...props }: Ima
     const previewURL = file.fileType === 'file' ? useGetFilePreviewUrl(file) : ''
 
     return (
-        <img src={previewURL} alt={file.fileType === 'file' ? file.name : 'Image'} className={`object-cover rounded-md h-${size} w-${size} border-r-${borderRadius} ${props.className}`} />
+        <img src={previewURL} alt={file.fileType === 'file' ? file.name : 'Image'} className={`object-cover rounded-md h-${size} w-${size} border-r-${borderRadius} ${props.className} rounded-2xl`} />
     )
 }
 
