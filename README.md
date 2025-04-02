@@ -31,17 +31,6 @@
 
 Born out of a need to improve developer tooling for Frappe, "Commit" allows you to visualize your app's database schema and view all its APIs, generate documentation for the APIs, and manage your documentation through Commit Docs - improving developer productivity and security of your critical applications.
 
-## Key Features
-
-- **Database Schema Visualization**: View and analyze your application's database structure graphically.
-- **API Explorer**: Easily access and test API endpoints within the Frappe framework.
-- **Command Reference**: Get an overview of available Frappe commands.
-- **Documentation Generation**: Auto-generate API documentation.
-- **OpenAI Integration**: Edit and refine documentation using AI assistance.
-- **Commit Docs**: Manage and publish documentation for your applications.
-- **Docs Dashboard**: View and manage all your documentation in one place.
-- **MDX Support**: Write JavaScript and React components in your Markdown files.
-- **Customizable**: Tailor the tool to fit your specific needs and preferences.
 
 ## Basic Installation
 
@@ -88,3 +77,15 @@ You can try **Frappe Cloud**, a simple, user-friendly, and sophisticated open-so
 It takes care of installation, setup, upgrades, monitoring, maintenance, and support of your Frappe deployments. It is a fully featured developer platform with the ability to manage and control multiple Frappe deployments.
 
 [Try on Frappe Cloud](https://frappecloud.com/)
+
+## Key Features
+
+- **Database Schema Visualization**: View and analyze your application's database structure graphically.
+- **API Explorer**: Easily access and test API endpoints within the Frappe framework.
+- **Command Reference**: Get an overview of available Frappe commands.
+- **Documentation Generation**: Auto-generate API documentation.
+- **OpenAI Integration**: Edit and refine documentation using AI assistance.
+- **Commit Docs**: Manage and publish documentation for your applications.
+- **Docs Dashboard**: View and manage all your documentation in one place.
+- **MDX Support**: Write JavaScript and React components in your Markdown files.
+- **Customizable**: Tailor the tool to fit your specific needs and preferences.
