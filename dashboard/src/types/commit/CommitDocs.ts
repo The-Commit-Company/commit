@@ -21,12 +21,16 @@ export interface CommitDocs{
 	published?: 0 | 1
 	/**	Company Name : Data - For Copyright Purpose	*/
 	company_name?: string
+	/**	Description : Small Text	*/
+	description?: string
 	/**	Sidebar : Table - Commit Docs Group Item	*/
 	sidebar?: CommitDocsGroupItem[]
 	/**	Light Mode Logo : Attach Image	*/
 	light_mode_logo?: string
 	/**	Night Mode Logo : Attach Image	*/
 	night_mode_logo?: string
+	/**	Preview Image : Attach Image	*/
+	preview_image?: string
 	/**	Navbar Items : Table - Commit Docs Topbar Item	*/
 	navbar_items?: CommitDocsTopbarItem[]
 	/**	Twitter  : Data - Add Twitter URL	*/
@@ -43,6 +47,8 @@ export interface CommitDocs{
 	raven?: string
 	/**	Telegram : Data - Add Telegram URL	*/
 	telegram?: string
+	/**	Discord : Data - Add Discord URl	*/
+	discord?: string
 	/**	Footer : Table - Commit Docs Footer Item	*/
 	footer?: CommitDocsFooterItem[]
 }

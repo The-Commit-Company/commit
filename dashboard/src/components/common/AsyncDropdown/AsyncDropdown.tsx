@@ -1,5 +1,5 @@
 import { FrappeError, useFrappePostCall } from 'frappe-react-sdk'
-import { lazy, PropsWithChildren, Suspense, useEffect, useRef } from 'react'
+import { PropsWithChildren, useEffect, useRef } from 'react'
 import { Filter, useFrappeGetCall } from "frappe-react-sdk";
 import { useCallback, useMemo, useState } from "react";
 import { RegisterOptions, useController, useFormContext } from "react-hook-form";
@@ -11,11 +11,7 @@ import { useGetDoctypeMeta } from '@/hooks/useGetDoctypeMeta';
 import { useDebounce } from '@/hooks/useDebounce';
 import { getLinkTitleAtom, setLinkTitleAtom } from './LinkTitles';
 import { AsyncSpinnerLoader } from '../FullPageLoader/SpinnerLoader';
-import { getErrorMessages } from '../ErrorBanner/ErrorBanner';
-import { FullPageLoader } from '../FullPageLoader/FullPageLoader';
-
-
-const MDXRenderer = lazy(() => import('../MarkdownRenderer/MDX'))
+import { ErrorBanner, } from '../ErrorBanner/ErrorBanner';
 
 interface ResultItem {
     value: string,
@@ -474,9 +470,7 @@ const ErrorContainer = ({ error }: { error?: FrappeError }) => {
             <div className="absolute w-full z-10 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 rounded-b-md p-2"
                 style={{ boxShadow: '0px 8px 14px rgba(25, 39, 52, 0.08), 0px 2px 6px rgba(25, 39, 52, 0.04)' }}>
                 <p className="text-red-500 text-sm">
-                    <Suspense fallback={<FullPageLoader />}>
-                        {getErrorMessages(error).map(e => <MDXRenderer key={e.message} mdxContent={e.message} />)}
-                    </Suspense>
+                    <ErrorBanner error={error} />
                 </p>
             </div>
         );
@@ -528,3 +522,300 @@ const DropdownItem = ({ item, index, getItemProps, highlightedIndex, selectedIte
 };
 
 const htmlReplaceRegex = /(<([^>]+)>)/gi;
+
+export interface AsyncDropdownWithoutFormProps extends BaseDropdownProps {
+    selectedValue?: string,
+    setSelectedValue: (value: string) => void,
+    /** callback triggered when the dropdown is opened/closed */
+    onOpenChange?: (isOpen: boolean) => void,
+    showTitleField?: boolean,
+}
+/**
+ * The AsyncDropdown component is used to handle Link fields in any form.
+ * It needs to be used inside a React Hook Form FormProvider.
+ * The component takes in a doctype and a fieldname and returns an input field with a dropdown list of options fetched from the server.
+ * @param props 
+ * @returns 
+ */
+export const AsyncDropdownWithoutForm = ({
+    doctype,
+    reference_doctype,
+    name,
+    filters = [],
+    allowPagination = true,
+    customQuery,
+    searchfield,
+    searchAPIPath = "commit.api.search.search_link",
+    limit,
+    isReadOnly = false,
+    placeholder = doctype,
+    isDisabled = false,
+    clickOpenInNewTab = false,
+    defaultValuesForCreate,
+    autoFocus,
+    openMenuOnFocus = false,
+    filterOption,
+    selectedValue,
+    onOpenChange,
+    setSelectedValue,
+    onKeyDown,
+    onKeyDownCapture,
+    showTitleField,
+    ...inputProps
+}: AsyncDropdownWithoutFormProps) => {
+
+    const pageLimit = useMemo(() => limit || getSystemDefault('link_field_results_limit') || 10, [limit])
+
+    /** Load the Doctype meta so that we can determine the search fields + the name of the title field */
+    const { data: meta, isLoading: isMetaLoading } = useGetDoctypeMeta(doctype)
+
+    const [isOpened, setIsOpened] = useState(false)
+    const [searchInput, setSearchInput] = useState(selectedValue ?? '')
+
+    const debouncedInput = useDebounce(searchInput)
+
+
+    // Maintain link titles in an Atom
+    const [getLinkTitle] = useAtom(getLinkTitleAtom)
+
+    const [, setLinkTitle] = useAtom(setLinkTitleAtom)
+
+    const { call: linkTitleCall } = useFrappePostCall('emotive_app.api.utils.link.get_link_title')
+
+    const loadingLinkTitle = useRef(false)
+
+    // On mount, we want to check if the link title is available in the atom
+    // If it is, set the search input to the link title
+    useEffect(() => {
+        if (meta) {
+            let fetchTitle = false
+            if (showTitleField !== undefined) {
+                fetchTitle = showTitleField
+            } else if (["User"].includes(doctype)) {
+                // Is doctype in standard title fields
+                fetchTitle = true
+            } else {
+                fetchTitle = meta.show_title_field_in_link ? true : false
+            }
+            if (fetchTitle && selectedValue) {
+                const t = getLinkTitle(doctype, selectedValue)
+                if (t) {
+                    setSearchInput(t)
+                } else {
+                    // The link title is not available in the atom
+                    // We need to fetch it from the server
+                    if (!loadingLinkTitle.current) {
+                        loadingLinkTitle.current = true
+                        linkTitleCall({
+                            doctype,
+                            docname: selectedValue
+                        }).then(response => {
+                            const title = response.message
+                            setLinkTitle(doctype, selectedValue, title)
+                            setSearchInput(title)
+                            loadingLinkTitle.current = false
+                        })
+                    }
+                }
+            } else {
+                setSearchInput(selectedValue ?? '')
+            }
+        }
+
+    }, [selectedValue, meta, showTitleField])
+
+    const { data, error, isLoading } = useFrappeGetCall<{ message: ResultItem[] }>(searchAPIPath, {
+        doctype,
+        txt: debouncedInput,
+        page_length: pageLimit,
+        query: customQuery?.query,
+        searchfield,
+        filters: JSON.stringify(customQuery?.filters || filters || []),
+        reference_doctype,
+    }, () => {
+        if (!isOpened) {
+            return null
+        } else {
+            let key = `${searchAPIPath}_${doctype}_${debouncedInput}`
+
+            if (pageLimit) {
+                key += `_${pageLimit}`
+            }
+
+            if (customQuery?.filters) {
+                key += `_${JSON.stringify(customQuery.filters)}`
+            } else if (filters) {
+                key += `_${JSON.stringify(filters)}`
+            }
+
+            if (customQuery && customQuery.query) {
+                key += `_${customQuery.query}`
+            }
+
+            if (reference_doctype) {
+                key += `_${reference_doctype}`
+            }
+
+            if (searchfield && searchfield !== 'name') {
+                key += `_${searchfield}`
+            }
+
+            return key
+
+        }
+    }, {
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
+        revalidateOnMount: true,
+        shouldRetryOnError: false,
+        revalidateOnReconnect: false,
+    })
+
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const items = filterOption ? data?.message?.slice(0, 50).filter((item) => filterOption(item, searchInput)) : data?.message
+
+    const stateReducer = useCallback((state: UseComboboxState<ResultItem>, actionAndChanges: UseComboboxStateChangeOptions<ResultItem>) => {
+        const { type, changes } = actionAndChanges
+        // returning an uppercased version of the item string.
+        switch (type) {
+            case useCombobox.stateChangeTypes.ItemClick:
+                // Set the field value to the selected item
+                setSelectedValue(changes.selectedItem?.value ?? '')
+                if (changes.selectedItem?.label) {
+                    setLinkTitle(doctype, changes.selectedItem.value, changes.selectedItem.label)
+                }
+
+                return changes
+            case useCombobox.stateChangeTypes.InputKeyDownEnter:
+
+                if (changes.inputValue && state.highlightedIndex === -1) {
+                    return {
+                        ...changes,
+                        inputValue: '',
+                        selectedItem: null
+                    }
+                } else {
+                    setSelectedValue(changes.selectedItem?.value ?? '')
+                    return changes
+                }
+            case useCombobox.stateChangeTypes.InputKeyDownEscape:
+            case useCombobox.stateChangeTypes.InputKeyDownHome:
+            case useCombobox.stateChangeTypes.FunctionCloseMenu:
+            case useCombobox.stateChangeTypes.InputBlur:
+                // When the input blurs, we want to check if the value in the input is the same as the selected item.
+                //If not, then we want to clear the input value
+                // That will in turn clear the field value as well
+                if (selectedValue !== changes.selectedItem?.value) {
+                    return {
+                        ...changes,
+                        inputValue: ''
+                    }
+                }
+                return changes
+
+            default:
+                return changes // otherwise business as usual.
+        }
+    }, [selectedValue, items])
+
+    const {
+        isOpen,
+        getMenuProps,
+        getInputProps,
+        highlightedIndex,
+        getItemProps,
+        openMenu,
+        selectedItem,
+    } = useCombobox<ResultItem>({
+        onInputValueChange({ inputValue, type }) {
+            // @ts-expect-error apparently, on production, type is a number
+            if (type === "__input_change__" || type === 8) {
+                setSearchInput(inputValue ?? '')
+            }
+            if (inputValue === '') {
+                setSelectedValue('')
+            }
+        },
+        onSelectedItemChange: ({ selectedItem }) => {
+            setSelectedValue(selectedItem?.value ?? '')
+            if (selectedItem?.label) {
+                setLinkTitle(doctype, selectedItem.value, selectedItem.label)
+            }
+        },
+        items: items || [],
+        inputValue: searchInput,
+        itemToString(item) {
+            return item ? (item.label ?? item.value) : ''
+        },
+        onIsOpenChange: ({ isOpen }) => {
+            // Set the state so that we do not fetch data when the dropdown is closed
+            setIsOpened(isOpen ? true : false)
+            onOpenChange?.(isOpen ? true : false)
+        },
+        stateReducer
+    })
+    return (
+        <div className="relative w-full">
+            <div>
+                <div className="relative w-full ">
+                    <Input
+                        ref={inputRef}
+                        placeholder={placeholder}
+                        {...getInputProps({
+                            readOnly: isReadOnly, disabled: isDisabled,
+                            autoFocus: autoFocus,
+                            onClick: (event) => {
+                                if (isReadOnly || isDisabled) {
+                                    // If the field is read only/disabled - do not fire the downshift event of opening the menu
+                                    //@ts-expect-error
+                                    event.nativeEvent.preventDownshiftDefault = true
+                                }
+                            },
+                            onFocus: () => {
+                                if (openMenuOnFocus && !isDisabled && !isReadOnly) {
+                                    openMenu()
+                                }
+                            },
+                            onKeyDown: (event) => {
+                                onKeyDown?.(event)
+                            },
+                            onKeyDownCapture: (event) => {
+                                onKeyDownCapture?.(event)
+                            }
+                        })}
+                        {...inputProps}
+                    />
+                    {isLoading ? <AsyncSpinnerLoader /> : null}
+                </div>
+            </div>
+
+            {!isMetaLoading && !isLoading && items?.length === 0 &&
+                <NoResultsContainer isOpen={isOpen}>
+                    <NoRecordsFound />
+                </NoResultsContainer>
+            }
+            <ErrorContainer error={error} />
+            <DropdownContainer
+                getMenuProps={getMenuProps}
+                isOpen={isOpen}
+                items={items}
+                isFieldDisabled={isDisabled}
+                isFieldReadOnly={isReadOnly}
+                heightAdjust={false}
+            >
+                {isOpen &&
+                    items?.slice(0, 50).map((item, index) => (
+                        <DropdownItem
+                            item={item}
+                            index={index}
+                            getItemProps={getItemProps}
+                            highlightedIndex={highlightedIndex}
+                            selectedItem={selectedItem}
+                            key={item.value}
+                        />
+                    ))}
+            </DropdownContainer>
+        </div>
+    )
+}

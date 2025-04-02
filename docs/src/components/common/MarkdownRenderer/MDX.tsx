@@ -11,9 +11,9 @@ import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
-import CustomHeading from '@/components/features/custommdxcomponent/CustomHeading';
-import CustomCodeBlock from '@/components/features/custommdxcomponent/CustomCodeBlock';
 import rehypePrettyCode from "rehype-pretty-code";
+import CustomCodeBlock from '@/pages/features/custommdxcomponent/CustomCodeBlock';
+import CustomHeading from '@/pages/features/custommdxcomponent/CustomHeading';
 
 // Custom components
 const CustomParagraph = ({ children }: { children?: React.ReactNode }) => {
@@ -77,12 +77,29 @@ const MDXRenderer = ({ mdxContent }: { mdxContent: string }) => {
     }, [mdxContent]);
 
     if (!MDXComponent) {
-        return <p>Loading content...</p>;
+        return <MDXRendererSkeleton />;
     }
 
     return (
         <div className="markdown-body">
             <MDXComponent />
+        </div>
+    );
+};
+
+const MDXRendererSkeleton: React.FC = () => {
+    return (
+        <div className="markdown-body animate-pulse">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
         </div>
     );
 };

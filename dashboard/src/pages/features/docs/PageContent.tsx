@@ -1,12 +1,8 @@
 import { ErrorBanner } from "@/components/common/ErrorBanner/ErrorBanner";
 import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
 import { CommitDocsPage } from "@/types/commit/CommitDocsPage";
-import { useFrappeGetCall } from "frappe-react-sdk";
-import { useState } from "react";
-import { Renderer } from "./Renderer";
+import { useFrappeGetDoc } from "frappe-react-sdk";
 import { EditorComponent } from "./EditorComponent";
-import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
-import { useParams } from "react-router-dom";
 
 export interface PageData {
     doc: CommitDocsPage
@@ -26,33 +22,15 @@ export interface TocObj {
     [key: string]: TocItem;
 };
 
-export const PageContent = ({ ID }: { ID: string }) => {
+const PageContent = ({ pageID, ID }: { pageID: string, ID: string }) => {
 
-    const { data } = useGetCommitDocsDetails(ID);
-
-    const { pageID } = useParams();
-
-    if (data && pageID) {
-        return (
-            <PageContentFetch selectedEndpoint={pageID} route_map={data.route_map} />
-        )
-    }
-    return null;
-}
-
-const PageContentFetch = ({ selectedEndpoint, route_map }: { selectedEndpoint: string, route_map: Record<string, string> }) => {
-    const selectedEndpointRoute = route_map[selectedEndpoint];
-
-    const { data, error, isLoading, mutate } = useFrappeGetCall<{ message: PageData; }>("commit.commit.doctype.commit_docs_page.commit_docs_page.get_commit_docs_page", {
-        name: selectedEndpointRoute
-    }, undefined, {
+    const { data, error, isLoading, mutate } = useFrappeGetDoc<CommitDocsPage>("Commit Docs Page", pageID, undefined, {
         revalidateOnFocus: false,
         revalidateIfStale: false,
         revalidateOnReconnect: false,
         keepPreviousData: true
     });
 
-    const [edit, setEdit] = useState<boolean>(false);
 
     if (isLoading) {
         return <FullPageLoader />;
@@ -64,11 +42,10 @@ const PageContentFetch = ({ selectedEndpoint, route_map }: { selectedEndpoint: s
         </div>
     }
 
-    if (data && data?.message) {
-        return (
-            <>
-                {edit ? <EditorComponent data={data.message?.doc} setEdit={setEdit} mutate={mutate} key={data.message.doc.name} /> : <Renderer data={data.message} setEdit={setEdit} key={data.message.doc.name} />}
-            </>
-        )
+    if (data) {
+        return <EditorComponent data={data} mutate={mutate} ID={ID} key={data.name} />
     }
+    return null
 }
+
+export default PageContent

@@ -1,23 +1,21 @@
-import { FullPageLoader } from "@/components/common/FullPageLoader/FullPageLoader";
-import { OnThisPage } from "@/components/features/documentation/OnThisPage";
-import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
 import { Button } from "@/components/ui/button";
-import { isSystemManager } from "@/utils/roles";
 import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { DocsSidebarItem } from "./docs";
 import { PageData } from "./PageContent";
-const MDXRenderer = lazy(() => import('@/components/common/MarkdownRenderer/MDX'));
+import MDXRenderer from "@/components/common/MarkdownRenderer/MDX";
+import { useGetCommitDocsDetails } from "@/hooks/useGetCommitDocsDetails";
+import { OnThisPage } from "./OnThisPage";
 
 
-export const Renderer = ({ data, setEdit }: { data: PageData, setEdit: React.Dispatch<React.SetStateAction<boolean>> }) => {
-
-    const editAvailable = isSystemManager()
+export const Renderer = ({ data }: { data: PageData }) => {
 
     const { ID } = useParams();
 
-    const { data: docsDetail, } = useGetCommitDocsDetails(ID ?? '');
+    const { data: docsDetail } = useGetCommitDocsDetails(ID ?? '');
+    if (!docsDetail) {
+        return null
+    }
 
     const { next, prev } = findNextPrev(docsDetail.sidebar_items, data.doc.route);
 
@@ -25,9 +23,7 @@ export const Renderer = ({ data, setEdit }: { data: PageData, setEdit: React.Dis
         <div className="flex flex-row gap-12 h-full w-full pt-40 lg:pt-2">
             <div className="flex flex-col gap-4 w-full py-6 px-16">
                 <div className="inline-block text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight dark:text-gray-200">{data?.doc?.title}</div>
-                <Suspense fallback={<FullPageLoader />}>
-                    <MDXRenderer mdxContent={data?.doc?.content ?? ''} />
-                </Suspense>
+                <MDXRenderer mdxContent={data?.doc?.content ?? ''} />
                 <div className="flex flex-col items-center mt-auto w-full border-t border-gray-300 py-4">
                     <div className="flex flex-row justify-between items-center w-full max-w-5xl">
                         {/* Feedback Section */}
@@ -52,16 +48,6 @@ export const Renderer = ({ data, setEdit }: { data: PageData, setEdit: React.Dis
                                 </Button>
                             </div>
                         </div>
-
-                        {/* Edit Button */}
-                        {editAvailable && (
-                            <button
-                                className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
-                                onClick={() => setEdit(true)}
-                            >
-                                Edit this page
-                            </button>
-                        )}
                     </div>
                     {/* Navigation Section */}
                     <div className="flex flex-row justify-between items-center w-full max-w-5xl mt-8">

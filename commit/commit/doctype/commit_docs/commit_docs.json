@@ -10,11 +10,13 @@
   "route",
   "published",
   "company_name",
+  "description",
   "section_break_camv",
   "sidebar",
   "logo_section",
   "light_mode_logo",
   "night_mode_logo",
+  "preview_image",
   "navbar_tab",
   "navbar_items",
   "footer_tab",
@@ -26,6 +28,7 @@
   "github",
   "raven",
   "telegram",
+  "discord",
   "section_break_gawv",
   "footer"
  ],
@@ -160,11 +163,27 @@
    "fieldname": "company_name",
    "fieldtype": "Data",
    "label": "Company Name"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "preview_image",
+   "fieldtype": "Attach Image",
+   "label": "Preview Image"
+  },
+  {
+   "description": "Add Discord URl",
+   "fieldname": "discord",
+   "fieldtype": "Data",
+   "label": "Discord"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-09 12:53:12.416589",
+ "modified": "2025-03-30 12:43:40.306104",
  "modified_by": "Administrator",
  "module": "commit",
  "name": "Commit Docs",
@@ -184,6 +203,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []

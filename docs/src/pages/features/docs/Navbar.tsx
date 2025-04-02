@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { DocsNavbarItem } from "./docs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Search } from "lucide-react";
-import { useGetCommitDocsDetails } from "@/components/features/meta_apps/useGetCommitDocsDetails";
+import { useGetCommitDocsDetails } from "@/hooks/useGetCommitDocsDetails";
 
 
 export const Navbar = ({ ID }: { ID: string }) => {
@@ -35,7 +35,7 @@ export const Navbar = ({ ID }: { ID: string }) => {
                                                     className={navbar_items[key]?.is_primary_button ? 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full' : ''}
                                                     onClick={() => window.open(navbar_items[key].url, navbar_items[key].open_in_new_tab ? "_blank" : "_self")}
                                                 >
-                                                    {navbar_items[key].icon && <DynamicIcon icon={navbar_items[key].icon} className="mr-2" size="14px" />}
+                                                    {navbar_items[key].icon && <DynamicIcon icon={navbar_items[key].icon} size="14px" />}
                                                     {navbar_items[key].label}
                                                 </Button>
                                             ) : (

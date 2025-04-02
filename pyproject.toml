@@ -10,4 +10,5 @@ dynamic = ["version"]
 dependencies = [
  "GitPython",
  "openai",
+ "pyppeteer",
 ]
