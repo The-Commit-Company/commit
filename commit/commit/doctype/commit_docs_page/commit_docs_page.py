@@ -136,26 +136,31 @@ def calculate_toc_object(html):
     headings = soup.find_all(["h2", "h3", "h4", "h5", "h6"])
 
     toc = {}
+    stack = []  # To keep track of the current hierarchy
 
     def add_to_toc(toc, level, heading_id, title):
-        if level == 2:
-            toc[heading_id] = {"name": title, "children": {}}
+        # Ensure the stack is consistent with the current level
+        while stack and stack[-1]["level"] >= level:
+            stack.pop()
+
+        # Create the new heading entry
+        new_entry = {"id": heading_id, "name": title, "children": {}}
+
+        if not stack:
+            # Top-level heading
+            toc[heading_id] = new_entry
+            stack.append({"level": level, "children": toc[heading_id]["children"]})
         else:
-            parent_level = level - 1
-            parent = toc
-            while parent_level > 2:
-                if not parent:
-                    break
-                parent = next(iter(parent.values()))["children"]
-                parent_level -= 1
-            if parent:
-                parent[next(iter(parent.keys()))]["children"][heading_id] = {"name": title, "children": {}}
+            # Nested heading
+            parent = stack[-1]["children"]
+            parent[heading_id] = new_entry
+            stack.append({"level": level, "children": parent[heading_id]["children"]})
 
     for heading in headings:
         title = heading.get_text().strip()
         heading_id = re.sub(r"[^\u00C0-\u1FFF\u2C00-\uD7FF\w\- ]", "", title).replace(" ", "-").lower()
         heading["id"] = heading_id
-        level = int(heading.name[1])
+        level = int(heading.name[1])  # Extract the level from the tag name (e.g., h2 -> 2)
         add_to_toc(toc, level, heading_id, title)
 
     return toc
