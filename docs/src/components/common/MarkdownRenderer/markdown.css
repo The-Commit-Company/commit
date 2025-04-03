@@ -1,3 +1,71 @@
+:root {
+  --borderColor-default: #d1d9e0; /* Light gray */
+  --borderColor-muted: #d1d9e0b3; /* Muted gray */
+  --fgColor-default: #1f2328; /* Dark gray for text */
+  --fgColor-muted: #59636e; /* Muted gray for secondary text */
+  --fgColor-accent: #0969da; /* Blue for links and accents */
+  --bgColor-default: #ffffff; /* White background */
+  --bgColor-muted: #f6f8fa; /* Light gray background */
+  --focus-outlineColor: #0969da; /* Blue for focus outlines */
+  --base-text-weight-normal: 400; /* Normal font weight */
+  --base-text-weight-medium: 500; /* Medium font weight */
+  --base-text-weight-semibold: 600; /* Semibold font weight */
+  --base-size-4: 0.25rem; /* Spacing unit */
+  --base-size-8: 0.5rem; /* Spacing unit */
+  --base-size-16: 1rem; /* Spacing unit */
+  --base-size-24: 1.5rem; /* Spacing unit */
+  --base-size-40: 2.5rem; /* Spacing unit */
+  --focus-outlineColor: #0969da;
+  --fgColor-default: #1f2328;
+  --fgColor-muted: #59636e;
+  --fgColor-accent: #0969da;
+  --fgColor-success: #1a7f37;
+  --fgColor-attention: #9a6700;
+  --fgColor-danger: #d1242f;
+  --fgColor-done: #8250df;
+  --bgColor-default: #ffffff;
+  --bgColor-muted: #f6f8fa;
+  --bgColor-neutral-muted: #818b981f;
+  --bgColor-attention-muted: #fff8c5;
+  --borderColor-default: #d1d9e0;
+  --borderColor-muted: #d1d9e0b3;
+  --borderColor-neutral-muted: #d1d9e0b3;
+  --borderColor-accent-emphasis: #0969da;
+  --borderColor-success-emphasis: #1a7f37;
+  --borderColor-attention-emphasis: #9a6700;
+  --borderColor-danger-emphasis: #cf222e;
+  --borderColor-done-emphasis: #8250df;
+  --color-prettylights-syntax-comment: #59636e;
+  --color-prettylights-syntax-constant: #0550ae;
+  --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+  --color-prettylights-syntax-entity: #6639ba;
+  --color-prettylights-syntax-storage-modifier-import: #1f2328;
+  --color-prettylights-syntax-entity-tag: #0550ae;
+  --color-prettylights-syntax-keyword: #cf222e;
+  --color-prettylights-syntax-string: #0a3069;
+  --color-prettylights-syntax-variable: #953800;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+  --color-prettylights-syntax-brackethighlighter-angle: #59636e;
+  --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+  --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+  --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+  --color-prettylights-syntax-carriage-return-bg: #cf222e;
+  --color-prettylights-syntax-string-regexp: #116329;
+  --color-prettylights-syntax-markup-list: #3b2300;
+  --color-prettylights-syntax-markup-heading: #0550ae;
+  --color-prettylights-syntax-markup-italic: #1f2328;
+  --color-prettylights-syntax-markup-bold: #1f2328;
+  --color-prettylights-syntax-markup-deleted-text: #82071e;
+  --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
+  --color-prettylights-syntax-markup-inserted-text: #116329;
+  --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+  --color-prettylights-syntax-markup-changed-text: #953800;
+  --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+  --color-prettylights-syntax-markup-ignored-text: #d1d9e0;
+  --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+  --color-prettylights-syntax-meta-diff-range: #8250df;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #818b98;
+}
 .markdown-body {
     --base-size-4: 0.25rem;
     --base-size-8: 0.5rem;
@@ -65,62 +133,6 @@
       --color-prettylights-syntax-sublimelinter-gutter-mark: #3d444d;
     }
   } */
-  @media (prefers-color-scheme: light) {
-    .markdown-body, [data-theme="light"] {
-      /* light */
-      color-scheme: light;
-      --focus-outlineColor: #0969da;
-      --fgColor-default: #1f2328;
-      --fgColor-muted: #59636e;
-      --fgColor-accent: #0969da;
-      --fgColor-success: #1a7f37;
-      --fgColor-attention: #9a6700;
-      --fgColor-danger: #d1242f;
-      --fgColor-done: #8250df;
-      --bgColor-default: #ffffff;
-      --bgColor-muted: #f6f8fa;
-      --bgColor-neutral-muted: #818b981f;
-      --bgColor-attention-muted: #fff8c5;
-      --borderColor-default: #d1d9e0;
-      --borderColor-muted: #d1d9e0b3;
-      --borderColor-neutral-muted: #d1d9e0b3;
-      --borderColor-accent-emphasis: #0969da;
-      --borderColor-success-emphasis: #1a7f37;
-      --borderColor-attention-emphasis: #9a6700;
-      --borderColor-danger-emphasis: #cf222e;
-      --borderColor-done-emphasis: #8250df;
-      --color-prettylights-syntax-comment: #59636e;
-      --color-prettylights-syntax-constant: #0550ae;
-      --color-prettylights-syntax-constant-other-reference-link: #0a3069;
-      --color-prettylights-syntax-entity: #6639ba;
-      --color-prettylights-syntax-storage-modifier-import: #1f2328;
-      --color-prettylights-syntax-entity-tag: #0550ae;
-      --color-prettylights-syntax-keyword: #cf222e;
-      --color-prettylights-syntax-string: #0a3069;
-      --color-prettylights-syntax-variable: #953800;
-      --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
-      --color-prettylights-syntax-brackethighlighter-angle: #59636e;
-      --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
-      --color-prettylights-syntax-invalid-illegal-bg: #82071e;
-      --color-prettylights-syntax-carriage-return-text: #f6f8fa;
-      --color-prettylights-syntax-carriage-return-bg: #cf222e;
-      --color-prettylights-syntax-string-regexp: #116329;
-      --color-prettylights-syntax-markup-list: #3b2300;
-      --color-prettylights-syntax-markup-heading: #0550ae;
-      --color-prettylights-syntax-markup-italic: #1f2328;
-      --color-prettylights-syntax-markup-bold: #1f2328;
-      --color-prettylights-syntax-markup-deleted-text: #82071e;
-      --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
-      --color-prettylights-syntax-markup-inserted-text: #116329;
-      --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
-      --color-prettylights-syntax-markup-changed-text: #953800;
-      --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
-      --color-prettylights-syntax-markup-ignored-text: #d1d9e0;
-      --color-prettylights-syntax-markup-ignored-bg: #0550ae;
-      --color-prettylights-syntax-meta-diff-range: #8250df;
-      --color-prettylights-syntax-sublimelinter-gutter-mark: #818b98;
-    }
-  }
   
   .markdown-body {
     -ms-text-size-adjust: 100%;
@@ -320,7 +332,7 @@
     border-spacing: 0;
     border-collapse: collapse;
     display: block;
-    width: max-content;
+    /* width: max-content; */
     max-width: 100%;
     overflow: auto;
   }
@@ -687,8 +699,14 @@
   
   .markdown-body table th,
   .markdown-body table td {
-    padding: 6px 13px;
-    border: 1px solid var(--borderColor-default);
+      border: 1px solid var(--borderColor-default, #d1d9e0); /* Add fallback */
+      padding: 6px 13px; /* Ensure padding is applied */
+  }
+  
+  .markdown-body table {
+      border-spacing: 0; /* Remove spacing between cells */
+      border-collapse: collapse; /* Ensure borders collapse */
+      width: 100%; /* Ensure table takes full width */
   }
   
   .markdown-body table td>:last-child {
