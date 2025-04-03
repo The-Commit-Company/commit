@@ -20,9 +20,9 @@ export const Sidebar = ({ ID }: { ID: string }) => {
             <div className="sticky top-0 h-screen overflow-y-auto border-r border-gray-200 dark:border-gray-700">
                 <div className="py-6 px-8">
                     {/* Header */}
-                    <div className="flex items-center gap-4 mb-8">
+                    <div className="flex items-center gap-2 mb-8">
                         {commit_docs.light_mode_logo && (
-                            <img src={commit_docs.light_mode_logo} alt="logo" className="h-8" />
+                            <img src={commit_docs.light_mode_logo} alt="logo" className="h-8 rounded-md" />
                         )}
                         {commit_docs.header && <div className="text-lg font-bold">{commit_docs.header}</div>}
                         {commit_docs.published == 0 && (

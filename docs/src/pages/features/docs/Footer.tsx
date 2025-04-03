@@ -27,7 +27,7 @@ export const Footer = ({ ID }: { ID: string }) => {
                         <div className="flex justify-between items-start">
                             <div className="flex items-center justify-center flex-row gap-2">
                                 {commit_docs.light_mode_logo && (
-                                    <img src={commit_docs.light_mode_logo} alt="Logo" className="h-8 w-auto" />
+                                    <img src={commit_docs.light_mode_logo} alt="Logo" className="h-8 w-auto rounded-md" />
                                 )}
                                 {commit_docs.header && (
                                     <h4 className="text-lg font-semibold">{commit_docs.header}</h4>
