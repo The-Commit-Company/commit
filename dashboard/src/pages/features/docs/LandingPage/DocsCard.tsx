@@ -21,7 +21,7 @@ const DocsListCard = ({ data }: { data: CommitDocs }) => {
 
     const onNavigate = useCallback(() => {
         navigate({
-            pathname: `/docs/${data.name}`
+            pathname: `/docs/${data.route}`
         })
     }, [navigate])
 
