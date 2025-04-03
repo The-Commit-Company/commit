@@ -31,7 +31,7 @@
     "moment-timezone": "^0.5.46",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "^7.1.2",
+    "react-router-dom": "6.3.0",
     "rehype-katex": "^7.0.1",
     "rehype-pretty-code": "^0.14.0",
     "rehype-raw": "^7.0.0",
