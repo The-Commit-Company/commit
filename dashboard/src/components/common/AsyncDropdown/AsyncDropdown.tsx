@@ -201,7 +201,7 @@ export const AsyncDropdown = ({
 
     const [, setLinkTitle] = useAtom(setLinkTitleAtom)
 
-    const { call: linkTitleCall } = useFrappePostCall('frappe.desk.search.get_link_title')
+    const { call: linkTitleCall } = useFrappePostCall('commit.api.link.get_link_title')
 
     const loadingLinkTitle = useRef(false)
 
@@ -580,7 +580,7 @@ export const AsyncDropdownWithoutForm = ({
 
     const [, setLinkTitle] = useAtom(setLinkTitleAtom)
 
-    const { call: linkTitleCall } = useFrappePostCall('emotive_app.api.utils.link.get_link_title')
+    const { call: linkTitleCall } = useFrappePostCall('commit.api.link.get_link_title')
 
     const loadingLinkTitle = useRef(false)
 
