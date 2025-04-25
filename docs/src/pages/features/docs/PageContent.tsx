@@ -51,6 +51,7 @@ const PageContent = () => {
             <Renderer data={data.message} key={data.message.doc.name} />
         )
     }
+    return null
 }
 
 export default PageContent

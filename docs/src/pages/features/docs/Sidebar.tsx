@@ -47,6 +47,7 @@ export const Sidebar = ({ ID }: { ID: string }) => {
     if (isLoading) {
         return <SidebarSkeleton />;
     }
+    return null
 };
 
 const SidebarGroup = ({ groupName, items }: { groupName: string, items: DocsSidebarItem[] }) => {
