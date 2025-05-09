@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 import json
 from commit.api.preview import save_preview_screenshot
+from bs4 import BeautifulSoup
 
 class CommitDocsPage(Document):
 	
@@ -22,6 +23,22 @@ class CommitDocsPage(Document):
 					domain = frappe.utils.get_url()
 					docs_url = f'{domain}/commit-docs/{commit_docs.route}/{self.name}'
 					frappe.enqueue(method=save_preview_screenshot, url=docs_url,doctype="Commit Docs",docname=commit_docs.name,field='preview_image')
+
+def fix_unclosed_tags(html_content):
+	# Parse the HTML content using the 'html.parser'
+	soup = BeautifulSoup(html_content, 'html.parser')
+
+	# Iterate over all elements with a 'class' attribute
+	for tag in soup.find_all():
+		# Replace 'class' with 'className'
+		if 'class' in tag.attrs or 'classname' in tag.attrs:
+			if 'classname' in tag.attrs:
+				tag['className'] = tag['classname']
+				del tag['classname']
+			else:
+				tag['className'] = tag['class']
+				del tag['class']
+	return str(soup)
 
 @frappe.whitelist(methods=['POST'])
 def publish_documentation(project_branch, endpoint, viewer_type, docs_name, parent_label, title, published, allow_guest, content):
@@ -121,6 +138,7 @@ def get_commit_docs_page(name):
 
 	# Calculate the Table of Contents
 	toc_obj = calculate_toc_object(html)
+	doc.content = fix_unclosed_tags(doc.content)
 
 	return {
 		'doc': doc,
