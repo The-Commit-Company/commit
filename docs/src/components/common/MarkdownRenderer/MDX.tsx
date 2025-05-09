@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { compile, run } from '@mdx-js/mdx';
 import * as runtime from 'react/jsx-runtime';
-import './markdown.css'; // Import your custom styles for markdown
+import './markdown.css';
 import 'katex/dist/katex.min.css';
 
 // Plugins
@@ -11,9 +11,28 @@ import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
-import rehypePrettyCode from "rehype-pretty-code";
+import rehypePrettyCode from 'rehype-pretty-code';
 import CustomCodeBlock from '@/pages/features/custommdxcomponent/CustomCodeBlock';
 import CustomHeading from '@/pages/features/custommdxcomponent/CustomHeading';
+
+// Preprocess MDX content to convert style attributes
+const preprocessMDX = (mdxContent: string) => {
+    return mdxContent.replace(/style="([^"]*)"/g, (match, styleString) => {
+        const styleObject = styleString
+            .split(';')
+            .filter(Boolean)
+            .reduce((acc: Record<string, string>, style) => {
+                const [key, value] = style.split(':').map((s) => s.trim());
+                if (key && value) {
+                    // Convert CSS property names to camelCase for React
+                    const camelCaseKey = key.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+                    acc[camelCaseKey] = value;
+                }
+                return acc;
+            }, {});
+        return `style={${JSON.stringify(styleObject)}}`;
+    });
+};
 
 // Custom components
 const CustomParagraph = ({ children }: { children?: React.ReactNode }) => {
@@ -40,7 +59,8 @@ const components = {
 };
 
 const compileMDX = async (mdxContent: string) => {
-    const compiled = await compile(mdxContent, {
+    const preprocessedContent = preprocessMDX(mdxContent); // Preprocess the MDX content
+    const compiled = await compile(preprocessedContent, {
         outputFormat: 'function-body',
         remarkPlugins: [remarkMdx, remarkMath, remarkBreaks, remarkGfm],
         rehypePlugins: [rehypeSlug, rehypeKatex, rehypePrettyCode],
@@ -53,8 +73,7 @@ const renderMDX = async (compiledMdx: string, customComponents: any) => {
         const { default: MDXContent } = await run(compiledMdx, { ...runtime });
 
         // Wrap MDXContent with MDXProvider to use custom components
-        const MDXWithProvider = (props: any) => <MDXContent {...props} components={customComponents} />
-
+        const MDXWithProvider = (props: any) => <MDXContent {...props} components={customComponents} />;
 
         return MDXWithProvider;
     } catch (error) {
