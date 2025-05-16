@@ -1,0 +1,25 @@
+.cm-editor {
+    min-height: 250px;
+    border-radius: 12px; /* Increased for more rounded corners */
+    border: 1px solid #e5e7eb; /* Optional: subtle border for better visibility */
+    overflow: hidden; /* Ensures inner content respects the border radius */
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.code-block-toolbar {
+  background-color: #060521; /* match CodeMirror dark background (coolGlow theme) */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border: 1px solid #e5e7eb;
+  border-bottom: none; /* so it merges seamlessly with editor's border */
+  padding: 0.5rem; /* adjust for spacing */
+  color: #d1d5db; /* lighter text */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  /* add box-shadow or subtle bottom border if you want a slight separation */
+  box-shadow: inset 0 -1px 0 0 #374151; /* subtle bottom line */
+}

@@ -25,6 +25,7 @@ import {
 
 import { cx } from "class-variance-authority";
 import { common, createLowlight } from "lowlight";
+import { CustomCodeBlock } from "./custom/CustomCodeBlock/CodeBlockExtension";
 
 //TODO I am using cx here to get tailwind autocomplete working, idk if someone else can write a regex to just capture the class key in objects
 const aiHighlight = AIHighlight;
@@ -148,17 +149,6 @@ const mathematics = Mathematics.configure({
 
 const characterCount = CharacterCount.configure();
 
-// const markdownExtension = MarkdownExtension.configure({
-//   html: true,
-//   tightLists: true,
-//   tightListClass: "tight",
-//   bulletListMarker: "-",
-//   linkify: false,
-//   breaks: false,
-//   transformPastedText: false,
-//   transformCopiedText: false,
-// });
-
 export const defaultExtensions = [
   starterKit,
   placeholder,
@@ -181,4 +171,5 @@ export const defaultExtensions = [
   Color,
   CustomKeymap,
   GlobalDragHandle,
+  CustomCodeBlock
 ];

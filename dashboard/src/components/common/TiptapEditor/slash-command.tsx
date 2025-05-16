@@ -1,6 +1,7 @@
 import {
   CheckSquare,
   Code,
+  CodeXml,
   Heading1,
   Heading2,
   Heading3,
@@ -168,6 +169,20 @@ export const suggestionItems = createSuggestionItems([
       }
     },
   },
+  {
+    title: "Code Block",
+    description: "Insert a code block.",
+    searchTerms: ["code", "code block"],
+    icon: <CodeXml size={18} />,
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range) // <-- This removes the /code text!
+        .insertContent({ type: 'customCodeBlock' })
+        .run();
+    }
+  }
 ]);
 
 export const slashCommand = Command.configure({
