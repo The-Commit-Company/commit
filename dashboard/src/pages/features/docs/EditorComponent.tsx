@@ -6,18 +6,21 @@ import { useToast } from '@/components/ui/use-toast';
 import { CommitDocsPage } from '@/types/commit/CommitDocsPage';
 import { removeFrappeFields } from '@/utils/removeFrappeFields';
 import { FrappeDoc, useFrappeUpdateDoc } from 'frappe-react-sdk';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetCommitDocsDetails } from '@/components/features/meta_apps/useGetCommitDocsDetails';
 import { web_url } from '@/config/socket';
-import TailwindAdvancedEditor from '@/components/common/TiptapEditor/advanced-editor';
+import { getMarkdown } from '@milkdown/utils';
+import { Editor } from '@milkdown/kit/core';
+import MarkdownEditor from '@/components/common/MarkdownEditor/MarkdownEditor';
 
 export const EditorComponent = ({ data, mutate, ID }: { data: CommitDocsPage, mutate: VoidFunction, ID: string }) => {
-    const editorRef = useRef<any>(null);
     const [activeTab, setActiveTab] = useState<'editor' | 'settings'>('editor'); // Track active tab
+
+    const [crepeInstance, setCrepeInstance] = useState<Promise<Editor> | null>(null);
 
     const { data: commitDoc } = useGetCommitDocsDetails(ID, true);
 
@@ -32,19 +35,20 @@ export const EditorComponent = ({ data, mutate, ID }: { data: CommitDocsPage, mu
     const navigate = useNavigate();
 
     const handleGetMarkdown = async () => {
-        if (activeTab !== 'editor' || !editorRef.current) {
+        if (activeTab !== 'editor' || !crepeInstance) {
             // Editor is not active or not initialized
             return data.content;
         }
 
-        if (editorRef.current) {
-            const html = editorRef.current.getHTML();
-            return html;
+        try {
+            const editor = await crepeInstance;
+            const markdownContent: string = getMarkdown ? editor.action(getMarkdown()) : '';
+            return markdownContent;
+        } catch (e) {
+            console.warn('Error getting markdown from editor:', e);
+            return data.content;
         }
-
-        return data.content;
     };
-
     const onSubmit = async (formData: CommitDocsPage) => {
         const markdownContent = await handleGetMarkdown() ?? formData.content;
         updateDoc("Commit Docs Page", formData.name, {
@@ -116,8 +120,8 @@ export const EditorComponent = ({ data, mutate, ID }: { data: CommitDocsPage, mu
                                 <TabsTrigger value="settings" className="px-8">Settings</TabsTrigger>
                             </TabsList>
                             <TabsContent value="editor">
-                                <div className="flex overflow-auto flex-col gap-4 border border-gray-200 rounded-lg h-[76vh] shadow-sm bg-white">
-                                    <TailwindAdvancedEditor ref={editorRef} initialContent={data?.content ?? ""} />
+                                <div className="flex overflow-auto flex-col gap-4 pl-24 pr-8 mt-4 pt-4 border border-gray-200 rounded-lg h-[76vh] shadow-sm bg-white">
+                                    <MarkdownEditor value={data?.content ?? ''} setCrepeInstance={setCrepeInstance} />
                                 </div>
                             </TabsContent>
                             <TabsContent value="settings">

@@ -30,7 +30,7 @@ export interface CommitDocsPage{
 	badge_color?: string
 	/**	Is Group Page : Check - When enabled, this page can hold and display nested sub-pages, creating a structured hierarchy in the sidebar.	*/
 	is_group_page?: 0 | 1
-	/**	Content : Markdown Editor	*/
+	/**	Content : Code	*/
 	content?: string
 	/**	Linked Pages : Table - Linked Commit Docs Page	*/
 	linked_pages?: LinkedCommitDocsPage[]
