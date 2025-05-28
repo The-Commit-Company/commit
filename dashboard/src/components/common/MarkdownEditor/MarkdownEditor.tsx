@@ -4,6 +4,7 @@ import '@milkdown/crepe/theme/frame.css';
 import { useEffect } from 'react';
 import { Editor } from '@milkdown/kit/core';
 import './markdown.css'
+import { useFrappeFileUpload } from 'frappe-react-sdk';
 
 export interface MarkdownEditorProps {
     value: string;
@@ -12,23 +13,39 @@ export interface MarkdownEditorProps {
 
 const MarkdownEditor = ({ value, setCrepeInstance }: MarkdownEditorProps) => {
 
+    const { upload } = useFrappeFileUpload();
+
     useEffect(() => {
         const crepe = new Crepe({
             root: '#editor',
             defaultValue: value,
-        }).create()
+            featureConfigs: {
+                'image-block': {
+                    onUpload: async (file: File) => {
+                        const result = await upload(file, {
+                            doctype: 'Commit Docs Page',
+                            docname: 'frappe-react-sdk-testing-new-editor',
+                            isPrivate: false,
+                        });
+
+                        if (!result || !result.file_url) {
+                            throw new Error('Upload failed');
+                        }
+
+                        return result.file_url;
+                    },
+                },
+            },
+        }).create();
+
         setCrepeInstance(crepe);
 
         return () => {
-            crepe.then((editor) => {
-                editor.destroy();
-            });
+            crepe.then((editor) => editor.destroy());
         };
     }, []);
-
     return (
         <div id="editor" className="markdown-editor">
-            {/* The editor will be initialized here */}
         </div>
 
     );
