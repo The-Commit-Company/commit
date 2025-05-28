@@ -121,7 +121,7 @@ export const EditorComponent = ({ data, mutate, ID }: { data: CommitDocsPage, mu
                             </TabsList>
                             <TabsContent value="editor">
                                 <div className="flex overflow-auto flex-col gap-4 pl-24 pr-8 mt-4 pt-4 border border-gray-200 rounded-lg h-[76vh] shadow-sm bg-white">
-                                    <MarkdownEditor value={data?.content ?? ''} setCrepeInstance={setCrepeInstance} />
+                                    <MarkdownEditor value={data?.content ?? ''} setCrepeInstance={setCrepeInstance} docname={data?.name} />
                                 </div>
                             </TabsContent>
                             <TabsContent value="settings">

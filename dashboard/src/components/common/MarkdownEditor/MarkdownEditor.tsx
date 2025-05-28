@@ -8,10 +8,11 @@ import { useFrappeFileUpload } from 'frappe-react-sdk';
 
 export interface MarkdownEditorProps {
     value: string;
-    setCrepeInstance: React.Dispatch<React.SetStateAction<Promise<Editor> | null>>
+    setCrepeInstance: React.Dispatch<React.SetStateAction<Promise<Editor> | null>>,
+    docname: string;
 }
 
-const MarkdownEditor = ({ value, setCrepeInstance }: MarkdownEditorProps) => {
+const MarkdownEditor = ({ value, setCrepeInstance, docname }: MarkdownEditorProps) => {
 
     const { upload } = useFrappeFileUpload();
 
@@ -24,7 +25,7 @@ const MarkdownEditor = ({ value, setCrepeInstance }: MarkdownEditorProps) => {
                     onUpload: async (file: File) => {
                         const result = await upload(file, {
                             doctype: 'Commit Docs Page',
-                            docname: 'frappe-react-sdk-testing-new-editor',
+                            docname: docname,
                             isPrivate: false,
                         });
 
