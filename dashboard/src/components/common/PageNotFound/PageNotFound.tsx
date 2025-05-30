@@ -47,6 +47,7 @@ const PageNotFound = () => {
 
             <Button
                 onClick={() => navigate(-1)}
+                type='button'
                 className="px-6 py-3 rounded-lg text-white bg-indigo-500 hover:bg-indigo-400 transition duration-200"
             >
                 Go Back

@@ -73,6 +73,7 @@ export const EditorComponent = ({ data, mutate, ID }: { data: CommitDocsPage, mu
                             size={'sm'}
                             onClick={() => navigate(-1)}
                             variant={'link'}
+                            type='button'
                         >
                             <ChevronLeft className="h-5 w-5" />
                             Back
