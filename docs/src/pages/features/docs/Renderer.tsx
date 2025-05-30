@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { DocsSidebarItem } from "./docs";
 import { PageData } from "./PageContent";
