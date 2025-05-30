@@ -5,12 +5,22 @@ import { useEffect } from 'react';
 import { Editor } from '@milkdown/kit/core';
 import './markdown.css'
 import { useFrappeFileUpload } from 'frappe-react-sdk';
+import { languages } from '@codemirror/language-data'
+import { javascript } from '@codemirror/lang-javascript';
+import { LanguageDescription } from '@codemirror/language';
 
 export interface MarkdownEditorProps {
     value: string;
     setCrepeInstance: React.Dispatch<React.SetStateAction<Promise<Editor> | null>>,
     docname: string;
 }
+
+const reactLanguage = LanguageDescription.of({
+    name: 'React',
+    alias: ['jsx', 'react'],
+    extensions: ['.jsx', '.tsx'],
+    load: () => Promise.resolve(javascript({ jsx: true, typescript: true })),
+});
 
 const MarkdownEditor = ({ value, setCrepeInstance, docname }: MarkdownEditorProps) => {
 
@@ -36,6 +46,13 @@ const MarkdownEditor = ({ value, setCrepeInstance, docname }: MarkdownEditorProp
                         return result.file_url;
                     },
                 },
+                'code-mirror': {
+                    languages: [
+                        ...languages,
+                        reactLanguage
+                    ]
+                }
+
             },
         }).create();
 

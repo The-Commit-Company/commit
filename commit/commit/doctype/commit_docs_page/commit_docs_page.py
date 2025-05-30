@@ -109,36 +109,54 @@ def publish_documentation(project_branch, endpoint, viewer_type, docs_name, pare
 
 @frappe.whitelist(allow_guest=True)
 def get_commit_docs_page(name):
-	'''
-		Get the Commit Docs Page
-	'''
-	user = frappe.session.user
-	
-	doc = frappe.get_cached_doc('Commit Docs Page', name)
+    '''
+        Get the Commit Docs Page
+    '''
+    user = frappe.session.user
+    
+    doc = frappe.get_cached_doc('Commit Docs Page', name)
 
-	if user == "Guest" and not doc.allow_guest and not doc.published:
-		frappe.throw("You are not allowed to view this page")
+    if user == "Guest" and not doc.allow_guest and not doc.published:
+        frappe.throw("You are not allowed to view this page")
 
-	def lowercase_codeblock_lang(md):
-		# Matches ```LangName\n ... \n```
-		def repl(match):
-			lang = match.group(1)
-			code = match.group(2)
-			return f"```{lang.lower()}\n{code}```"
-		return re.sub(r"```(\w+)\n(.*?)```", repl, md, flags=re.DOTALL)
+    def process_codeblocks(md):
+        # 1. Remove code fences for ```JSX blocks (render as HTML)
+        def jsx_repl(match):
+            code = match.group(1)
+            return code  # Just the code, no code block
 
-	doc.content = lowercase_codeblock_lang(doc.content)
+        md = re.sub(r"```JSX\n(.*?)```", jsx_repl, md, flags=re.DOTALL)
 
-	# Get the content as HTML
-	html = frappe.utils.md_to_html(doc.content)
+        # 2. Change ```React to ```jsx (lowercase)
+        def react_repl(match):
+            code = match.group(1)
+            return f"```jsx\n{code}```"
 
-	# Calculate the Table of Contents
-	toc_obj = calculate_toc_object(html)
+        md = re.sub(r"```React\n(.*?)```", react_repl, md, flags=re.DOTALL)
 
-	return {
-		'doc': doc,
-		'toc_obj': toc_obj
-	}
+        # 3. Lowercase all other code block languages (except jsx, already handled)
+        def lower_repl(match):
+            lang = match.group(1)
+            code = match.group(2)
+            if lang.lower() in ['jsx', 'react']:
+                return match.group(0)  # Already handled
+            return f"```{lang.lower()}\n{code}```"
+        md = re.sub(r"```(\w+)\n(.*?)```", lower_repl, md, flags=re.DOTALL)
+
+        return md
+
+    doc.content = process_codeblocks(doc.content)
+
+    # Get the content as HTML
+    html = frappe.utils.md_to_html(doc.content)
+
+    # Calculate the Table of Contents
+    toc_obj = calculate_toc_object(html)
+
+    return {
+        'doc': doc,
+        'toc_obj': toc_obj
+    }
 
 
 def calculate_toc_object(html):
