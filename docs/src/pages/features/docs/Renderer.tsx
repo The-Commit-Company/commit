@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { DocsSidebarItem } from "./docs";
 import { PageData } from "./PageContent";
@@ -27,7 +26,7 @@ export const Renderer = ({ data }: { data: PageData }) => {
                 <div className="flex flex-col items-center mt-auto w-full border-t border-gray-300 py-4">
                     <div className="flex flex-row justify-between items-center w-full max-w-5xl">
                         {/* Feedback Section */}
-                        <div className="flex flex-row items-center gap-4">
+                        {/* <div className="flex flex-row items-center gap-4">
                             <span className="text-gray-700 dark:text-gray-300 text-sm">
                                 Was this page helpful?
                             </span>
@@ -47,7 +46,7 @@ export const Renderer = ({ data }: { data: PageData }) => {
                                     No
                                 </Button>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     {/* Navigation Section */}
                     <div className="flex flex-row justify-between items-center w-full max-w-5xl mt-8">

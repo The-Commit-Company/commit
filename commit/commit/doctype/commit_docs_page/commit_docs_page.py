@@ -6,6 +6,7 @@ from frappe.model.document import Document
 import json
 from commit.api.preview import save_preview_screenshot
 from bs4 import BeautifulSoup
+import re
 
 class CommitDocsPage(Document):
 	
@@ -24,21 +25,6 @@ class CommitDocsPage(Document):
 					docs_url = f'{domain}/commit-docs/{commit_docs.route}/{self.name}'
 					frappe.enqueue(method=save_preview_screenshot, url=docs_url,doctype="Commit Docs",docname=commit_docs.name,field='preview_image')
 
-def fix_unclosed_tags(html_content):
-	# Parse the HTML content using the 'html.parser'
-	soup = BeautifulSoup(html_content, 'html.parser')
-
-	# Iterate over all elements with a 'class' attribute
-	for tag in soup.find_all():
-		# Replace 'class' with 'className'
-		if 'class' in tag.attrs or 'classname' in tag.attrs:
-			if 'classname' in tag.attrs:
-				tag['className'] = tag['classname']
-				del tag['classname']
-			else:
-				tag['className'] = tag['class']
-				del tag['class']
-	return str(soup)
 
 @frappe.whitelist(methods=['POST'])
 def publish_documentation(project_branch, endpoint, viewer_type, docs_name, parent_label, title, published, allow_guest, content):
@@ -123,27 +109,54 @@ def publish_documentation(project_branch, endpoint, viewer_type, docs_name, pare
 
 @frappe.whitelist(allow_guest=True)
 def get_commit_docs_page(name):
-	'''
-		Get the Commit Docs Page
-	'''
-	user = frappe.session.user
-	
-	doc = frappe.get_cached_doc('Commit Docs Page', name)
+    '''
+        Get the Commit Docs Page
+    '''
+    user = frappe.session.user
+    
+    doc = frappe.get_cached_doc('Commit Docs Page', name)
 
-	if user == "Guest" and not doc.allow_guest and not doc.published:
-		frappe.throw("You are not allowed to view this page")
+    if user == "Guest" and not doc.allow_guest and not doc.published:
+        frappe.throw("You are not allowed to view this page")
 
-	# Get the content as HTML
-	html = frappe.utils.md_to_html(doc.content)
+    def process_codeblocks(md):
+        # 1. Remove code fences for ```JSX blocks (render as HTML)
+        def jsx_repl(match):
+            code = match.group(1)
+            return code  # Just the code, no code block
 
-	# Calculate the Table of Contents
-	toc_obj = calculate_toc_object(html)
-	doc.content = fix_unclosed_tags(doc.content)
+        md = re.sub(r"```JSX\n(.*?)```", jsx_repl, md, flags=re.DOTALL)
 
-	return {
-		'doc': doc,
-		'toc_obj': toc_obj
-	}
+        # 2. Change ```React to ```jsx (lowercase)
+        def react_repl(match):
+            code = match.group(1)
+            return f"```jsx\n{code}```"
+
+        md = re.sub(r"```React\n(.*?)```", react_repl, md, flags=re.DOTALL)
+
+        # 3. Lowercase all other code block languages (except jsx, already handled)
+        def lower_repl(match):
+            lang = match.group(1)
+            code = match.group(2)
+            if lang.lower() in ['jsx', 'react']:
+                return match.group(0)  # Already handled
+            return f"```{lang.lower()}\n{code}```"
+        md = re.sub(r"```(\w+)\n(.*?)```", lower_repl, md, flags=re.DOTALL)
+
+        return md
+
+    doc.content = process_codeblocks(doc.content)
+
+    # Get the content as HTML
+    html = frappe.utils.md_to_html(doc.content)
+
+    # Calculate the Table of Contents
+    toc_obj = calculate_toc_object(html)
+
+    return {
+        'doc': doc,
+        'toc_obj': toc_obj
+    }
 
 
 def calculate_toc_object(html):
