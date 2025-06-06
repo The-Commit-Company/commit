@@ -24,6 +24,16 @@ class CommitDocsPage(Document):
 					domain = frappe.utils.get_url()
 					docs_url = f'{domain}/commit-docs/{commit_docs.route}/{self.name}'
 					frappe.enqueue(method=save_preview_screenshot, url=docs_url,doctype="Commit Docs",docname=commit_docs.name,field='preview_image')
+	
+	def get_docs_url(self):
+		'''
+			Get the URL for the Commit Docs Page
+		'''
+		if self.commit_docs:
+			commit_docs_route = frappe.get_cached_value('Commit Docs', self.commit_docs, 'route')
+			domain = frappe.utils.get_url()
+			return f'{domain}/commit-docs/{commit_docs_route}/{self.route}'
+		return None
 
 
 @frappe.whitelist(methods=['POST'])
