@@ -13,7 +13,6 @@ from frappe.utils import now
 from frappe.app import handle_exception
 from commit.api.api_explorer import get_file_content_from_path
 from commit.api.generate_documentation import generate_docs_for_apis
-from git.exc import GitCommandError
 
 class CommitProjectBranch(Document):
 
@@ -76,7 +75,7 @@ class CommitProjectBranch(Document):
         try:
             # Try fast-forward pull
             repo.git.pull('--ff-only')
-        except GitCommandError:
+        except Exception as e:
             # If fast-forward not possible, reset to remote branch
             repo.git.reset('--hard', 'origin/' + self.branch_name)
             
