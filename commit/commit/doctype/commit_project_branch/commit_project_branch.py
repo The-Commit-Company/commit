@@ -72,7 +72,13 @@ class CommitProjectBranch(Document):
         repo.remotes.origin.fetch()
 
         # Force fast-forward only to avoid merge commits
-        repo.git.pull('--ff-only')
+        try:
+            # Try fast-forward pull
+            repo.git.pull('--ff-only')
+        except GitCommandError:
+            # If fast-forward not possible, reset to remote branch
+            repo.git.reset('--hard', 'origin/' + self.branch_name)
+            
         self.last_fetched = now()
         self.commit_hash = repo.head.object.hexsha
 
