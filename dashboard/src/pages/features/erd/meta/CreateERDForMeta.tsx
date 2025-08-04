@@ -110,7 +110,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
                                 leaveTo="translate-x-[-100%]"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-[480px]">
-                                    <div className="flex h-full flex-col overflow-y-scroll bg-white pt-6 shadow-xl">
+                                    <div className="flex h-full flex-col bg-white pt-6 shadow-xl">
                                         <div className="px-4 sm:px-6">
                                             <div className="flex items-start justify-between">
                                                 <Dialog.Title className="flex space-x-2 ">
@@ -138,13 +138,12 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, erdDoctypes, setERDDocT
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                                        <div className="relative mt-6 flex-1 px-4 sm:px-6 overflow-y-scroll">
                                             <ModuleList doctype={doctype} setDocType={setDocType} />
                                         </div>
-
-                                    </div>
-                                    <div className="sticky bottom-0 items-center justify-end p-4 flex w-full bg-white border-t">
-                                        <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
+                                        <div className="sticky bottom-0 flex items-center justify-end p-4 w-full bg-white border-t text-3xl">
+                                            <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
+                                        </div>
                                     </div>
                                 </Dialog.Panel>
                             </Transition.Child>

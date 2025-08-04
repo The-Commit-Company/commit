@@ -172,14 +172,14 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                                        <div className="relative mt-6 flex-1 px-4 sm:px-6 overflow-y-scroll">
                                             <ModuleList apps={apps} doctype={doctype} setDocType={setDocType} />
                                         </div>
-
-                                    </div>
                                         <div className="fixed bottom-0 items-center w-[480px] justify-end p-4 flex bg-white border-t">
-                                        <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
+                                            <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
+                                        </div>
                                     </div>
+                                        
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>
