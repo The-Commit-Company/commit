@@ -13,6 +13,7 @@ from frappe.utils import now
 from frappe.app import handle_exception
 from commit.api.api_explorer import get_file_content_from_path
 from commit.api.generate_documentation import generate_docs_for_apis
+from git.exc import GitCommandError
 
 class CommitProjectBranch(Document):
 
