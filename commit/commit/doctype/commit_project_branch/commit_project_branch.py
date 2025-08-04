@@ -71,8 +71,8 @@ class CommitProjectBranch(Document):
         repo = git.Repo(self.path_to_folder)
         repo.remotes.origin.fetch()
 
-        # Pull the latest changes from the remote
-        repo.remotes.origin.pull()
+        # Force fast-forward only to avoid merge commits
+        repo.git.pull('--ff-only')
         self.last_fetched = now()
         self.commit_hash = repo.head.object.hexsha
 
