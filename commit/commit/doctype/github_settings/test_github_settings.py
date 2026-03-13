@@ -6,4 +6,4 @@ from frappe.tests.utils import FrappeTestCase
 
 
 class TestGithubSettings(FrappeTestCase):
-	pass
+    pass

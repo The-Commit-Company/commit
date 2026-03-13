@@ -6,4 +6,4 @@ from frappe.tests.utils import FrappeTestCase
 
 
 class TestCommitProject(FrappeTestCase):
-	pass
+    pass

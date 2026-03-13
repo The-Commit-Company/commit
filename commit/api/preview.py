@@ -1,29 +1,30 @@
 import asyncio
 import io
-from pyppeteer import launch
+
 import frappe
 from frappe.utils.file_manager import save_file
+from pyppeteer import launch
+
 from commit.api.convert_to_webp import convert_to_webp
+
 
 async def capture_screenshot(url, width=1366, height=800, delay=3):
     browser = await launch(
-        headless=True,
-        handleSIGINT=False,
-        handleSIGTERM=False,
-        handleSIGHUP=False
+        headless=True, handleSIGINT=False, handleSIGTERM=False, handleSIGHUP=False
     )
     page = await browser.newPage()
-    
+
     await page.setViewport({"width": width, "height": height})
     await page.goto(url, {"waitUntil": "load"})
     await asyncio.sleep(delay)  # Ensure page loads fully
-    
+
     # ✅ Explicitly return bytes and ensure no file is saved
-    screenshot_bytes = await page.screenshot({"fullPage": False, "encoding": "binary"}) 
-    
+    screenshot_bytes = await page.screenshot({"fullPage": False, "encoding": "binary"})
+
     await browser.close()
-    
+
     return screenshot_bytes  # Return raw image data
+
 
 def save_preview_screenshot(url, doctype, docname, field):
     try:
@@ -38,15 +39,17 @@ def save_preview_screenshot(url, doctype, docname, field):
     # ✅ Correct way: Wrap bytes in BytesIO
     screenshot_io = io.BytesIO(screenshot_bytes)
 
-    file_doc = frappe.get_doc({
-        "doctype": "File",
-        "file_name": docname + "_" + "preview.png",
-        "attached_to_doctype": doctype,
-        "attached_to_name": docname,
-        "attached_to_field": field,
-        "is_private": 1,
-        "content": screenshot_io.getvalue()
-    })
+    file_doc = frappe.get_doc(
+        {
+            "doctype": "File",
+            "file_name": docname + "_" + "preview.png",
+            "attached_to_doctype": doctype,
+            "attached_to_name": docname,
+            "attached_to_field": field,
+            "is_private": 1,
+            "content": screenshot_io.getvalue(),
+        }
+    )
     file_doc.save()
 
     # Convert to WebP

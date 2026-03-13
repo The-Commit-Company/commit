@@ -155,7 +155,7 @@ const CreateCommitDocs = ({ onClose, open ,mutate}: CreateCommitDocsProps) => {
                                           Clear
                                       </Button>
                                   </div>
-                                  
+
                                 ) : (
                                     <Button
                                         variant="outline"
@@ -177,7 +177,7 @@ const CreateCommitDocs = ({ onClose, open ,mutate}: CreateCommitDocsProps) => {
                                             placeholder="eg. https://example.com/night-mode-logo.png"
                                             className="rounded-r-none border-r-0"
                                             readOnly
-                                            
+
                                         />
                                         <Button
                                             type="button"

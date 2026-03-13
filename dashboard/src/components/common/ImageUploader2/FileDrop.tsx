@@ -29,7 +29,7 @@ export interface FileDropProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /**
  * File uploader with Drag 'n' Drop Zone
- * 
+ *
  * It encompasses Box component, so all Box props can be used.
  */
 export const FileDrop = ({ files, onFileChange, maxFiles = 1, uploading, accept, showList = true, maxFileSize, camera = false, linkAttachment = false, ...props }: FileDropProps) => {
@@ -150,7 +150,7 @@ export const FileListItem = ({ file, removeFile, isUploading, ...props }: FileLi
 
 /**
  * Hook takes in a file and returns a blob URL for previewing the file if image
- * @param file 
+ * @param file
  * @returns File url
  */
 export const useGetFilePreviewUrl = (file: CustomFile): string => {

@@ -312,23 +312,23 @@ interface CreateParentLabel {
     onClose: () => void
     open: boolean
   }
-  
-  
+
+
   const CreateNewParentLabel = ({ onColumnCreate, onClose, open }: CreateParentLabel) => {
-  
+
     const [label, setLabel] = useState<string>('')
-  
+
     useEffect(() => {
       setLabel('')
     }, [open])
-  
+
     const onSubmit = () => {
       if (label) {
         onColumnCreate(label)
         onClose()
       }
     }
-  
+
     return (
       <DialogContent className="p-6 w-[90vw] sm:w-full overflow-hidden">
         <DialogHeader className="text-left">

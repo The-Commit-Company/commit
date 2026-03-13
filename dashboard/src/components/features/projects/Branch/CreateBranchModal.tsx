@@ -147,4 +147,3 @@ const CreateBranchModal = ({ mutate, setOpen, open }: BranchProps) => {
 }
 
 export default CreateBranchModal
-

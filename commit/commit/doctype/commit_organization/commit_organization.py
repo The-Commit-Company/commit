@@ -6,11 +6,11 @@ from frappe.model.document import Document
 
 
 class CommitOrganization(Document):
-	def on_trash(self):
-		# find all project which are linked with this organisation 
-		# delete all projects
-		projects = frappe.get_all('Commit Project',filters={
-			'org':self.name
-		},pluck='name')
-		for project in projects:
-			frappe.db.delete('Commit Project',project)
+    def on_trash(self):
+        # find all project which are linked with this organisation
+        # delete all projects
+        projects = frappe.get_all(
+            "Commit Project", filters={"org": self.name}, pluck="name"
+        )
+        for project in projects:
+            frappe.db.delete("Commit Project", project)

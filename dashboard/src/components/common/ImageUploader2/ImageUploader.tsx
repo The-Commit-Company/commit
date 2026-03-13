@@ -59,7 +59,7 @@ interface ImageUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /**
  * File uploader with Drag 'n' Drop Zone
- * 
+ *
  * It encompasses Box component, so all Box props can be used.
  */
 export const ImageUploader = ({ file, doctype, docname, onUpdate, fieldname = 'image', icon, accept = { 'image/*': ['.jpeg', '.jpg', '.png'] }, maxFileSize, boxSize = 120, defaultFile, borderRadius = "50%", ...props }: ImageUploaderProps) => {

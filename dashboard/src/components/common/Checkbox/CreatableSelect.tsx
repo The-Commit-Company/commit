@@ -110,7 +110,7 @@ export const CreatableSelect = ({ options, selected, className, label, mode = 's
                                                 }
                                             }}
                                         >
-                                            <Check size={16} 
+                                            <Check size={16}
                                                 className={cn(
                                                     'mr-2 h-4 w-4',
                                                     selected.includes(option.value)
@@ -245,7 +245,7 @@ export const FormCreatableSelect = ({
                                                         }
                                                     }}
                                                 >
-                                                    <Check size={16} 
+                                                    <Check size={16}
                                                         className={cn(
                                                             'mr-2 h-4 w-4',
                                                             value?.includes(option.value) ? 'opacity-100' : 'opacity-0'
