@@ -11,7 +11,7 @@ setup(
 	version=version,
 	description="The Commit Company",
 	author="The Commit Company",
-	author_email="yash.jane@thecommit.company",
+	author_email="sumit.jain@thecommit.company",
 	packages=find_packages(),
 	zip_safe=False,
 	include_package_data=True,

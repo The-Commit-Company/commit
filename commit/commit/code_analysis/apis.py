@@ -32,18 +32,80 @@ def find_all_occurrences_of_whitelist(path: str, app_name: str):
 
             ## Comment out later
             # if file.endswith('party.py'):
-            indexes,line_nos,no_of_occurrences = find_indexes_of_whitelist(file_content, no_of_occurrences)
+            result = find_indexes_of_whitelist(file_content, no_of_occurrences)
+            indexes, line_nos = result[0], result[1]
+            no_of_occurrences = result[2]
+            ast_names = result[3] if len(result) > 3 else None
+            ast_def_indexes = result[4] if len(result) > 4 else None
             api_count += no_of_occurrences
-            apis = get_api_details(app_name, file, file_content, indexes,line_nos, path)
+            apis = get_api_details(app_name, file, file_content, indexes, line_nos, path, ast_names, ast_def_indexes)
             api_details.extend(apis)
     
     return api_details
+
+def _find_whitelist_indexes_via_ast(file_content: str):
+    '''
+    Find all @frappe.whitelist decorator positions using AST.
+    Returns (indexes, line_nos, function_names, def_indexes) or None if parse fails.
+    This is order-independent and not confused by strings/comments.
+    Uses AST-derived function names and def positions so multi-line signatures
+    and "def " in comments do not cause missed APIs.
+    '''
+    try:
+        tree = ast.parse(file_content)
+    except SyntaxError:
+        return None
+    lines = file_content.split('\n')
+    results = []  # (decorator_index, line_no, function_name, def_index)
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        decorators = get_decorators(node)
+        if 'whitelist' not in decorators:
+            continue
+        for dec in node.decorator_list:
+            name = get_decorator_name(dec)
+            if name == 'whitelist':
+                lineno = getattr(dec, 'lineno', node.lineno)
+                if lineno < 1 or lineno > len(lines):
+                    break
+                line_start = sum(len(l) + 1 for l in lines[: lineno - 1])
+                line_content = lines[lineno - 1]
+                pos_in_line = line_content.find('@frappe.whitelist')
+                if pos_in_line >= 0:
+                    decorator_index = line_start + pos_in_line
+                    # def_index: start of "def name" on the function's line
+                    def_lineno = node.lineno
+                    def_line_start = sum(len(l) + 1 for l in lines[: def_lineno - 1])
+                    def_line_content = lines[def_lineno - 1]
+                    def_pos_in_line = def_line_content.find('def ')
+                    def_index = def_line_start + def_pos_in_line if def_pos_in_line >= 0 else decorator_index
+                    results.append((decorator_index, lineno, node.name, def_index))
+                break
+    if not results:
+        return None
+    # Keep source order (ast.walk order is not guaranteed)
+    results.sort(key=lambda r: r[0])
+    return (
+        [r[0] for r in results],
+        [r[1] for r in results],
+        [r[2] for r in results],
+        [r[3] for r in results],
+    )
+
 
 def find_indexes_of_whitelist(file_content: str, count: int):
     '''
     Find indexes of @frappe.whitelist in the file content,
     ensuring it's not commented out or inside a string.
+    Prefers AST-based discovery (order-independent); falls back to
+    string scan when AST parse fails (e.g. syntax error).
     '''
+    ast_result = _find_whitelist_indexes_via_ast(file_content)
+    if ast_result is not None:
+        indexes, line_nos, ast_names, ast_def_indexes = ast_result
+        return indexes, line_nos, count - len(indexes), ast_names, ast_def_indexes
+
     def is_in_string_or_comment(file_content, index):
         # State variables
         in_single_quote = False
@@ -104,37 +166,51 @@ def find_indexes_of_whitelist(file_content: str, count: int):
             actual_count -= 1
         start = index + len('@frappe.whitelist')
     
-    return indexes, line_nos, actual_count
+    return indexes, line_nos, actual_count, None, None
 
-def get_api_details(app_name, file, file_content: str, indexes: list,line_nos:list, path: str):
+def get_api_details(app_name, file, file_content: str, indexes: list, line_nos: list, path: str, ast_names=None, ast_def_indexes=None):
     '''
     Get details of the API
     '''
     apis = []
-    for index in indexes:
-        whitelist_details = get_whitelist_details(file_content, index)
-        api_details = get_api_name(file_content, index)
-        other_decorators = get_other_decorators(file_content, index, api_details.get('def_index'))
-        obj = {
-            **api_details,
-            **whitelist_details,
-            'other_decorators': other_decorators,
-            'index': index,
-            'block_start': line_nos[indexes.index(index)],
-            'block_end': find_function_end_lines(file_content,api_details.get('name','')),
-            'file': file,
-            'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
-        }
-        documentation, last_updated, is_published, published_on, publish_by, publish_id,published_route = get_documentation_from_branch_documentation(app_name, obj.get('name'), obj.get('api_path'))
-        obj['documentation'] = documentation
-        obj['last_updated'] = last_updated
-        obj['is_published'] = is_published
-        obj['published_on'] = published_on
-        obj['publish_by'] = publish_by
-        obj['publish_id'] = publish_id
-        obj['published_route'] = published_route
-        apis.append(obj)
-    
+    for i, index in enumerate(indexes):
+        try:
+            whitelist_details = get_whitelist_details(file_content, index)
+            use_ast = ast_names is not None and ast_def_indexes is not None and i < len(ast_names) and i < len(ast_def_indexes)
+            if use_ast:
+                api_name = ast_names[i]
+                def_index = ast_def_indexes[i]
+                api_details = get_api_name(file_content, index, def_index=def_index)
+                api_details['name'] = api_name
+                api_details['def_index'] = def_index
+            else:
+                api_details = get_api_name(file_content, index)
+            if not api_details.get('name'):
+                continue
+            def_idx = api_details.get('def_index', -1)
+            search_end = def_idx if isinstance(def_idx, int) and def_idx >= 0 else len(file_content)
+            other_decorators = get_other_decorators(file_content, index, search_end)
+            obj = {
+                **api_details,
+                **whitelist_details,
+                'other_decorators': other_decorators,
+                'index': index,
+                'block_start': line_nos[i],
+                'block_end': find_function_end_lines(file_content, api_details.get('name', '')),
+                'file': file,
+                'api_path': file.replace(path, '').replace('\\', '/').replace('.py', '').replace('/', '.')[1:] + '.' + api_details.get('name')
+            }
+            documentation, last_updated, is_published, published_on, publish_by, publish_id, published_route = get_documentation_from_branch_documentation(app_name, obj.get('name'), obj.get('api_path'))
+            obj['documentation'] = documentation
+            obj['last_updated'] = last_updated
+            obj['is_published'] = is_published
+            obj['published_on'] = published_on
+            obj['publish_by'] = publish_by
+            obj['publish_id'] = publish_id
+            obj['published_route'] = published_route
+            apis.append(obj)
+        except Exception:
+            frappe.log_error(f"Commit API discovery: skipped API at index {index} in {file}", "Commit API Discovery")
     return apis
 
 def get_other_decorators(file_content: str, index: int, def_index: int):
@@ -181,30 +257,49 @@ def get_whitelist_details(file_content: str, index: int):
         "allow_guest": allow_guest
     }
 
-def get_api_name(file_content: str, index: int):
+def _find_def_at_line_start(file_content: str, index: int):
+    '''Find next "def " that starts a line (after newline or start of file). Avoids matching "def " in comments.'''
+    start = index
+    while True:
+        def_index = file_content.find('def ', start)
+        if def_index == -1:
+            return -1
+        if def_index == 0 or file_content[def_index - 1] == '\n':
+            return def_index
+        start = def_index + 1
+
+
+def _find_signature_end(file_content: str, def_index: int):
+    '''Find the "):" that closes the function signature. Prefers ) followed by newline or : to avoid type hints.'''
+    pos = def_index
+    while True:
+        pos = file_content.find('):', pos)
+        if pos == -1:
+            return -1
+        next_char = file_content[pos + 2] if pos + 2 < len(file_content) else '\n'
+        if next_char in ('\n', ':'):
+            return pos
+        pos += 1
+
+
+def get_api_name(file_content: str, index: int, def_index: int = None):
     '''
     Get name of the API.
-    To do this, we need to find the first occurrence of "def api_name" after the index 
+    Finds the function definition after the decorator. When def_index is provided (from AST), uses it.
+    Otherwise finds "def " at line start only to avoid matching comments.
     '''
     api_name = ''
-    # Find the first occurrence of "def" after the index
-    def_index = file_content.find('def ', index)
-
-    # Find occurrence of ":" after the def_index
-    colon_index = file_content.find('):', def_index)
-
-    # Get the string between def_index and colon_index
-    api_def = file_content[def_index:colon_index+1].replace('\n', '').replace('\t', '')
-
-    # api_def is of the form "def api_name(self, arg1, arg2, ...)"
-    # We need to get the api_name. To do this, we can remove the "def " first
-    api_name_with_params = api_def.replace('def ', '')
-
+    if def_index is None:
+        def_index = _find_def_at_line_start(file_content, index)
+    if def_index == -1:
+        return {'name': '', 'arguments': [], 'def': '', 'def_index': -1}
+    colon_index = _find_signature_end(file_content, def_index)
+    if colon_index == -1:
+        return {'name': '', 'arguments': [], 'def': '', 'def_index': def_index}
+    api_def = file_content[def_index:colon_index + 1].replace('\n', '').replace('\t', '')
+    api_name_with_params = api_def.replace('def ', '', 1)
     api_name = extract_name_from_def(api_name_with_params)
     arguments = extract_arguments_from_def(api_name_with_params)
-
-
-
     return {
         'name': api_name,
         'arguments': arguments,
