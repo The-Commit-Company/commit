@@ -48,8 +48,8 @@ const Projects = () => {
 
     if (data && data.message) {
         return (
-            <div className="mx-auto pl-2 pr-4 h-full overflow-y-auto pt-2">
-                <div className="h-full flex flex-col gap-4">
+            <div className="mx-auto pl-2 pr-4 pt-2 pb-4">
+                <div className="flex flex-col gap-4">
                     <div className="grid grid-cols-1 gap-6 justify-between sm:grid-cols-2">
                         <ViewERDButton data={data?.message} />
                         <APIExplorer />

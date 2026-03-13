@@ -14,25 +14,25 @@ const Overview = () => {
     // if both arer false then count 1 if any one is true then count 2 if both are true then count 3
     const gridCount = areAppsAvailable + isCreateAccess + 1
     return (
-        <div className="h-screen flex flex-col gap-2 space-x-2">
+        <div className="h-screen flex flex-col gap-2 overflow-hidden">
             <Header />
-            <Tabs defaultValue="projects" className="h-full px-2">
-                <TabsList className={`grid grid-cols-${gridCount} w-fit gap-8`}>
+            <Tabs defaultValue="projects" className="flex-1 min-h-0 flex flex-col px-2 overflow-hidden">
+                <TabsList className={`grid grid-cols-${gridCount} w-fit gap-8 shrink-0`}>
                     <TabsTrigger value="projects" className="px-8">Projects</TabsTrigger>
                     {areAppsAvailable && <TabsTrigger value="your-apps" className="px-8">Site Apps</TabsTrigger>}
                     {isCreateAccess && <TabsTrigger value="docs" className="px-8">Docs</TabsTrigger>}
                 </TabsList>
-                <TabsContent value="projects">
+                <TabsContent value="projects" className="flex-1 min-h-0 overflow-y-auto mt-2">
                     <Suspense fallback={<FullPageLoader />}>
                         <Projects />
                     </Suspense>
                 </TabsContent>
-                {areAppsAvailable && <TabsContent value="your-apps">
+                {areAppsAvailable && <TabsContent value="your-apps" className="flex-1 min-h-0 overflow-y-auto mt-2">
                     <Suspense fallback={<FullPageLoader />}>
                         <YourApps />
                     </Suspense>
                 </TabsContent>}
-                {isCreateAccess && <TabsContent value="docs">
+                {isCreateAccess && <TabsContent value="docs" className="flex-1 min-h-0 overflow-y-auto mt-2">
                     <Suspense fallback={<FullPageLoader />}>
                         <CommitDocsList />
                     </Suspense>

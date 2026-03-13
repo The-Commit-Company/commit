@@ -29,15 +29,15 @@ const YourApps = () => {
 
     if (data && data.message) {
         return (
-            <div className="mx-auto pl-2 pr-4 h-full overflow-y-auto pt-2">
-                <div className="h-full flex flex-col gap-4">
+            <div className="mx-auto pl-2 pr-4 pt-2 pb-4">
+                <div className="flex flex-col gap-4">
                     <div className="grid grid-cols-1 gap-6 justify-between sm:grid-cols-2">
                         <ViewERDButtonForSiteApps />
                         <YourAppAPIExplorer />
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-row items-end justify-between border-b pb-2">
-                            <div className="text-xl font-semibold pt-1">Projects</div>
+                            <div className="text-xl font-semibold pt-1">Site Installed Apps</div>
                         </div>
                         <div className="grid sm:grid-cols-2 gap-x-8 pb-4">
                             {data.message.map((org: AppsData) => {
