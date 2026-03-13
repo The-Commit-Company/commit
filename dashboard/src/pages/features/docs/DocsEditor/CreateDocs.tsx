@@ -50,7 +50,7 @@ const CreateCommitDocsPage = ({ onClose, open, mutate, commit_docs }: CreateComm
             ]
             // Remove duplicates
             const uniqueOptions = options.filter((v, i, a) => a.findIndex(t => (t.value === v.value)) === i)
-            setOpt(uniqueOptions)    
+            setOpt(uniqueOptions)
         }
     }, [data])
 
@@ -70,7 +70,7 @@ const CreateCommitDocsPage = ({ onClose, open, mutate, commit_docs }: CreateComm
             onClose()
         })
     }
-    
+
     return (
         <DialogContent className="p-6 w-[90vw] sm:max-w-xl overflow-hidden">
             <DialogHeader className="text-left px-4">

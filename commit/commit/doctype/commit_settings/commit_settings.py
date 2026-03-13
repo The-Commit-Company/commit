@@ -6,4 +6,4 @@ from frappe.model.document import Document
 
 
 class CommitSettings(Document):
-	pass
+    pass

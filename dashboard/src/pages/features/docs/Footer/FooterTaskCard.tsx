@@ -25,16 +25,16 @@ export function TaskCard({
         data: { type: "Task", task },
         attributes: { roleDescription: "Task" },
       });
-    
+
       const style = {
         transition,
         transform: transform ? CSS.Translate.toString(transform) : undefined, // Apply transform only if it exists
         opacity: isDragging ? 0.5 : 1, // Ensure only the dragged task has reduced opacity
         zIndex: isDragging ? 10 : "auto", // Bring the dragged task to the front
       };
-    
+
       const [isRevealed, setIsRevealed] = useState(false);
-    
+
       return (
         <div className="relative overflow-hidden" ref={setNodeRef} style={style}>
           {/* Delete Button (Hidden until revealed) */}
@@ -48,7 +48,7 @@ export function TaskCard({
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
-    
+
           {/* Task Card */}
           <Card
             className={`relative transition-transform duration-300 ${

@@ -5,7 +5,7 @@ import { Moment } from "moment-timezone"
  * Converts a Frappe timestamp to a readable time ago string
  * @param timestamp A frappe timestamp string in the format YYYY-MM-DD HH:mm:ss
  * @param withoutSuffix remove the suffix from the time ago string
- * @returns 
+ * @returns
  */
 export const convertFrappeTimestampToTimeAgo = (timestamp?: string, withoutSuffix?: boolean) => {
 

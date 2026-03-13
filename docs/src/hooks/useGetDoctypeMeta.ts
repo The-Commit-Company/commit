@@ -91,10 +91,10 @@ export const useDoctypeForField = () => {
         return hasField
     }
     /**
-     * 
-     * @param doctype 
+     *
+     * @param doctype
      * @param fieldname
-     * return promise that resolves to the doctype of the field 
+     * return promise that resolves to the doctype of the field
      */
     const getDoctypeForField = (doctype: string, fieldname: string) => {
         /**

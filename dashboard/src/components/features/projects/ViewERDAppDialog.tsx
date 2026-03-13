@@ -94,4 +94,3 @@ export const ViewERDProjectCard = ({ project, apps, setApps }: ViewERDProjectCar
             </div>
         </li >)
 }
-

@@ -38,7 +38,7 @@ export const APIExplorer = () => {
                     </CardHeader>
                     <CardContent>
                         <div className="text-sm text-gray-500 sm:mb-8">
-                            Effortlessly explore and interact with your whitelisted API's and Bench commands using our API Explorer. 
+                            Effortlessly explore and interact with your whitelisted API's and Bench commands using our API Explorer.
                         </div>
                     </CardContent>
 
@@ -139,4 +139,3 @@ export const ViewAPIExplorerCard = ({ project }: ViewERDProjectCardProps) => {
             </div>
         </li >)
 }
-

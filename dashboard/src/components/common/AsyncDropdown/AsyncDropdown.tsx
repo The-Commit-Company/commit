@@ -28,37 +28,37 @@ interface BaseDropdownProps extends Partial<InputProps> {
     limit?: number;
     /** TODO: Should the dropdown allow pagination when the user scrolls. Default: true */
     allowPagination?: boolean;
-    /** 
+    /**
      * API to call to fetch records.
-     * 
+     *
      * Default: `emotive_app.emotive_app.search.search_link`
-     * 
+     *
      * If you want to use a custom API, you can pass the path to the API here.
-     * 
+     *
      * The API should return a list of documents in the following format:
      * [{value: string, description: string, label?: string}] - where the value is the ID of the document.
-     * 
+     *
      * If the API sends a label, it will be used as the label in the dropdown.
-     * 
+     *
      * Refer: Cost Codes query
     */
     searchAPIPath?: string;
     /**
      * Field you want to search against in the doctype.
-     * 
+     *
      * Default: `name`
-     * 
+     *
      * If you want to search against a different field, you can pass the fieldname here.
-     * 
+     *
      * If you want to search against multiple fields, you can try using the `searchAPIPath` prop to call a custom API,
      * or use a custom query in the `customQuery` prop.
      */
     searchfield?: string;
-    /** 
+    /**
      * Custom query to be used to fetch records.
-     * 
+     *
      * If you want to use a custom query, you can pass the query here.
-     * 
+     *
      * The query should be in the following format:
      * {
      *  query: string,
@@ -70,41 +70,41 @@ interface BaseDropdownProps extends Partial<InputProps> {
      * }
      */
     customQuery?: {
-        /** Path to function for the query. 
-         * 
+        /** Path to function for the query.
+         *
          * Refer: Item/Supplier query
          */
         query: string,
         /** Filters are usually an object instead of an array in a custom query */
         filters?: any,
     },
-    /** 
+    /**
      * Used for certain queries where a reference doctype is needed.
-     * 
+     *
      * For example when searching a supplier in a "Purchase Invoice", the reference_doctype is "Purchase Invoice"
-     * 
+     *
      * TODO: This can be auto-filled eventually from FormContext since we will know the doctype of the form.
      */
     reference_doctype?: string,
 
     /**
      * Some doctypes are "creatable" - for example "Item"
-     * 
+     *
      * This means that if the user does not find a match, they can create a new record from the dropdown itself.
-     * 
+     *
      * A popup will open up with the form to create a new record.
-     * 
+     *
      * You can pass in default values for the new record to be created.
      */
     defaultValuesForCreate?: Record<string, any>,
 
     /** Placeholder for the dropdown. Default: `doctype` */
     placeholder?: string;
-    /** 
-     * Should the field be read-only. 
-     * 
+    /**
+     * Should the field be read-only.
+     *
      * The Dropdown takes in the FormContext and automatically sets the field to readOnly if the docstatus is 1 (Submitted) or 2 (Cancelled)
-     * 
+     *
      * If `allowOnSubmit` is set to true, the field will be readOnly only if the docstatus is 2 (Cancelled)
      */
     isReadOnly?: boolean;
@@ -119,7 +119,7 @@ interface BaseDropdownProps extends Partial<InputProps> {
     heightAdjust?: boolean;
     /**
      * Function to filter the options based on the input value/other criteria.
-     * 
+     *
      * For example, you might want to limit the companies shown in the dropdown since they have been already added (like in Cost Codes)
      */
     filterOption?: (option: ResultItem, inputValue: string) => boolean,
@@ -128,15 +128,15 @@ interface BaseDropdownProps extends Partial<InputProps> {
 interface AsyncDropdownProps extends BaseDropdownProps {
     /** Fieldname */
     name: string;
-    /** 
+    /**
      * Rules to add for the field to validate input, show errors, and trigger effects onChange/onBlur etc.
-     * 
+     *
      * Refer:https://react-hook-form.com/docs/useform/register#options
      */
     rules?: RegisterOptions,
-    /** 
+    /**
      * Is the field editable on submit. If true, the field will be readOnly only if the docstatus is 2 (Cancelled)
-     * 
+     *
      * Default: false
      */
     allowOnSubmit?: boolean;
@@ -146,8 +146,8 @@ interface AsyncDropdownProps extends BaseDropdownProps {
  * The AsyncDropdown component is used to handle Link fields in any form.
  * It needs to be used inside a React Hook Form FormProvider.
  * The component takes in a doctype and a fieldname and returns an input field with a dropdown list of options fetched from the server.
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export const AsyncDropdown = ({
     doctype,
@@ -534,8 +534,8 @@ export interface AsyncDropdownWithoutFormProps extends BaseDropdownProps {
  * The AsyncDropdown component is used to handle Link fields in any form.
  * It needs to be used inside a React Hook Form FormProvider.
  * The component takes in a doctype and a fieldname and returns an input field with a dropdown list of options fetched from the server.
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export const AsyncDropdownWithoutForm = ({
     doctype,

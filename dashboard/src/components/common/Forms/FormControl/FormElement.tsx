@@ -31,7 +31,7 @@ export const FormElement = ({ name, label, children, tooltip, ...props }: FormEl
 
     const { errors } = useFormState()
 
-    /** 
+    /**
      * The name can be a path like `items.0.item_code` so we need to split it
      * and then get the error message from the errors object
      * */

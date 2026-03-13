@@ -26,7 +26,7 @@ const NavbarDetails = ({ ID }: { ID: string }) => {
           ...data.navbar_items[key],
         }));
       }, [data]);
-    
+
       const initialTasks: NavbarTask[] = useMemo(() => {
         if (!data) return [];
         return Object.entries(data.navbar_items)

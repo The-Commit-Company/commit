@@ -179,7 +179,7 @@ export const ModuleDoctypeListDrawer = ({ open, setOpen, apps, setSelectedApps, 
                                             <Button onClick={onGenerateERD} size="sm" className="bg-blue-500">Generate ERD</Button>
                                         </div>
                                     </div>
-                                        
+
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>

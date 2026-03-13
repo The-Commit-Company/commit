@@ -79,7 +79,7 @@ const UploadModalContent = ({ doctype, docname, fieldname, maxFiles, accept, max
                     doctype: doctype,
                     docname: docname,
                     fieldname: fieldname,
-                    isPrivate: isPrivate 
+                    isPrivate: isPrivate
                 }).then(res => res)
                     .catch((e) => {
                         const serverMessage = JSON.parse(JSON.parse(e._server_messages)[0])

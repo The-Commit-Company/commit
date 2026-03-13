@@ -44,5 +44,3 @@ export const ICON_KEY_MAP: Record<ICON_KEY, any> = {
     'Text Editor': Pencil as any,
     'Time': Clock3 as any,
 }
-
-
