@@ -82,6 +82,7 @@ export const AppAPIViewer = ({ appName }: { appName: string }) => {
                             selectedEndpoint={selectedendpoint}
                             path_to_folder=""
                             listRef={listRef}
+                            viewerType="app"
                         />
                     </Suspense>
 
