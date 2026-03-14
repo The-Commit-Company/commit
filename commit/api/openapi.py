@@ -201,16 +201,26 @@ def _build_openapi_document(
         "Automatically generated OpenAPI definition for Frappe whitelisted methods."
     )
     base_url = _get_request_base_url()
+    paths = _build_paths_from_apis(apis)
 
-    return {
+    # Ensure version is a string for strict OpenAPI validators (e.g. Postman).
+    try:
+        version = frappe.get_hooks().get("app_version", ["0.0.0"])
+        version = version[0] if version else "0.0.0"
+    except Exception:
+        version = "0.0.0"
+    if not isinstance(version, str):
+        version = "0.0.0"
+
+    doc = {
         "openapi": "3.0.0",
         "info": {
             "title": title or default_title,
-            "version": frappe.get_hooks().get("app_version", ["0.0.0"])[0],
+            "version": version,
             "description": description or default_description,
         },
         "servers": [{"url": base_url, "description": "Frappe site"}],
-        "paths": _build_paths_from_apis(apis),
+        "paths": paths,
         "components": {
             "securitySchemes": {
                 "UserKey": {
@@ -221,8 +231,10 @@ def _build_openapi_document(
                 }
             }
         },
-        "security": [{"UserKey": []}],
     }
+    # Do not set document-level security so Postman/other tools don't send auth by default.
+    # Guest endpoints work without it; protected endpoints can add auth in the tool.
+    return doc
 
 
 @frappe.whitelist(allow_guest=True)
