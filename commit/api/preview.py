@@ -39,7 +39,7 @@ def save_preview_screenshot(url, doctype, docname, field):
     # ✅ Correct way: Wrap bytes in BytesIO
     screenshot_io = io.BytesIO(screenshot_bytes)
 
-    file_doc = frappe.get_doc(
+    file_doc = frappe.get_cached_doc(
         {
             "doctype": "File",
             "file_name": docname + "_" + "preview.png",
@@ -55,7 +55,7 @@ def save_preview_screenshot(url, doctype, docname, field):
     # Convert to WebP
     file_url = convert_to_webp(file_doc.file_url, file_doc)
     # Update the document with the preview file URL
-    doc = frappe.get_doc(doctype, docname)
+    doc = frappe.get_cached_doc(doctype, docname)
     doc.set(field, file_url)
     doc.save()
 

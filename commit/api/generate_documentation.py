@@ -202,7 +202,7 @@ def save_documentation_for_project_branch(
     project_branch: str, endpoint: str, documentation: str
 ):
 
-    doc = frappe.get_doc("Commit Project Branch", project_branch)
+    doc = frappe.get_cached_doc("Commit Project Branch", project_branch)
     docs = json.loads(doc.documentation) if doc.documentation else {}
     apis = docs.get("apis", [])
 
@@ -237,7 +237,7 @@ def save_documentation_for_site_app(
 ):
 
     if frappe.db.exists("Commit Branch Documentation", project_branch):
-        doc = frappe.get_doc("Commit Branch Documentation", project_branch)
+        doc = frappe.get_cached_doc("Commit Branch Documentation", project_branch)
         docs = json.loads(doc.documentation) if doc.documentation else {}
         apis = docs.get("apis", [])
 

@@ -67,7 +67,7 @@ def publish_documentation(
     """
 
     # 1. Create a new Commit Docs Page Document
-    commit_docs_page = frappe.get_doc(
+    commit_docs_page = frappe.get_cached_doc(
         {
             "doctype": "Commit Docs Page",
             "title": title,
@@ -81,7 +81,7 @@ def publish_documentation(
 
     # 2. Update the Commit Docs Document with the new Page by adding it to the Sidebar child table
 
-    commit_docs = frappe.get_doc("Commit Docs", docs_name)
+    commit_docs = frappe.get_cached_doc("Commit Docs", docs_name)
 
     commit_docs.append(
         "sidebar", {"parent_label": parent_label, "docs_page": commit_docs_page.name}
@@ -93,7 +93,9 @@ def publish_documentation(
 
     if viewer_type == "project":
         # Get the Project Branch Document
-        project_branch_doc = frappe.get_doc("Commit Project Branch", project_branch)
+        project_branch_doc = frappe.get_cached_doc(
+            "Commit Project Branch", project_branch
+        )
 
         # Get the documentation JSON
         documentation = (
@@ -120,7 +122,7 @@ def publish_documentation(
                 project_branch_doc.save()
 
     else:
-        commit_branch_documentation = frappe.get_doc(
+        commit_branch_documentation = frappe.get_cached_doc(
             "Commit Branch Documentation", project_branch
         )
 
@@ -279,7 +281,7 @@ def create_commit_docs_page(data):
         data = json.loads(data)
 
     # create a new Commit Docs Page
-    commit_docs_page = frappe.get_doc(
+    commit_docs_page = frappe.get_cached_doc(
         {
             "doctype": "Commit Docs Page",
             "title": data.get("title"),
@@ -290,7 +292,7 @@ def create_commit_docs_page(data):
     commit_docs_page.insert()
 
     if data.get("sidebar_label"):
-        commit_doc = frappe.get_doc("Commit Docs", data.get("commit_docs"))
+        commit_doc = frappe.get_cached_doc("Commit Docs", data.get("commit_docs"))
         commit_doc.append(
             "sidebar",
             {

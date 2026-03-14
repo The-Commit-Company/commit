@@ -40,7 +40,7 @@ def convert_to_webp(
             "File", filters={"file_url": file_url}, fields=["name"], limit=1
         )
         if files:
-            _file = frappe.get_doc("File", files[0].name)
+            _file = frappe.get_cached_doc("File", files[0].name)
             webp_path = _file.get_full_path().replace(extn, "webp")
             convert_and_save_image(image, webp_path)
             new_file = frappe.copy_doc(_file)
@@ -57,7 +57,7 @@ def convert_to_webp(
         filename = image_url.split("/")[-1]
         extn = get_extension(filename)
         if can_convert_image(extn):
-            _file = frappe.get_doc(
+            _file = frappe.get_cached_doc(
                 {
                     "doctype": "File",
                     "file_name": f"{filename.replace(extn, 'webp')}",
