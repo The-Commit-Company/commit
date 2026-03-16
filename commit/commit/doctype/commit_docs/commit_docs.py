@@ -73,7 +73,7 @@ def get_docs_sidebar_parent_labels(id: str):
     """
 
     # Get the Commit Docs Document
-    commit_docs = frappe.get_doc("Commit Docs", id)
+    commit_docs = frappe.get_cached_doc("Commit Docs", id)
 
     parent_labels = []
 
@@ -107,7 +107,7 @@ def get_all_commit_docs_detail():
     commit_docs_obj = {}
 
     for commit_docs in all_commit_docs:
-        commit_docs = frappe.get_doc("Commit Docs", commit_docs.name).as_dict()
+        commit_docs = frappe.get_cached_doc("Commit Docs", commit_docs.name).as_dict()
 
         parse_doc = parse_commit_docs(commit_docs)
 
@@ -282,7 +282,7 @@ def get_sidebar_items(sidebar, show_hidden_items: bool = False):
         group_items = []
         for group_item in commit_docs_page.linked_pages:
             # Get the document for each linked page
-            group_commit_docs_page = frappe.get_doc(
+            group_commit_docs_page = frappe.get_cached_doc(
                 "Commit Docs Page", group_item.commit_docs_page
             )
 
@@ -340,7 +340,9 @@ def get_sidebar_items(sidebar, show_hidden_items: bool = False):
         if sidebar_item.hide_on_sidebar and not show_hidden_items:
             continue
 
-        commit_docs_page = frappe.get_doc("Commit Docs Page", sidebar_item.docs_page)
+        commit_docs_page = frappe.get_cached_doc(
+            "Commit Docs Page", sidebar_item.docs_page
+        )
 
         permitted = commit_docs_page.allow_guest or frappe.session.user != "Guest"
         published = commit_docs_page.published or frappe.session.user != "Guest"
@@ -386,7 +388,9 @@ def get_first_page_route(route: str):
         commit_docs = frappe.get_doc("Commit Docs", {"route": route})
         found = False
         for sidebar in commit_docs.sidebar:
-            commit_docs_page = frappe.get_doc("Commit Docs Page", sidebar.docs_page)
+            commit_docs_page = frappe.get_cached_doc(
+                "Commit Docs Page", sidebar.docs_page
+            )
             if commit_docs_page.published:
                 found = True
                 return commit_docs_page.route
@@ -440,7 +444,7 @@ def manage_sidebar(commit_doc: str, parent_labels, docs_page):
     """
 
     # Get the Commit Docs Document
-    doc = frappe.get_doc("Commit Docs", commit_doc)
+    doc = frappe.get_cached_doc("Commit Docs", commit_doc)
 
     # Loop Over the Parent Labels
     if isinstance(parent_labels, str):
@@ -497,7 +501,7 @@ def manage_navbar(commit_doc: str, navbar_items, sub_navbar_items=None):
     # 4. Save the Navbar Items
     """
 
-    doc = frappe.get_doc("Commit Docs", commit_doc)
+    doc = frappe.get_cached_doc("Commit Docs", commit_doc)
 
     if isinstance(navbar_items, str):
         navbar_items = json.loads(navbar_items)
@@ -573,7 +577,7 @@ def manage_footer(commit_doc: str, footer_columns, footer_items):
     # 5. Save the Footer Items
     """
 
-    doc = frappe.get_doc("Commit Docs", commit_doc)
+    doc = frappe.get_cached_doc("Commit Docs", commit_doc)
     if isinstance(footer_columns, str):
         footer_columns = json.loads(footer_columns)
 

@@ -94,6 +94,8 @@ export const APIViewer = ({ projectBranch }: { projectBranch: string }) => {
                             selectedEndpoint={selectedendpoint}
                             path_to_folder={data?.message.path_to_folder}
                             listRef={listRef}
+                            viewerType="project"
+                            project_branch={projectBranch}
                         />
                     </Suspense>
                 </div>

@@ -11,7 +11,7 @@ def get_apis_for_project(project_branch: str):
     """
     Gets the Project Branch document with the organization and app name
     """
-    branch_doc = frappe.get_doc("Commit Project Branch", project_branch)
+    branch_doc = frappe.get_cached_doc("Commit Project Branch", project_branch)
 
     apis = (
         json.loads(branch_doc.whitelisted_apis).get("apis", [])
@@ -81,7 +81,7 @@ def get_file_content_from_path(
     Gets the Project Branch document with the organization and app name
     """
     if viewer_type == "project":
-        branch_doc = frappe.get_doc("Commit Project Branch", project_branch)
+        branch_doc = frappe.get_cached_doc("Commit Project Branch", project_branch)
 
         api_data = json.loads(branch_doc.whitelisted_apis)["apis"]
     else:

@@ -66,11 +66,11 @@ class CommitProjectBranch(Document):
             os.mkdir(self.path_to_folder)
 
     def get_path_to_folder(self):
-        project = frappe.get_doc("Commit Project", self.project)
+        project = frappe.get_cached_doc("Commit Project", self.project)
         return project.path_to_folder + "/" + self.branch_name
 
     def clone_repo(self):
-        project = frappe.get_doc("Commit Project", self.project)
+        project = frappe.get_cached_doc("Commit Project", self.project)
         self.app_name = project.app_name
         repo_url = "https://github.com/{}/{}".format(project.org, project.repo_name)
 
@@ -200,7 +200,7 @@ def get_code_from_file(file_path: str, block_start: int, block_end: int):
 
 def background_fetch_process(project_branch):
     try:
-        doc = frappe.get_doc("Commit Project Branch", project_branch)
+        doc = frappe.get_cached_doc("Commit Project Branch", project_branch)
         frappe.publish_realtime(
             "commit_branch_clone_repo",
             {
@@ -285,10 +285,10 @@ def background_fetch_process(project_branch):
 @frappe.whitelist(allow_guest=True)
 def fetch_repo(doc, name=None):
     if name:
-        project_branch = frappe.get_doc("Commit Project Branch", name)
+        project_branch = frappe.get_cached_doc("Commit Project Branch", name)
     else:
         doc = json.loads(doc)
-        project_branch = frappe.get_doc("Commit Project Branch", doc.get("name"))
+        project_branch = frappe.get_cached_doc("Commit Project Branch", doc.get("name"))
     project_branch.fetch_repo()
     project_branch.save()
     return "Hello"
@@ -305,7 +305,7 @@ def generate_branch_documentation(project_branch):
         user=frappe.session.user,
     )
 
-    doc = frappe.get_doc("Commit Project Branch", project_branch)
+    doc = frappe.get_cached_doc("Commit Project Branch", project_branch)
     doc.get_whitelisted_apis_code()
     doc.save()
 
@@ -327,6 +327,6 @@ def get_module_doctype_map_for_branches(branches: str):
     branches = json.loads(branches)
     module_doctypes_map = {}
     for branch in branches:
-        project_branch = frappe.get_doc("Commit Project Branch", branch)
+        project_branch = frappe.get_cached_doc("Commit Project Branch", branch)
         module_doctypes_map[branch] = json.loads(project_branch.module_doctypes_map)
     return module_doctypes_map

@@ -1,11 +1,21 @@
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { APIData } from "@/types/APIData"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { CommandContent } from "../commands/CommandsContent"
-import { Box, GitBranch, SquareTerminal } from "lucide-react"
+import { Box, FileJson, GitBranch, SquareTerminal } from "lucide-react"
+import { web_url } from "@/config/socket"
 
 export interface APIListProps {
     apiList: APIData[]
@@ -15,11 +25,57 @@ export interface APIListProps {
     selectedEndpoint?: string
     path_to_folder: string
     listRef?: React.RefObject<HTMLDivElement>
+    /** 'app' = Installed Apps explorer; 'project' = Project Apps (Commit Project Branch) explorer */
+    viewerType?: 'app' | 'project'
+    /** Required when viewerType is 'project' – the Commit Project Branch document name */
+    project_branch?: string
 }
 
-const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder, listRef }: APIListProps) => {
+const getDefaultBaseUrl = () => web_url.replace(/\/$/, "")
+
+const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selectedEndpoint, path_to_folder, listRef, viewerType = 'app', project_branch }: APIListProps) => {
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [requestTypeFilter, setRequestTypeFilter] = useState<string>('All')
+    const [openApiLoading, setOpenApiLoading] = useState(false)
+    const [openApiDialogOpen, setOpenApiDialogOpen] = useState(false)
+    const [openApiBaseUrl, setOpenApiBaseUrl] = useState("")
+
+    useEffect(() => {
+        if (openApiDialogOpen) {
+            setOpenApiBaseUrl(viewerType === "app" ? getDefaultBaseUrl() : "")
+        }
+    }, [openApiDialogOpen, viewerType])
+
+    const handleDownloadOpenAPI = async (baseUrl: string) => {
+        const isProject = viewerType === 'project' && project_branch
+        const method = isProject
+            ? 'commit.api.openapi.get_openapi_definition_project_apps'
+            : 'commit.api.openapi.get_openapi_definition_installed_apps'
+        const params: Record<string, string> = {}
+        if (isProject && project_branch) params.project_branch = project_branch
+        else if (app_name) params.app_name = app_name
+        const qs = new URLSearchParams(params).toString()
+        const url = `${web_url}/api/method/${method}${qs ? `?${qs}` : ''}`
+        setOpenApiLoading(true)
+        try {
+            const res = await fetch(url)
+            const json = await res.json()
+            const spec = json?.message ?? json
+            const serverUrl = baseUrl.trim().replace(/\/$/, "") || getDefaultBaseUrl()
+            if (spec && typeof spec === "object") {
+                spec.servers = [{ url: serverUrl, description: "Frappe site" }]
+            }
+            const blob = new Blob([JSON.stringify(spec, null, 2)], { type: 'application/json' })
+            const a = document.createElement('a')
+            a.href = URL.createObjectURL(blob)
+            a.download = `${app_name}-${project_branch ?? "app"}-openapi.json`
+            a.click()
+            URL.revokeObjectURL(a.href)
+            setOpenApiDialogOpen(false)
+        } finally {
+            setOpenApiLoading(false)
+        }
+    }
 
     const filterList = useMemo(() => {
 
@@ -60,15 +116,61 @@ const APIList = ({ apiList, app_name, branch_name, setSelectedEndpoint, selected
                         <p>{branch_name}</p>
                     </div>
                 </div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
-                            <SquareTerminal className="h-4 w-4 mr-2" />
-                            Commands
-                        </Button>
-                    </DialogTrigger>
-                    <CommandContent app={app_name} app_path={path_to_folder} />
-                </Dialog>
+                <div className="flex items-center gap-1">
+                    <Dialog open={openApiDialogOpen} onOpenChange={setOpenApiDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button
+                                aria-label="Download OpenAPI spec"
+                                size="sm"
+                                variant="outline"
+                            >
+                                <FileJson className="h-4 w-4 mr-2" />
+                                OpenAPI
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                                <DialogTitle>Download OpenAPI spec</DialogTitle>
+                                <DialogDescription>
+                                    Set the base URL for the API. It will be used in the spec as the default server so tools like Bruno use the correct domain.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-2 py-2">
+                                <Label htmlFor="openapi-base-url">Base URL</Label>
+                                <Input
+                                    id="openapi-base-url"
+                                    type="url"
+                                    placeholder="https://your-site.com"
+                                    value={openApiBaseUrl}
+                                    onChange={(e) => setOpenApiBaseUrl(e.target.value)}
+                                />
+                            </div>
+                            <DialogFooter>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setOpenApiDialogOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={() => handleDownloadOpenAPI(openApiBaseUrl)}
+                                    disabled={openApiLoading}
+                                >
+                                    {openApiLoading ? "Downloading…" : "Download"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button aria-label="View Bench Commands" size={'sm'} variant={'outline'}>
+                                <SquareTerminal className="h-4 w-4 mr-2" />
+                                Commands
+                            </Button>
+                        </DialogTrigger>
+                        <CommandContent app={app_name} app_path={path_to_folder} />
+                    </Dialog>
+                </div>
             </div>
             <div className="flex flex-row space-x-4">
                 <div className="w-4/5 flex flex-row space-x-4">

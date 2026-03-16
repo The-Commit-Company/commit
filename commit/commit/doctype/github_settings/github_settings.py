@@ -32,7 +32,7 @@ def get_access_token(code):
     1. Make a POST request to GitHub to get the access token
     2. Return the access token
     """
-    github_settings = frappe.get_doc("Github Settings")
+    github_settings = frappe.get_cached_doc("Github Settings")
     client_id = github_settings.client_id
     client_secret = github_settings.get_password("client_secret")
     token_url = github_settings.token_uri

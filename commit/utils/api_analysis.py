@@ -109,11 +109,46 @@ def extract_name_from_def(api_def: str):
     return api_def.split("(")[0].strip()
 
 
+def _split_params_by_comma(params_str: str) -> list:
+    """
+    Split parameter string by top-level commas, ignoring commas inside [], (), {}.
+    """
+    parts = []
+    current = []
+    open_brackets = []  # stack of opening bracket chars
+    bracket_pairs = {"[": "]", "(": ")", "{": "}"}
+    i = 0
+    while i < len(params_str):
+        c = params_str[i]
+        if c in bracket_pairs:
+            open_brackets.append(c)
+            current.append(c)
+            i += 1
+        elif open_brackets and c == bracket_pairs[open_brackets[-1]]:
+            open_brackets.pop()
+            current.append(c)
+            i += 1
+        elif c == "," and not open_brackets:
+            parts.append("".join(current).strip())
+            current = []
+            i += 1
+        else:
+            current.append(c)
+            i += 1
+    if current:
+        parts.append("".join(current).strip())
+    return parts
+
+
 def extract_arguments_from_def(api_def: str):
     """
     Extract arguments from def
     """
-    arguments_with_types_defaults = api_def.split("(")[1].split(")")[0].split(",")
+    if "(" not in api_def or ")" not in api_def:
+        arguments_with_types_defaults = []
+    else:
+        params_str = api_def.split("(")[1].split(")")[0]
+        arguments_with_types_defaults = _split_params_by_comma(params_str)
 
     arguments = []
     for arg in arguments_with_types_defaults:
@@ -122,14 +157,15 @@ def extract_arguments_from_def(api_def: str):
         argument = ""
         type = ""
         if "=" in argument_with_types_default:
-            default_split = argument_with_types_default.split("=")
+            default_split = argument_with_types_default.split("=", 1)
             default = default_split[1].strip().replace('"', "").replace("'", "")
             argument = default_split[0].strip()
         else:
             argument = argument_with_types_default
         if ":" in argument:
-            type = argument.split(":")[1].strip()
-            argument = argument.split(":")[0].strip()
+            name_type = argument.split(":", 1)
+            argument = name_type[0].strip()
+            type = name_type[1].strip()
         arguments.append({"argument": argument, "type": type, "default": default})
 
     return arguments
